@@ -1,0 +1,39 @@
+@use "../../../../styles/variables" as *;
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: $text-primary;
+  transition: color 160ms ease;
+
+  &:hover {
+    color: $text-link-hover;
+  }
+}
+
+.brandMark {
+  width: 32px;
+  height: 32px;
+  border-radius: $radius;
+  display: grid;
+  place-items: center;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  letter-spacing: 0.04em;
+  color: $text-inverse;
+  background: linear-gradient(145deg, $accent-hover 0%, $primary 100%);
+  box-shadow: 0 8px 16px rgba($accent, 0.32);
+}
+
+.brandText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 560px) {
+  .brandText {
+    display: none;
+  }
+}

@@ -1,0 +1,57 @@
+@use "../../../../styles/variables" as *;
+
+.search {
+  flex: 1;
+  max-width: 350px;
+  min-width: 230px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8.8px;
+  border: 1px solid $input-border;
+  border-radius: $radius;
+  background: $input-bg;
+  padding: 0 12.8px;
+  transition: border-color 160ms ease;
+  margin-left: 30px;
+
+  &:focus-within {
+    border-color: $input-border-focus;
+  }
+}
+
+.searchIcon {
+  color: $text-tertiary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  line-height: 1;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+}
+
+.searchField {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: $text-primary;
+  font-size: $font-size-sm;
+
+  &::placeholder {
+    color: $input-placeholder;
+  }
+
+  &::-webkit-search-cancel-button {
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 840px) {
+  .search {
+    display: none;
+  }
+}
