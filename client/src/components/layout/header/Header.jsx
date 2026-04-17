@@ -1,6 +1,7 @@
+import Logo from "./logo/Logo.jsx";
 import Search from "./search/Search.jsx";
 import Actions from "./actions/Actions.jsx";
-import Logo from "./logo/Logo.jsx";
+import Hamburger from "./hamburger/Hamburger.jsx";
 
 import styles from "./Header.module.scss";
 
@@ -15,6 +16,7 @@ const Header = () => {
         </div>
         <div>
           <Actions />
+          <Hamburger />
         </div>
       </div>
     </header>

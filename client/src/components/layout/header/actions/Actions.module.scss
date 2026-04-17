@@ -7,8 +7,7 @@
 }
 
 .ghostButton,
-.primaryButton,
-.menuButton {
+.primaryButton {
   border: 1px solid transparent;
   border-radius: $radius;
   font-size: $font-size-sm;
@@ -51,42 +50,9 @@
   }
 }
 
-.menuButton {
-  display: none;
-  width: 40px;
-  height: 40px;
-  background: transparent;
-  border-color: $border-subtle;
-  padding: 8px;
-
-  span {
-    display: block;
-    width: 100%;
-    height: 2px;
-    border-radius: 999px;
-    background: $text-primary;
-
-    & + span {
-      margin-top: 4px;
-    }
-  }
-
-  &:hover {
-    border-color: $border-default;
-    background: rgba($bg-surface-2, 0.75);
-  }
-}
-
 @media (max-width: 840px) {
   .ghostButton,
   .primaryButton {
     display: none;
-  }
-
-  .menuButton {
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
   }
 }

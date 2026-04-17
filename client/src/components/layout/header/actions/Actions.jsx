@@ -13,11 +13,6 @@ const Actions = () => {
       <button className={styles.ghostButton} onClick={() => goSignIn()} type="button">
         Sign in
       </button>
-      <button className={styles.menuButton} type="button" aria-label="Open menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
     </div>
   );
 };
