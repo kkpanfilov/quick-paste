@@ -1,15 +1,16 @@
 import { useNavigate } from "react-router";
 
+import { paths } from "@/routes/paths.config.js";
+
 export function useAppNavigation() {
   const navigate = useNavigate();
 
   return {
-    goHome: () => navigate("/"),
-    goSignIn: () => navigate("/signin"),
-    goRegister: () => navigate("/register"),
-    goNew: () => navigate("/new"),
-    goPaste: (id) => navigate(`/paste/${id}`),
+    goHome: () => navigate(paths.home),
+    goSignIn: () => navigate(paths.signin),
+    goRegister: () => navigate(paths.register),
+    goNew: () => navigate(paths.new),
+    goPaste: (id) => navigate(paths.paste),
     goBack: () => navigate(-1),
   };
 }
-

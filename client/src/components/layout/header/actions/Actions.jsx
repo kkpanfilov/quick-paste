@@ -1,4 +1,4 @@
-import { useAppNavigation } from "../../../../hooks/useAppNavigation.js";
+import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 
 import styles from "./Actions.module.scss";
 

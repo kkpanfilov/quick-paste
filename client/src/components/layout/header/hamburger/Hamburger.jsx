@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { Link } from "react-router";
+
 import styles from "./Hamburger.module.scss";
 
 const Hamburger = () => {
@@ -11,7 +13,7 @@ const Hamburger = () => {
         className={styles.menuButton}
         type="button"
         aria-label="Open menu"
-        onClick={() => setIsShow(isShow ? false : true)}
+        onClick={() => setIsShow(!isShow)}
       >
         <span></span>
         <span></span>
@@ -40,12 +42,12 @@ const Hamburger = () => {
           />
         </form>
 
-        <a className={styles.menuLinkPrimary} href="/new">
+        <Link className={styles.menuLinkPrimary} to="/new">
           New paste
-        </a>
-        <a className={styles.menuLinkGhost} href="/sign-in">
+        </Link>
+        <Link className={styles.menuLinkGhost} to="/signin">
           Sign in
-        </a>
+        </Link>
       </div>
     </div>
   );

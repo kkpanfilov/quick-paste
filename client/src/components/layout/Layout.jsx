@@ -1,10 +1,11 @@
+import Routing from "@/routes/Routing.jsx";
 import Header from "./header/Header.jsx";
 
-const Layout = ({ children }) => {
+const Layout = () => {
   return (
     <div>
       <Header />
-      {children}
+      <Routing></Routing>
     </div>
   );
 };
