@@ -1,8 +1,8 @@
-import { paths } from "./paths.config.js";
-
 import Home from "@/components/screens/home/Home.jsx";
-import Signin from "@/components/screens/signin/Signin.jsx";
 import Register from "@/components/screens/register/Register.jsx";
+import Signin from "@/components/screens/signin/Signin.jsx";
+
+import { paths } from "./paths.config.js";
 
 export const routes = [
   {

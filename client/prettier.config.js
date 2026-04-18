@@ -1,16 +1,15 @@
-
-
-module.exports = {
-  sortingMethod: "lineLength",
-  plugins: ["./node_modules/prettier-plugin-sort-imports/dist/index.js"],
+export default {
+  plugins: ["@trivago/prettier-plugin-sort-imports"],
   importOrder: [
     "^react$",
+    "^react-dom$",
     "^react/(.*)$",
-    "^next/(.*)$",
+    "^react-dom/(.*)$",
     "<THIRD_PARTY_MODULES>",
-    "^@/(.*)$",
-    "^[./]",
+    "^@/(?!.*\\.scss$).*$",
+    "^[./](?!.*\\.scss$).*$",
+    "^.+\\.scss$"
   ],
   importOrderSeparation: true,
-  importOrderSortSpecifiers: true,
+  importOrderSortSpecifiers: true
 };

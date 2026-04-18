@@ -14,7 +14,9 @@ const NotFound = () => {
         <h1 id="not-found-title" className={styles.title}>
           Page not found
         </h1>
-        <p className={styles.description}>The page you requested does not exist or was moved.</p>
+        <p className={styles.description}>
+          The page you requested does not exist or was moved.
+        </p>
 
         <div className={styles.actions}>
           <Link to="/" className={styles.primaryButton}>

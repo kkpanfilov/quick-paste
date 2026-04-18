@@ -1,8 +1,8 @@
-import { Routes, Route } from "react-router";
-
-import { routes } from "./routes.data.js";
+import { Route, Routes } from "react-router";
 
 import NotFound from "@/components/screens/not-found/NotFound.jsx";
+
+import { routes } from "./routes.data.js";
 
 const Routing = () => {
   return (

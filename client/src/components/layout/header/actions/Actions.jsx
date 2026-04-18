@@ -7,10 +7,18 @@ const Actions = () => {
 
   return (
     <div className={styles.actions}>
-      <button className={styles.primaryButton} onClick={() => goNew()} type="button">
+      <button
+        className={styles.primaryButton}
+        onClick={() => goNew()}
+        type="button"
+      >
         New paste
       </button>
-      <button className={styles.ghostButton} onClick={() => goSignIn()} type="button">
+      <button
+        className={styles.ghostButton}
+        onClick={() => goSignIn()}
+        type="button"
+      >
         Sign in
       </button>
     </div>
