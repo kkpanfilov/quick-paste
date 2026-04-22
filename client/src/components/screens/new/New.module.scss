@@ -1,0 +1,204 @@
+@use "@/styles/tokens" as *;
+
+.screen {
+  min-height: $screen-min-height-desktop;
+  margin: 0 auto;
+  padding: 36px 0 56px;
+  background: $screen-bg-aurora;
+  font-family: $font-family-sans;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.panel {
+  width: min(820px, 100%);
+  border: 1px solid $auth-panel-border;
+  border-radius: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba($auth-panel-bg, 0.96) 0%,
+    rgba($bg-surface-1, 0.96) 100%
+  );
+  box-shadow: $card-shadow;
+  padding: 28px;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: $text-link;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 8px 0 0;
+  color: $text-primary;
+  font-size: $font-size-2xl;
+  line-height: 1.25;
+}
+
+.subtitle {
+  margin: 10px 0 0;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  line-height: 1.6;
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.group {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border: 1px solid $input-border;
+  border-radius: $radius;
+  outline: 0;
+  background: $input-bg;
+  color: $text-primary;
+  font-size: $font-size-sm;
+  transition: $transition-input;
+
+  &::placeholder {
+    color: $input-placeholder;
+  }
+
+  &:hover {
+    border-color: $input-border-hover;
+  }
+
+  &:focus-visible {
+    border-color: $input-border-focus;
+    box-shadow: $input-focus-shadow;
+  }
+}
+
+.input {
+  height: 44px;
+  padding: 0 13px;
+}
+
+select.input {
+  cursor: pointer;
+}
+
+.textarea {
+  min-height: 300px;
+  resize: vertical;
+  padding: 12px 13px;
+  font-family: $font-family-mono;
+  line-height: 1.55;
+}
+
+.actions {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.secondaryButton,
+.primaryButton {
+  height: 42px;
+  padding: 0 16px;
+  border-radius: $radius;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: $transition-button-surface;
+
+  &:focus-visible {
+    outline: $focus-ring-outline;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: $active-press-transform;
+  }
+}
+
+.secondaryButton {
+  border: 1px solid $border-default;
+  background: $bg-surface-2;
+  color: $text-primary;
+
+  &:hover {
+    border-color: $border-strong;
+    background: $bg-surface-3;
+  }
+}
+
+.primaryButton {
+  border: 1px solid transparent;
+  background: $primary;
+  color: $button-text;
+
+  &:hover {
+    background: $primary-hover;
+  }
+}
+
+@media (max-width: 768px) {
+  .screen {
+    min-height: $screen-min-height-mobile;
+    width: $layout-width-tablet;
+    padding: 28px 0 44px;
+  }
+
+  .panel {
+    padding: 22px 18px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .textarea {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 480px) {
+  .screen {
+    width: $layout-width-mobile;
+    padding: 24px 0 34px;
+  }
+
+  .title {
+    font-size: $font-size-xl;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .secondaryButton,
+  .primaryButton {
+    width: 100%;
+  }
+}

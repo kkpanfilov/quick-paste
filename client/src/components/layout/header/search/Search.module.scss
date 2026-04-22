@@ -1,4 +1,4 @@
-@use "@/styles/variables" as *;
+@use "@/styles/tokens" as *;
 
 .search {
   flex: 1;
@@ -12,7 +12,7 @@
   border-radius: $radius;
   background: $input-bg;
   padding: 0 12.8px;
-  transition: border-color 160ms ease;
+  transition: $transition-border;
   margin-left: 30px;
 
   &:focus-within {

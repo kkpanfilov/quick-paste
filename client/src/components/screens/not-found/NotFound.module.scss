@@ -1,22 +1,11 @@
-@use "@/styles/variables" as *;
+@use "@/styles/tokens" as *;
 
 .screen {
-  min-height: calc(100vh - 72px);
+  min-height: $screen-min-height-desktop;
   display: grid;
   place-items: center;
   padding: 48px 16px;
-  background:
-    radial-gradient(
-      1100px 540px at 8% -10%,
-      rgba($warning, 0.12),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 480px at 100% 100%,
-      rgba($accent, 0.12),
-      transparent 60%
-    ),
-    linear-gradient(180deg, $bg-canvas 0%, $bg-page 100%);
+  background: $bg-main;
   font-family: $font-family-sans;
 }
 
@@ -25,10 +14,10 @@
   padding: 40px 34px;
   border: 1px solid $auth-panel-border;
   border-radius: 18px;
-  background: rgba($auth-panel-bg, 0.92);
+  background: $auth-card-bg;
   box-shadow:
     0 24px 70px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba($white, 0.02);
+    $auth-card-highlight;
   text-align: center;
 }
 
@@ -76,19 +65,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition:
-    transform 120ms ease,
-    border-color 160ms ease,
-    background-color 160ms ease,
-    color 160ms ease;
+  transition: $transition-button-interactive;
 
   &:focus-visible {
-    outline: 2px solid rgba($border-focus, 0.9);
+    outline: $focus-ring-outline;
     outline-offset: 2px;
   }
 
   &:active {
-    transform: translateY(1px);
+    transform: $active-press-transform;
   }
 }
 
@@ -115,7 +100,7 @@
 
 @media (max-width: 768px) {
   .screen {
-    min-height: calc(100vh - 64px);
+    min-height: $screen-min-height-mobile;
     padding: 36px 12px;
   }
 

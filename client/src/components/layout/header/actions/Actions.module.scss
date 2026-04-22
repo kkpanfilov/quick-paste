@@ -1,4 +1,4 @@
-@use "@/styles/variables" as *;
+@use "@/styles/tokens" as *;
 
 .actions {
   display: flex;
@@ -14,14 +14,10 @@
   font-weight: $font-weight-semibold;
   line-height: 1;
   cursor: pointer;
-  transition:
-    transform 120ms ease,
-    border-color 160ms ease,
-    background-color 160ms ease,
-    color 160ms ease;
+  transition: $transition-button-interactive;
 
   &:active {
-    transform: translateY(1px);
+    transform: $active-press-transform;
   }
 }
 

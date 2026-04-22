@@ -1,16 +1,12 @@
-
 // Color primitives
-$black: #000000 !default;
 $white: #ffffff !default;
 
 // Background scale
-$bg-canvas: #0b0d12 !default;
 $bg-page: #10131a !default;
+$bg-canvas: #0b0d12 !default;
 $bg-surface-1: #151a22 !default;
 $bg-surface-2: #1b2230 !default;
 $bg-surface-3: #232d3f !default;
-$bg-inset: #0d1118 !default;
-$bg-overlay: rgba(4, 6, 10, 0.78) !default;
 
 // Border scale
 $border-subtle: #2a3344 !default;
@@ -22,7 +18,6 @@ $border-focus: #7c9cff !default;
 $text-primary: #e6edf7 !default;
 $text-secondary: #b4c0d3 !default;
 $text-tertiary: #8a97ab !default;
-$text-disabled: #66758d !default;
 $text-inverse: #0f172a !default;
 $text-link: #8eb4ff !default;
 $text-link-hover: #a9c7ff !default;
@@ -30,30 +25,17 @@ $text-link-hover: #a9c7ff !default;
 // Brand & interactive
 $accent: #7c9cff !default;
 $accent-hover: #95afff !default;
-$accent-active: #6889f2 !default;
-$accent-soft: rgba(124, 156, 255, 0.16) !default;
 
 $primary: #4f7cff !default;
 $primary-hover: #6990ff !default;
 $primary-active: #3f67e6 !default;
 
 // Semantic states
-$success: #2fbf8f !default;
-$success-soft: rgba(47, 191, 143, 0.16) !default;
 $warning: #f2b13f !default;
-$warning-soft: rgba(242, 177, 63, 0.16) !default;
-$danger: #ef5d6c !default;
-$danger-soft: rgba(239, 93, 108, 0.16) !default;
 $info: #4db8ff !default;
-$info-soft: rgba(77, 184, 255, 0.16) !default;
 
 // Paste/code-specific
 $code-bg: #0d1117 !default;
-$code-bg-elevated: #121826 !default;
-$code-line-highlight: rgba(124, 156, 255, 0.12) !default;
-$code-selection: rgba(124, 156, 255, 0.24) !default;
-$code-inline-bg: #1b2230 !default;
-$code-inline-text: #c4d4ff !default;
 
 // Component tokens
 $input-bg: #111722 !default;
@@ -80,33 +62,39 @@ $auth-panel-border: #2d3950 !default;
 
 // Typography
 $font-family-sans:
-  'Inter',
-  'Manrope',
+  "Inter",
+  "Manrope",
   -apple-system,
   BlinkMacSystemFont,
-  'Segoe UI',
+  "Segoe UI",
   sans-serif !default;
 $font-family-mono:
-  'JetBrains Mono',
-  'Fira Code',
-  'Cascadia Code',
-  ui-monospace,
-  SFMono-Regular,
-  Menlo,
-  monospace !default;
+  "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, SFMono-Regular,
+  Menlo, monospace !default;
 
 $font-size-xs: 0.75rem !default; // 12
 $font-size-sm: 0.875rem !default; // 14
 $font-size-md: 1rem !default; // 16
-$font-size-lg: 1.125rem !default; // 18
 $font-size-xl: 1.25rem !default; // 20
 $font-size-2xl: 1.5rem !default; // 24
 $font-size-3xl: 2rem !default; // 32
 
-$font-weight-regular: 400 !default;
 $font-weight-medium: 500 !default;
 $font-weight-semibold: 600 !default;
 $font-weight-bold: 700 !default;
 
 // Radius
 $radius: 0.5rem !default; // 8
+
+$bg-main:
+  radial-gradient(
+    1100px 540px at 8% -10%,
+    rgba($warning, 0.12),
+    transparent 60%
+  ),
+  radial-gradient(
+    900px 480px at 100% 100%,
+    rgba($accent, 0.12),
+    transparent 60%
+  ),
+  linear-gradient(180deg, $bg-canvas 0%, $bg-page 100%);

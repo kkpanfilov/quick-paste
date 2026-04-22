@@ -1,0 +1,146 @@
+@use "@/styles/tokens" as *;
+
+.screen {
+  min-height: $screen-min-height-desktop;
+  padding: 36px 0 56px;
+  font-family: $font-family-sans;
+  background: $screen-bg-aurora;
+}
+
+.container {
+  width: $layout-width-desktop;
+  margin: 0 auto;
+}
+
+.hero {
+  margin-bottom: 22px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: $text-link;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 8px 0 0;
+  color: $text-primary;
+  font-size: $font-size-3xl;
+  line-height: 1.2;
+}
+
+.subtitle {
+  margin: 10px 0 0;
+  max-width: 640px;
+  color: $text-secondary;
+  font-size: $font-size-md;
+  line-height: 1.6;
+}
+
+.feed {
+  display: grid;
+  gap: 14px;
+}
+
+.card {
+  border: 1px solid $card-border;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba($card-bg-hover, 0.96) 0%, rgba($card-bg, 0.96) 100%);
+  padding: 18px;
+  box-shadow: $card-shadow;
+  transition:
+    border-color 160ms ease,
+    transform 120ms ease;
+
+  &:hover {
+    border-color: $border-strong;
+    transform: translateY(-1px);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cardTitle {
+  margin: 0;
+  color: $text-primary;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  line-height: 1.4;
+}
+
+.language {
+  border: 1px solid $border-default;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: $text-secondary;
+  font-size: $font-size-xs;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.preview {
+  margin: 12px 0 0;
+  border: 1px solid $border-subtle;
+  border-radius: 10px;
+  background: $code-bg;
+  padding: 12px;
+  color: $text-primary;
+  font-family: $font-family-mono;
+  font-size: $font-size-sm;
+  line-height: 1.55;
+  overflow-x: auto;
+}
+
+.meta {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: $text-tertiary;
+  font-size: $font-size-xs;
+}
+
+@media (max-width: 768px) {
+  .screen {
+    min-height: $screen-min-height-mobile;
+    width: $layout-width-tablet;
+    padding: 28px 0 44px;
+  }
+
+  .title {
+    font-size: $font-size-2xl;
+  }
+}
+
+@media (max-width: 480px) {
+  .screen {
+    width: $layout-width-mobile;
+    padding: 24px 0 34px;
+  }
+
+  .subtitle {
+    font-size: $font-size-sm;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .meta {
+    font-size: 11px;
+  }
+}

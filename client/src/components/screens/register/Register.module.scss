@@ -1,22 +1,11 @@
-@use "@/styles/variables" as *;
+@use "@/styles/tokens" as *;
 
 .screen {
-  min-height: calc(100vh - 72px);
+  min-height: $screen-min-height-desktop;
   display: grid;
   place-items: center;
   padding: 48px 16px;
-  background:
-    radial-gradient(
-      1200px 600px at 12% -8%,
-      rgba($accent, 0.14),
-      transparent 62%
-    ),
-    radial-gradient(
-      1000px 520px at 100% 100%,
-      rgba($info, 0.12),
-      transparent 60%
-    ),
-    linear-gradient(180deg, $bg-canvas 0%, $bg-page 100%);
+  background: $screen-bg-aurora;
   font-family: $font-family-sans;
 }
 
@@ -25,10 +14,10 @@
   padding: 32px;
   border: 1px solid $auth-panel-border;
   border-radius: 16px;
-  background: rgba($auth-panel-bg, 0.92);
+  background: $auth-card-bg;
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba($white, 0.02);
+    $auth-card-highlight;
   backdrop-filter: blur(6px);
 }
 
@@ -76,9 +65,7 @@
   background: $input-bg;
   color: $text-primary;
   font-size: $font-size-sm;
-  transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease;
+  transition: $transition-input;
 
   &::placeholder {
     color: $input-placeholder;
@@ -90,7 +77,7 @@
 
   &:focus-visible {
     border-color: $input-border-focus;
-    box-shadow: 0 0 0 3px rgba($accent, 0.22);
+    box-shadow: $input-focus-shadow;
   }
 }
 
@@ -104,9 +91,7 @@
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
   cursor: pointer;
-  transition:
-    background-color 160ms ease,
-    transform 120ms ease;
+  transition: $transition-button-filled;
 
   &:hover {
     background: $primary-hover;
@@ -114,11 +99,11 @@
 
   &:active {
     background: $primary-active;
-    transform: translateY(1px);
+    transform: $active-press-transform;
   }
 
   &:focus-visible {
-    outline: 2px solid rgba($border-focus, 0.9);
+    outline: $focus-ring-outline;
     outline-offset: 2px;
   }
 }
@@ -134,14 +119,14 @@
   color: $text-link;
   text-decoration: none;
   font-weight: $font-weight-semibold;
-  transition: color 160ms ease;
+  transition: $transition-color;
 
   &:hover {
     color: $text-link-hover;
   }
 
   &:focus-visible {
-    outline: 2px solid rgba($border-focus, 0.9);
+    outline: $focus-ring-outline;
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -149,7 +134,7 @@
 
 @media (max-width: 768px) {
   .screen {
-    min-height: calc(100vh - 64px);
+    min-height: $screen-min-height-mobile;
     padding: 36px 12px;
   }
 

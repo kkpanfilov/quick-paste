@@ -1,11 +1,11 @@
-@use "@/styles/variables" as *;
+@use "@/styles/tokens" as *;
 
 .brand {
   display: inline-flex;
   align-items: center;
   gap: 12px;
   color: $text-primary;
-  transition: color 160ms ease;
+  transition: $transition-color;
 
   &:hover {
     color: $text-link-hover;
