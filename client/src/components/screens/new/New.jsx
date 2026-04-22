@@ -70,9 +70,6 @@ const New = () => {
           </div>
 
           <div className={styles.actions}>
-            <button type="button" className={styles.secondaryButton}>
-              Clear
-            </button>
             <button type="submit" className={styles.primaryButton}>
               Create paste
             </button>

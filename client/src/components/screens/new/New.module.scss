@@ -166,8 +166,6 @@ select.input {
 @media (max-width: 768px) {
   .screen {
     min-height: $screen-min-height-mobile;
-    width: $layout-width-tablet;
-    padding: 28px 0 44px;
   }
 
   .panel {
@@ -185,7 +183,6 @@ select.input {
 
 @media (max-width: 480px) {
   .screen {
-    width: $layout-width-mobile;
     padding: 24px 0 34px;
   }
 

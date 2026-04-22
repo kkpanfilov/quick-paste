@@ -48,7 +48,11 @@
 .card {
   border: 1px solid $card-border;
   border-radius: 12px;
-  background: linear-gradient(180deg, rgba($card-bg-hover, 0.96) 0%, rgba($card-bg, 0.96) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba($card-bg-hover, 0.96) 0%,
+    rgba($card-bg, 0.96) 100%
+  );
   padding: 18px;
   box-shadow: $card-shadow;
   transition:
@@ -96,7 +100,7 @@
   font-family: $font-family-mono;
   font-size: $font-size-sm;
   line-height: 1.55;
-  overflow-x: auto;
+  white-space: pre-wrap;
 }
 
 .meta {
@@ -112,7 +116,6 @@
 @media (max-width: 768px) {
   .screen {
     min-height: $screen-min-height-mobile;
-    width: $layout-width-tablet;
     padding: 28px 0 44px;
   }
 
@@ -123,7 +126,6 @@
 
 @media (max-width: 480px) {
   .screen {
-    width: $layout-width-mobile;
     padding: 24px 0 34px;
   }
 
