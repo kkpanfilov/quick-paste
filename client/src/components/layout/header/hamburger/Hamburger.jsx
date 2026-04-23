@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import Button from "@/components/ui/button/Button.jsx";
+import Field from "@/components/ui/field/Field.jsx";
 import SearchIcon from "@/components/ui/search-icon/SearchIcon.jsx";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 
@@ -31,7 +32,7 @@ const Hamburger = () => {
       >
         <form className={styles.search} role="search">
           <SearchIcon />
-          <input
+          <Field
             className={styles.searchField}
             type="search"
             name="query"

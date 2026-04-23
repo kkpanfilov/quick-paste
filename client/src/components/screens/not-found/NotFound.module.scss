@@ -53,49 +53,10 @@
   flex-wrap: wrap;
 }
 
-.primaryButton,
-.ghostButton {
+.button {
   min-width: 148px;
   height: 44px;
   padding: 0 16px;
-  border-radius: $radius;
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: $transition-button-interactive;
-
-  &:focus-visible {
-    outline: $focus-ring-outline;
-    outline-offset: 2px;
-  }
-
-  &:active {
-    transform: $active-press-transform;
-  }
-}
-
-.primaryButton {
-  border: 1px solid transparent;
-  color: $button-text;
-  background: $primary;
-
-  &:hover {
-    background: $primary-hover;
-  }
-}
-
-.ghostButton {
-  border: 1px solid $border-default;
-  color: $text-primary;
-  background: $bg-surface-2;
-
-  &:hover {
-    border-color: $border-strong;
-    background: $bg-surface-3;
-  }
 }
 
 @media (max-width: 768px) {
@@ -131,8 +92,7 @@
     gap: 10px;
   }
 
-  .primaryButton,
-  .ghostButton {
+  .button {
     width: 100%;
   }
 }

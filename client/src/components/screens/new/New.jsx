@@ -1,4 +1,5 @@
 import Button from "@/components/ui/button/Button.jsx";
+import Field from "@/components/ui/field/Field.jsx";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./New.module.scss";
@@ -24,7 +25,7 @@ const New = () => {
             <label htmlFor="new-title" className={styles.label}>
               Title
             </label>
-            <input
+            <Field
               id="new-title"
               name="title"
               type="text"
@@ -71,7 +72,8 @@ const New = () => {
             <label htmlFor="new-content" className={styles.label}>
               Content
             </label>
-            <textarea
+            <Field
+              tag="textarea"
               id="new-content"
               name="content"
               className={styles.textarea}
@@ -80,7 +82,11 @@ const New = () => {
           </div>
 
           <div className={styles.actions}>
-            <Button type="submit" variant="primary" className={styles.createPasteButton}>
+            <Button
+              type="submit"
+              variant="primary"
+              className={styles.createPasteButton}
+            >
               Create paste
             </Button>
           </div>

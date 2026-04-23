@@ -1,11 +1,13 @@
-import { Link } from "react-router";
-
+import Button from "@/components/ui/button/Button.jsx";
+import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./NotFound.module.scss";
 
 const NotFound = () => {
   useDocumentTitle("Page not found");
+
+  const { goHome, goSignIn } = useAppNavigation();
 
   return (
     <main className={styles.screen}>
@@ -19,12 +21,20 @@ const NotFound = () => {
         </p>
 
         <div className={styles.actions}>
-          <Link to="/" className={styles.primaryButton}>
+          <Button
+            onClick={() => goHome()}
+            variant="primary"
+            className={styles.button}
+          >
             Back to home
-          </Link>
-          <Link to="/signin" className={styles.ghostButton}>
+          </Button>
+          <Button
+            onClick={() => goSignIn()}
+            variant="ghost"
+            className={styles.button}
+          >
             Sign in
-          </Link>
+          </Button>
         </div>
       </section>
     </main>

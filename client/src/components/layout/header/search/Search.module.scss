@@ -38,16 +38,6 @@
   border: 0;
   outline: 0;
   background: transparent;
-  color: $text-primary;
-  font-size: $font-size-sm;
-
-  &::placeholder {
-    color: $input-placeholder;
-  }
-
-  &::-webkit-search-cancel-button {
-    cursor: pointer;
-  }
 }
 
 @media (max-width: 840px) {

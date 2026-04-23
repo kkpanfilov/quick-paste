@@ -84,12 +84,6 @@
   border: 0;
   outline: 0;
   background: transparent;
-  color: $text-primary;
-  font-size: $font-size-sm;
-
-  &::placeholder {
-    color: $input-placeholder;
-  }
 }
 
 .menuLinkPrimary,
