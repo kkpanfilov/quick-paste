@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 
+import Button from "@/components/ui/button/Button.jsx";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./Signin.module.scss";
@@ -58,7 +59,6 @@ const Signin = () => {
             />
             {errors.email && <p>{errors.email.message}</p>}
           </div>
-
           <div className={styles.group}>
             <label htmlFor="signin-password" className={styles.label}>
               Password
@@ -80,7 +80,6 @@ const Signin = () => {
             />
             {errors.password && <p>{errors.password.message}</p>}
           </div>
-
           <div className={styles.actions}>
             <label className={styles.remember}>
               <input
@@ -95,9 +94,9 @@ const Signin = () => {
             </Link>
           </div>
 
-          <button type="submit" className={styles.submit}>
+          <Button type="submit" variant="primary" className={styles.submit}>
             Sign in
-          </button>
+          </Button>
         </form>
 
         <p className={styles.footer}>

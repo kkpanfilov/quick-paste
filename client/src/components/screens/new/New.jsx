@@ -1,4 +1,6 @@
+import Button from "@/components/ui/button/Button.jsx";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+
 import styles from "./New.module.scss";
 
 const New = () => {
@@ -36,7 +38,11 @@ const New = () => {
               <label htmlFor="new-language" className={styles.label}>
                 Language
               </label>
-              <select id="new-language" name="language" className={styles.input}>
+              <select
+                id="new-language"
+                name="language"
+                className={styles.input}
+              >
                 <option>Plain text</option>
                 <option>JavaScript</option>
                 <option>TypeScript</option>
@@ -48,7 +54,11 @@ const New = () => {
               <label htmlFor="new-expire" className={styles.label}>
                 Expiration
               </label>
-              <select id="new-expire" name="expiration" className={styles.input}>
+              <select
+                id="new-expire"
+                name="expiration"
+                className={styles.input}
+              >
                 <option>Never</option>
                 <option>1 hour</option>
                 <option>1 day</option>
@@ -70,9 +80,9 @@ const New = () => {
           </div>
 
           <div className={styles.actions}>
-            <button type="submit" className={styles.primaryButton}>
+            <Button type="submit" variant="primary" className={styles.createPasteButton}>
               Create paste
-            </button>
+            </Button>
           </div>
         </form>
       </section>

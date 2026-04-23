@@ -2,10 +2,15 @@ import { useState } from "react";
 
 import { Link } from "react-router";
 
+import Button from "@/components/ui/button/Button.jsx";
+import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+
 import styles from "./Hamburger.module.scss";
 
 const Hamburger = () => {
   const [isShow, setIsShow] = useState(false);
+
+  const { goNew, goSignIn } = useAppNavigation();
 
   return (
     <div className={styles.hamburger}>
@@ -52,12 +57,26 @@ const Hamburger = () => {
           />
         </form>
 
-        <Link className={styles.menuLinkPrimary} to="/new">
+        <Button
+          variant="primary"
+          className={styles.menuLinkPrimary}
+          onClick={() => {
+            goNew();
+            setIsShow(false);
+          }}
+        >
           New paste
-        </Link>
-        <Link className={styles.menuLinkGhost} to="/signin">
+        </Button>
+        <Button
+          variant="ghost"
+          className={styles.menuLinkGhost}
+          onClick={() => {
+            goSignIn();
+            setIsShow(false);
+          }}
+        >
           Sign in
-        </Link>
+        </Button>
       </div>
     </div>
   );

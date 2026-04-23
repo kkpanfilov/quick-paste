@@ -51,7 +51,9 @@
   flex-direction: column;
   gap: 8px;
   padding: 12px;
-  background: rgba($bg-canvas, 0.88);
+  background: rgba(35, 45, 63, 0.705);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
   z-index: 10;
 
@@ -102,44 +104,8 @@
 
 .menuLinkPrimary,
 .menuLinkGhost {
-  display: block;
   width: 100%;
   padding: 10px 15px;
-  border-radius: $radius;
-  border: 1px solid transparent;
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  line-height: 1;
-  text-align: center;
-  text-decoration: none;
-  transition: $transition-button-interactive;
-
-  &:active {
-    transform: $active-press-transform;
-  }
-}
-
-.menuLinkPrimary {
-  color: $button-text;
-  background: $primary;
-
-  &:hover {
-    background: $primary-hover;
-  }
-
-  &:active {
-    background: $primary-active;
-  }
-}
-
-.menuLinkGhost {
-  color: $button-ghost-text;
-  background: transparent;
-  border: 2px solid $button-ghost-text;
-
-  &:hover {
-    background: $button-ghost-bg-hover;
-  }
 }
 
 @media (max-width: 840px) {

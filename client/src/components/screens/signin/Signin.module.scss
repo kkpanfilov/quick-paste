@@ -125,28 +125,6 @@
 .submit {
   margin-top: 2px;
   height: 44px;
-  border: 0;
-  border-radius: $radius;
-  color: $button-text;
-  background: $primary;
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  cursor: pointer;
-  transition: $transition-button-filled;
-
-  &:hover {
-    background: $primary-hover;
-  }
-
-  &:active {
-    background: $primary-active;
-    transform: $active-press-transform;
-  }
-
-  &:focus-visible {
-    outline: $focus-ring-outline;
-    outline-offset: 2px;
-  }
 }
 
 .footer {

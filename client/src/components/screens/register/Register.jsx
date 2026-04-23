@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 
+import Button from "@/components/ui/button/Button.jsx";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./Register.module.scss";
@@ -76,9 +77,13 @@ const Register = () => {
             />
           </div>
 
-          <button type="submit" className={styles.submit}>
+          <Button
+            type="submit"
+            variant="primary"
+            className={styles.submit}
+          >
             Create account
-          </button>
+          </Button>
         </form>
 
         <p className={styles.footer}>

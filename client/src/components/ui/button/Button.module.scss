@@ -1,0 +1,39 @@
+@use "@/styles/variables" as *;
+
+.primary-button,
+.ghost-button {
+  border-radius: $radius;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.primary-button {
+  color: $button-text;
+  background: $primary;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: $primary-hover;
+  }
+
+  &:active {
+    background: $primary-active;
+  }
+}
+
+.ghost-button {
+  color: $button-ghost-text;
+  background: transparent;
+  border: 2px solid $button-ghost-text;
+
+  &:hover {
+    background: $button-ghost-bg-hover;
+  }
+}

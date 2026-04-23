@@ -6,49 +6,19 @@
   gap: 8px;
 }
 
-.ghostButton,
-.primaryButton {
-  border: 1px solid transparent;
-  border-radius: $radius;
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  line-height: 1;
-  cursor: pointer;
-  transition: $transition-button-interactive;
-
-  &:active {
-    transform: $active-press-transform;
-  }
+.newPasteButton,
+.signInButton {
+  padding: 10px 15px;
 }
 
-.ghostButton {
-  padding: 10px 15px;
-  color: $button-ghost-text;
-  background: transparent;
-  border: 2px solid $button-ghost-text;
-
-  &:hover {
-    background: $button-ghost-bg-hover;
-  }
-}
-
-.primaryButton {
-  padding: 10px 15px;
+.newPasteButton {
   color: $button-text;
   background: $primary;
-
-  &:hover {
-    background: $primary-hover;
-  }
-
-  &:active {
-    background: $primary-active;
-  }
 }
 
 @media (max-width: 840px) {
-  .ghostButton,
-  .primaryButton {
+  .newPasteButton,
+  .signInButton {
     display: none;
   }
 }

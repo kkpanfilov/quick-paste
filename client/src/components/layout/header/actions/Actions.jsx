@@ -1,3 +1,4 @@
+import Button from "@/components/ui/button/Button.jsx";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 
 import styles from "./Actions.module.scss";
@@ -7,20 +8,22 @@ const Actions = () => {
 
   return (
     <div className={styles.actions}>
-      <button
-        className={styles.primaryButton}
+      <Button
+        variant="primary"
+        className={styles.newPasteButton}
         onClick={() => goNew()}
         type="button"
       >
         New paste
-      </button>
-      <button
-        className={styles.ghostButton}
+      </Button>
+      <Button
+        variant="ghost"
+        className={styles.signInButton}
         onClick={() => goSignIn()}
         type="button"
       >
         Sign in
-      </button>
+      </Button>
     </div>
   );
 };

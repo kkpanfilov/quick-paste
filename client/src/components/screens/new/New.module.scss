@@ -122,45 +122,10 @@ select.input {
   gap: 10px;
 }
 
-.secondaryButton,
-.primaryButton {
+.createPasteButton {
   height: 42px;
   padding: 0 16px;
-  border-radius: $radius;
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  cursor: pointer;
-  transition: $transition-button-surface;
-
-  &:focus-visible {
-    outline: $focus-ring-outline;
-    outline-offset: 2px;
-  }
-
-  &:active {
-    transform: $active-press-transform;
-  }
-}
-
-.secondaryButton {
-  border: 1px solid $border-default;
-  background: $bg-surface-2;
-  color: $text-primary;
-
-  &:hover {
-    border-color: $border-strong;
-    background: $bg-surface-3;
-  }
-}
-
-.primaryButton {
-  border: 1px solid transparent;
-  background: $primary;
-  color: $button-text;
-
-  &:hover {
-    background: $primary-hover;
-  }
+  width: 100%;
 }
 
 @media (max-width: 768px) {
@@ -194,7 +159,6 @@ select.input {
     flex-direction: column;
   }
 
-  .secondaryButton,
   .primaryButton {
     width: 100%;
   }
