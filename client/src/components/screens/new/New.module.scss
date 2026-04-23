@@ -73,31 +73,6 @@
   font-weight: $font-weight-medium;
 }
 
-.input,
-.textarea {
-  width: 100%;
-  border: 1px solid $input-border;
-  border-radius: $radius;
-  outline: 0;
-  background: $input-bg;
-  color: $text-primary;
-  font-size: $font-size-sm;
-  transition: $transition-input;
-
-  &::placeholder {
-    color: $input-placeholder;
-  }
-
-  &:hover {
-    border-color: $input-border-hover;
-  }
-
-  &:focus-visible {
-    border-color: $input-border-focus;
-    box-shadow: $input-focus-shadow;
-  }
-}
-
 .input {
   height: 44px;
   padding: 0 13px;

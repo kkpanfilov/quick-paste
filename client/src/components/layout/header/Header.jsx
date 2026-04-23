@@ -6,7 +6,6 @@ import Search from "./search/Search.jsx";
 import styles from "./Header.module.scss";
 
 const Header = () => {
-  // TODO: Make hamburger menu
   return (
     <header className={styles.header}>
       <div className={styles.inner}>

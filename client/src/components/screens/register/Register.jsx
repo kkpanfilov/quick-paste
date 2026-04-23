@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 
 import Button from "@/components/ui/button/Button.jsx";
+import Field from "@/components/ui/field/Field.jsx";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./Register.module.scss";
@@ -25,11 +26,11 @@ const Register = () => {
             <label htmlFor="register-email" className={styles.label}>
               Email
             </label>
-            <input
+            <Field
               id="register-email"
               name="email"
               type="email"
-              className={styles.input}
+              className={styles.registerField}
               placeholder="name@example.com"
               autoComplete="email"
             />
@@ -39,11 +40,11 @@ const Register = () => {
             <label htmlFor="register-username" className={styles.label}>
               Username
             </label>
-            <input
+            <Field
               id="register-username"
               name="username"
               type="text"
-              className={styles.input}
+              className={styles.registerField}
               placeholder="your-username"
               autoComplete="username"
             />
@@ -53,11 +54,11 @@ const Register = () => {
             <label htmlFor="register-password" className={styles.label}>
               Password
             </label>
-            <input
+            <Field
               id="register-password"
               name="password"
               type="password"
-              className={styles.input}
+              className={styles.registerField}
               placeholder="Create password"
               autoComplete="new-password"
             />
@@ -67,21 +68,17 @@ const Register = () => {
             <label htmlFor="register-confirm-password" className={styles.label}>
               Confirm password
             </label>
-            <input
+            <Field
               id="register-confirm-password"
               name="confirmPassword"
               type="password"
-              className={styles.input}
+              className={styles.registerField}
               placeholder="Repeat password"
               autoComplete="new-password"
             />
           </div>
 
-          <Button
-            type="submit"
-            variant="primary"
-            className={styles.submit}
-          >
+          <Button type="submit" variant="primary" className={styles.submit}>
             Create account
           </Button>
         </form>

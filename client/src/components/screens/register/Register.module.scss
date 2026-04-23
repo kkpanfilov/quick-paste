@@ -55,30 +55,9 @@
   font-weight: $font-weight-medium;
 }
 
-.input {
+.registerField {
   height: 44px;
-  width: 100%;
   padding: 0 13px;
-  border: 1px solid $input-border;
-  border-radius: $radius;
-  outline: 0;
-  background: $input-bg;
-  color: $text-primary;
-  font-size: $font-size-sm;
-  transition: $transition-input;
-
-  &::placeholder {
-    color: $input-placeholder;
-  }
-
-  &:hover {
-    border-color: $input-border-hover;
-  }
-
-  &:focus-visible {
-    border-color: $input-border-focus;
-    box-shadow: $input-focus-shadow;
-  }
 }
 
 .submit {
@@ -138,7 +117,6 @@
 
   .subtitle,
   .label,
-  .input,
   .footer {
     font-size: $font-size-xs;
   }

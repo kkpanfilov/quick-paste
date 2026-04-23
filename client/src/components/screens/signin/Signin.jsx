@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 
 import Button from "@/components/ui/button/Button.jsx";
+import Field from "@/components/ui/field/Field.jsx";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./Signin.module.scss";
@@ -26,7 +27,7 @@ const Signin = () => {
 
   useDocumentTitle("Sign in");
 
-  // TODO: перенести inputs, fields, buttons в отдельные ui компоненты (components/ui)
+  // TODO: перенести inputs, fields в отдельные ui компоненты (components/ui)
   return (
     <main className={styles.screen}>
       <section className={styles.card} aria-labelledby="signin-title">
@@ -42,11 +43,11 @@ const Signin = () => {
             <label htmlFor="signin-email" className={styles.label}>
               Email
             </label>
-            <input
+            <Field
               id="signin-email"
               name="email"
               type="email"
-              className={styles.input}
+              className={styles.signInField}
               placeholder="name@example.com"
               autoComplete="email"
               {...register("email", {
@@ -63,11 +64,11 @@ const Signin = () => {
             <label htmlFor="signin-password" className={styles.label}>
               Password
             </label>
-            <input
+            <Field
               id="signin-password"
               name="password"
               type="password"
-              className={styles.input}
+              className={styles.signInField}
               placeholder="Enter password"
               autoComplete="current-password"
               {...register("password", {
