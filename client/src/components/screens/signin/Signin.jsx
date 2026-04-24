@@ -1,9 +1,13 @@
+import { useEffect } from "react";
+
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router";
 
 import Button from "@/components/ui/button/Button.jsx";
 import Field from "@/components/ui/field/Field.jsx";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { login } from "@/store/auth/authSlice.js";
 
 import styles from "./Signin.module.scss";
 
@@ -21,8 +25,15 @@ const Signin = () => {
     },
   });
 
-  const onSubmit = async (data) => {
-    console.log("Data:", data);
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    console.log("auth state", auth);
+  }, [auth]);
+
+  const onSubmit = (data) => {
+    dispatch(login(data));
   };
 
   useDocumentTitle("Sign in");

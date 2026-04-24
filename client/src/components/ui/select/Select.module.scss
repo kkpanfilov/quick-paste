@@ -4,14 +4,10 @@
   border: 1px solid $input-border;
   border-radius: $radius;
   background: $input-bg;
-  color: $text-primary;
+  color: $input-placeholder;
   font-size: $font-size-sm;
   transition: $transition-input;
   outline: 0;
-
-  &::placeholder {
-    color: $input-placeholder;
-  }
 
   &:hover {
     border-color: $input-border-hover;
