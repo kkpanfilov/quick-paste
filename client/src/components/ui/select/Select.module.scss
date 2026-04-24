@@ -1,0 +1,30 @@
+@use "@/styles/tokens" as *;
+
+.select {
+  border: 1px solid $input-border;
+  border-radius: $radius;
+  background: $input-bg;
+  color: $text-primary;
+  font-size: $font-size-sm;
+  transition: $transition-input;
+  outline: 0;
+
+  &::placeholder {
+    color: $input-placeholder;
+  }
+
+  &:hover {
+    border-color: $input-border-hover;
+  }
+
+  &:focus-visible {
+    border-color: $input-border-focus;
+    box-shadow: $input-focus-shadow;
+  }
+}
+
+@media (max-width: 480px) {
+  .input {
+    font-size: $font-size-xs;
+  }
+}

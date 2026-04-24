@@ -1,5 +1,6 @@
 import Button from "@/components/ui/button/Button.jsx";
 import Field from "@/components/ui/field/Field.jsx";
+import Select from "@/components/ui/select/Select.jsx";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./New.module.scss";
@@ -39,32 +40,32 @@ const New = () => {
               <label htmlFor="new-language" className={styles.label}>
                 Language
               </label>
-              <select
+              <Select
                 id="new-language"
                 name="language"
-                className={styles.input}
+                className={styles.select}
               >
                 <option>Plain text</option>
                 <option>JavaScript</option>
                 <option>TypeScript</option>
                 <option>Python</option>
-              </select>
+              </Select>
             </div>
 
             <div className={styles.group}>
               <label htmlFor="new-expire" className={styles.label}>
                 Expiration
               </label>
-              <select
+              <Select
                 id="new-expire"
                 name="expiration"
-                className={styles.input}
+                className={styles.select}
               >
                 <option>Never</option>
                 <option>1 hour</option>
                 <option>1 day</option>
                 <option>7 days</option>
-              </select>
+              </Select>
             </div>
           </div>
 

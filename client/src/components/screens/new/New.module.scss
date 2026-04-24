@@ -73,13 +73,10 @@
   font-weight: $font-weight-medium;
 }
 
-.input {
+.input,
+.select {
   height: 44px;
   padding: 0 13px;
-}
-
-select.input {
-  cursor: pointer;
 }
 
 .textarea {
