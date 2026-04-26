@@ -1,9 +1,12 @@
+import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./Home.module.scss";
 
 const Home = () => {
   useDocumentTitle("Home");
+
+  const { goPaste } = useAppNavigation();
 
   return (
     <main className={styles.screen}>
@@ -18,7 +21,7 @@ const Home = () => {
         </section>
 
         <section className={styles.feed} aria-label="Recent pastes">
-          <article className={styles.card}>
+          <article className={styles.card} onClick={() => goPaste("1")}>
             <header className={styles.cardHeader}>
               <h2 className={styles.cardTitle}>auth-middleware-fix.js</h2>
               <span className={styles.language}>JavaScript</span>
@@ -32,7 +35,7 @@ const Home = () => {
             </footer>
           </article>
 
-          <article className={styles.card}>
+          <article className={styles.card} onClick={() => goPaste("1")}>
             <header className={styles.cardHeader}>
               <h2 className={styles.cardTitle}>db-index-notes.sql</h2>
               <span className={styles.language}>SQL</span>
@@ -46,7 +49,7 @@ const Home = () => {
             </footer>
           </article>
 
-          <article className={styles.card}>
+          <article className={styles.card} onClick={() => goPaste("1")}>
             <header className={styles.cardHeader}>
               <h2 className={styles.cardTitle}>release-checklist.md</h2>
               <span className={styles.language}>Markdown</span>
