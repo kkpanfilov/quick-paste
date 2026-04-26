@@ -38,7 +38,6 @@ const Signin = () => {
 
   useDocumentTitle("Sign in");
 
-  // TODO: перенести inputs, fields в отдельные ui компоненты (components/ui)
   return (
     <main className={styles.screen}>
       <section className={styles.card} aria-labelledby="signin-title">
