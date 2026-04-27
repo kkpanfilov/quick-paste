@@ -6,7 +6,7 @@ export class AuthService {
     return { msg: "Hello World!" };
   }
 
-  login() {
+  login(dto: any): any {
     return { msg: "Hello World!" };
   }
 }

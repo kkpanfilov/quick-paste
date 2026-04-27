@@ -11,3 +11,57 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum UserRole {
+  USER
+  SUPPORT
+  ADMIN
+}
+
+model User {
+  id               String    @id @default(cuid())
+  username         String    @unique
+  email            String    @unique
+  passwordHash     String
+  role             UserRole  @default(USER)
+  refreshTokenHash String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  pastes           Paste[]
+  comments         Comment[]
+
+  @@index([createdAt])
+}
+
+model Paste {
+  id        String    @id @default(cuid())
+  title     String
+  content   String
+  language  String?
+  expiresAt DateTime?
+  isPublic  Boolean   @default(false)
+  authorId  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+
+  @@index([authorId])
+  @@index([expiresAt])
+  @@index([createdAt])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  pasteId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  paste     Paste    @relation(fields: [pasteId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
+  @@index([pasteId])
+  @@index([createdAt])
+}
