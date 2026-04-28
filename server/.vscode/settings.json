@@ -1,0 +1,5 @@
+{
+  "js.preferences.importModuleSpecifier": "relative",
+  "ts.preferences.importModuleSpecifier": "relative",
+  "js/ts.preferences.importModuleSpecifier": "relative"
+}
