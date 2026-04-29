@@ -11,6 +11,9 @@ export class UsersService {
       where: {
         email: createUserDto.email,
       },
+      select: {
+        id: true,
+      },
     });
 
     if (isUserExists) {
