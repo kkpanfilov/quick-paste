@@ -23,8 +23,29 @@ export class AuthService {
       passwordHash: passwordHash,
     });
 
+    const payload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: "30m",
+    });
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      expiresIn: "15d",
+    });
+
+    await this.usersService.updateRefreshTokenHash(
+      user.id,
+      await argon2.hash(refreshToken),
+    );
+
     return {
       id: user.id,
+      accessToken,
+      refreshToken,
     };
   }
 

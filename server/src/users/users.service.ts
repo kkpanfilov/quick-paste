@@ -55,6 +55,27 @@ export class UsersService {
     return user;
   }
 
+  async updateRefreshTokenHash(userId: string, refreshTokenHash: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new ConflictException("User not found");
+    }
+
+    return this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        refreshTokenHash,
+      },
+    });
+  }
+
   update(id: number, updateUserDto: CreateUserDto) {
     return `This action updates a #${id} user`;
   }
