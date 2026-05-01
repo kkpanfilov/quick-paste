@@ -2,11 +2,13 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import * as argon2 from "argon2";
+import type { Request } from "express";
 
 import { UsersService } from "../users/users.service.js";
 import { AuthResponseDto } from "./dto/auth-response.dto.js";
 import { LoginUserDto } from "./dto/login-user.dto.js";
 import { RegisterUserDto } from "./dto/register-user.dto.js";
+import { JwtPayload } from "./types/jwt-payload.type.js";
 
 @Injectable()
 export class AuthService {
@@ -94,7 +96,76 @@ export class AuthService {
     };
   }
 
-  logout(dto: any): any {
+  logout(request: Request): any {
     return { msg: "Hello World!" };
+  }
+
+  async refresh(request: Request): Promise<AuthResponseDto> {
+    const refreshToken = this.getRefreshToken(request);
+    const payload = await this.getPayload(refreshToken);
+
+    const user = await this.usersService.findOneById(payload.id);
+
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    if (!user.refreshTokenHash) {
+      throw new UnauthorizedException("Refresh token not found");
+    }
+
+    const isRefreshTokenValid = await argon2.verify(
+      user.refreshTokenHash,
+      refreshToken,
+    );
+
+    if (!isRefreshTokenValid) {
+      throw new UnauthorizedException("Invalid refresh token");
+    }
+
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: "30m",
+    });
+
+    return {
+      id: user.id,
+      accessToken,
+    };
+  }
+
+  private getRefreshToken(request: Request): string {
+    const cookies: unknown = request.cookies;
+
+    if (!cookies || typeof cookies !== "object") {
+      throw new UnauthorizedException("Refresh token not found");
+    }
+
+    const refreshToken = (cookies as Record<string, unknown>).refreshToken;
+
+    if (typeof refreshToken !== "string") {
+      throw new UnauthorizedException("Refresh token not found");
+    }
+
+    return refreshToken;
+  }
+
+  private async getPayload(refreshToken: string): Promise<JwtPayload> {
+    const jwtPayload: JwtPayload | null = await this.jwtService
+      .verifyAsync(refreshToken)
+      .then((payload) => payload as JwtPayload)
+      .catch(() => null);
+
+    if (jwtPayload === null) {
+      throw new UnauthorizedException("Invalid refresh token");
+    }
+
+    const payload: JwtPayload = {
+      id: jwtPayload.id,
+      username: jwtPayload.username,
+      email: jwtPayload.email,
+      role: jwtPayload.role,
+    };
+
+    return payload;
   }
 }

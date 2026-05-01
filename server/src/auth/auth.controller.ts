@@ -1,6 +1,6 @@
-import { Body, Controller, Post, Res } from "@nestjs/common";
+import { Body, Controller, Post, Req, Res } from "@nestjs/common";
 
-import type { Response } from "express";
+import type { Request, Response } from "express";
 
 import { AuthService } from "./auth.service.js";
 import { AuthResponseDto } from "./dto/auth-response.dto.js";
@@ -47,8 +47,14 @@ export class AuthController {
     };
   }
 
+  // TODO: implement logout and refresh
   @Post("logout")
   logout(@Body() dto: any): any {
     return this.authService.logout(dto);
+  }
+
+  @Post("refresh")
+  async refresh(@Req() request: Request): Promise<AuthResponseDto> {
+    return this.authService.refresh(request);
   }
 }
