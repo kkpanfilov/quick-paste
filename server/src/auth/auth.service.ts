@@ -9,6 +9,7 @@ import { AuthResponseDto } from "./dto/auth-response.dto.js";
 import { LoginUserDto } from "./dto/login-user.dto.js";
 import { RegisterUserDto } from "./dto/register-user.dto.js";
 import { JwtPayload } from "./types/jwt-payload.type.js";
+import { Message } from "./types/message.type.js";
 
 @Injectable()
 export class AuthService {
@@ -96,8 +97,35 @@ export class AuthService {
     };
   }
 
-  logout(request: Request): any {
-    return { msg: "Hello World!" };
+  async logout(request: Request): Promise<Message> {
+    const refreshToken = this.getRefreshToken(request);
+    const payload = await this.getPayload(refreshToken);
+
+    const user = await this.usersService.findOneById(payload.id);
+
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    if (!user.refreshTokenHash) {
+      throw new UnauthorizedException("Refresh token not found");
+    }
+
+    const isRefreshTokenValid = await argon2.verify(
+      user.refreshTokenHash,
+      refreshToken,
+    );
+
+    if (!isRefreshTokenValid) {
+      throw new UnauthorizedException("Invalid refresh token");
+    }
+
+    await this.usersService.updateRefreshTokenHash(user.id, null);
+
+    return {
+      success: true,
+      message: "Logout successful",
+    };
   }
 
   async refresh(request: Request): Promise<AuthResponseDto> {

@@ -6,6 +6,7 @@ import { AuthService } from "./auth.service.js";
 import { AuthResponseDto } from "./dto/auth-response.dto.js";
 import { LoginUserDto } from "./dto/login-user.dto.js";
 import { RegisterUserDto } from "./dto/register-user.dto.js";
+import { Message } from "./types/message.type.js";
 
 @Controller("auth")
 export class AuthController {
@@ -47,10 +48,17 @@ export class AuthController {
     };
   }
 
-  // TODO: implement logout and refresh
+  // TODO: implement logout
   @Post("logout")
-  logout(@Body() dto: any): any {
-    return this.authService.logout(dto);
+  async logout(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<Message> {
+    const message = await this.authService.logout(request);
+
+    response.clearCookie("refreshToken");
+
+    return message;
   }
 
   @Post("refresh")

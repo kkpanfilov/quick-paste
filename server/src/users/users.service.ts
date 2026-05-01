@@ -65,7 +65,10 @@ export class UsersService {
     return user;
   }
 
-  async updateRefreshTokenHash(userId: string, refreshTokenHash: string) {
+  async updateRefreshTokenHash(
+    userId: string,
+    refreshTokenHash: string | null,
+  ) {
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
