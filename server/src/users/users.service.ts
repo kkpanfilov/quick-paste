@@ -33,10 +33,6 @@ export class UsersService {
     return user;
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
   async findOneById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: {

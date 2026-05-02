@@ -1,6 +1,6 @@
 import { IsEmail, IsString, Length } from "class-validator";
 
-export class CreateUserDto {
+export class UpdateUserDto {
   @Length(4, 20, { message: "Username must be at least 4 characters long" })
   @IsString({ message: "Username must be a string" })
   username!: string;
@@ -9,6 +9,6 @@ export class CreateUserDto {
   @IsString({ message: "Email must be a string" })
   email!: string;
 
-  @IsString({ message: "Password hash must be a string" })
-  passwordHash!: string;
+  @IsString({ message: "Password must be a string" })
+  password!: string;
 }

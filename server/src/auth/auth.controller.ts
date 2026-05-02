@@ -48,7 +48,6 @@ export class AuthController {
     };
   }
 
-  // TODO: implement logout
   @Post("logout")
   async logout(
     @Req() request: Request,
