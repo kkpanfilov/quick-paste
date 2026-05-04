@@ -1,12 +1,14 @@
-import { useEffect } from "react";
-
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router";
 
+import { apiClient } from "@/api/apiClient.js";
 import Button from "@/components/ui/button/Button.jsx";
+import ErrorMessage from "@/components/ui/error-message/ErrorMessage.jsx";
 import Field from "@/components/ui/field/Field.jsx";
+import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { setAccessToken } from "@/shared/authStore.js";
 import { login } from "@/store/auth/authSlice.js";
 
 import styles from "./Signin.module.scss";
@@ -25,18 +27,21 @@ const Signin = () => {
     },
   });
 
+  const { goHome } = useAppNavigation();
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    console.log("auth state", auth);
-  }, [auth]);
-
-  const onSubmit = (data) => {
-    dispatch(login(data));
-  };
 
   useDocumentTitle("Sign in");
+
+  const onSubmit = async (data) => {
+    const response = await apiClient("POST", "auth/login", data);
+
+    if (response.accessToken) {
+      setAccessToken(response.accessToken);
+      goHome();
+    }
+
+    dispatch(login({ userId: response.id, isAuth: true }));
+  };
 
   return (
     <main className={styles.screen}>
@@ -64,11 +69,11 @@ const Signin = () => {
                 required: "Email is required",
                 pattern: {
                   value: /^\S+@\S+\.\S+$/,
-                  message: "Некорректный email",
+                  message: "Invalid email",
                 },
               })}
             />
-            {errors.email && <p>{errors.email.message}</p>}
+            {errors.email && <ErrorMessage message={errors.email.message} />}
           </div>
           <div className={styles.group}>
             <label htmlFor="signin-password" className={styles.label}>
@@ -89,14 +94,16 @@ const Signin = () => {
                 },
               })}
             />
-            {errors.password && <p>{errors.password.message}</p>}
+            {errors.password && (
+              <ErrorMessage message={errors.password.message} />
+            )}
           </div>
           <div className={styles.actions}>
             <label className={styles.remember}>
               <input
                 type="checkbox"
                 name="remember"
-                {...register("agree", { required: true })}
+                {...register("agree", { required: "Agree is required" })}
               />
               <span>Remember me</span>
             </label>
@@ -104,6 +111,7 @@ const Signin = () => {
               Forgot password?
             </Link>
           </div>
+          {errors.agree && <ErrorMessage message={errors.agree.message} />}
 
           <Button type="submit" variant="primary" className={styles.submit}>
             Sign in
