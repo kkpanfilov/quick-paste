@@ -1,12 +1,23 @@
+import { useEffect } from "react";
+
 import Button from "@/components/ui/button/Button.jsx";
 import Field from "@/components/ui/field/Field.jsx";
 import Select from "@/components/ui/select/Select.jsx";
+import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./New.module.scss";
 
 const New = () => {
   useDocumentTitle("New");
+
+  const { isAuth } = useAuth();
+  const { goSignIn } = useAppNavigation();
+
+  useEffect(() => {
+    if (!isAuth) goSignIn();
+  });
 
   return (
     <main className={styles.screen}>

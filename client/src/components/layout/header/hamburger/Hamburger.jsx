@@ -4,13 +4,16 @@ import Button from "@/components/ui/button/Button.jsx";
 import Field from "@/components/ui/field/Field.jsx";
 import SearchIcon from "@/components/ui/search-icon/SearchIcon.jsx";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+import { useAuth } from "@/hooks/useAuth.js";
 
 import styles from "./Hamburger.module.scss";
 
 const Hamburger = () => {
   const [isShow, setIsShow] = useState(false);
 
-  const { goNew, goSignIn } = useAppNavigation();
+  const { goNew, goSignIn, goMe } = useAppNavigation();
+
+  const { isAuth } = useAuth();
 
   return (
     <div className={styles.hamburger}>
@@ -51,16 +54,29 @@ const Hamburger = () => {
         >
           New paste
         </Button>
-        <Button
-          variant="ghost"
-          className={styles.menuLinkGhost}
-          onClick={() => {
-            goSignIn();
-            setIsShow(false);
-          }}
-        >
-          Sign in
-        </Button>
+        {isAuth ? (
+          <Button
+            variant="soft"
+            className={styles.menuLinkSoft}
+            onClick={() => {
+              goMe();
+              setIsShow(false);
+            }}
+          >
+            Profile
+          </Button>
+        ) : (
+          <Button
+            variant="ghost"
+            className={styles.menuLinkGhost}
+            onClick={() => {
+              goSignIn();
+              setIsShow(false);
+            }}
+          >
+            Sign in
+          </Button>
+        )}
       </div>
     </div>
   );

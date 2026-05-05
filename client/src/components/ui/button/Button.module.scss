@@ -1,7 +1,8 @@
 @use "@/styles/variables" as *;
 
 .primary-button,
-.ghost-button {
+.ghost-button,
+.soft-button {
   border-radius: $radius;
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
@@ -35,5 +36,16 @@
 
   &:hover {
     background: $button-ghost-bg-hover;
+  }
+}
+
+.soft-button {
+  color: $button-soft-text;
+  background: $button-soft-bg;
+  border: 1px solid rgba($accent, 0.28);
+
+  &:hover {
+    background: $button-soft-bg-hover;
+    border-color: rgba($accent, 0.42);
   }
 }

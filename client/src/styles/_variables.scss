@@ -50,6 +50,10 @@ $button-text: #f4f7ff !default;
 $button-ghost-text: #c4d4ff !default;
 $button-ghost-bg-hover: rgba(124, 156, 255, 0.12) !default;
 
+$button-soft-bg: rgba(124, 156, 255, 0.16) !default;
+$button-soft-bg-hover: rgba(124, 156, 255, 0.24) !default;
+$button-soft-text: #eef3ff !default;
+
 // Feed/paste cards
 $card-bg: $bg-surface-1 !default;
 $card-bg-hover: #1a2230 !default;

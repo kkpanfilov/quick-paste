@@ -7,6 +7,7 @@ export function useAppNavigation() {
 
   return {
     goHome: () => navigate(paths.home),
+    goMe: () => navigate(paths.me),
     goSignIn: () => navigate(paths.signin),
     goRegister: () => navigate(paths.register),
     goNew: () => navigate(paths.new),

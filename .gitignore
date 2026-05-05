@@ -25,6 +25,7 @@ lerna-debug.log*
 
 # AI
 .codex
+.agents
 
 # Tests
 coverage/

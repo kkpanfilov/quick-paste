@@ -9,6 +9,7 @@ const Button = ({
   const variants = {
     primary: "primary-button",
     ghost: "ghost-button",
+    soft: "soft-button",
   };
 
   const variantClass = styles[variants[variant]] || "";
