@@ -1,7 +1,10 @@
 import Layout from "@/components/layout/Layout.jsx";
 
-// TODO: реализовать проверку на access токен
+import { useAuthBootstrap } from "./hooks/auth/useAuthBootstrap.js";
+
+// TODO: implement loader
 function App() {
+  useAuthBootstrap();
   return <Layout></Layout>;
 }
 

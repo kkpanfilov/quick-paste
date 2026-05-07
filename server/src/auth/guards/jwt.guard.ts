@@ -6,6 +6,8 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
+import { Request } from "express";
+
 import { JwtPayload } from "../types/jwt-payload.type.js";
 
 type RequestWithUser = Request & {
@@ -29,8 +31,7 @@ export class JwtGuard implements CanActivate {
     }
 
     try {
-      const payload: JwtPayload | null =
-        await this.jwtService.verifyAsync(token);
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
 
       if (!payload) {
         throw new UnauthorizedException(INVALID_TOKEN_MESSAGE);
@@ -45,7 +46,7 @@ export class JwtGuard implements CanActivate {
   }
 
   private extractToken(request: Request): string | undefined {
-    const authHeader = request.headers.get("Authorization");
+    const authHeader = request.headers.authorization;
 
     if (!authHeader) {
       return undefined;

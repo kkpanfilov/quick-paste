@@ -33,5 +33,3 @@ export async function apiClient(method, endpoint, data = null, options = {}) {
     console.log(error);
   }
 }
-
-// async function refreshToken() {}

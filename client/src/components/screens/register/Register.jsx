@@ -48,7 +48,7 @@ const Register = () => {
       goHome();
     }
 
-    dispatch(login({ userId: response.id, isAuth: true }));
+    dispatch(login({ userId: response.id }));
   };
 
   return (
