@@ -5,30 +5,33 @@ import { getAccessToken } from "@/shared/authStore.js";
 const BASE_URL = "http://localhost:4200";
 const PREFIX = "/api";
 
+// TODO: добавить refresh при необходимости
 export async function apiClient(method, endpoint, data = null, options = {}) {
-  const accessToken = getAccessToken();
+  try {
+    const accessToken = getAccessToken();
 
-  const requestOptions = {
-    method,
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    baseURL: BASE_URL,
-    url: `${PREFIX}/${endpoint}`,
-    data: data,
-    ...options,
-  };
+    const requestOptions = {
+      method,
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      baseURL: BASE_URL,
+      url: `${PREFIX}/${endpoint}`,
+      data: data,
+      ...options,
+    };
 
-  if (accessToken) {
-    requestOptions.headers.Authorization = `Bearer ${accessToken}`;
+    if (accessToken) {
+      requestOptions.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    const response = await axios(requestOptions);
+
+    if (response) return response.data;
+  } catch (error) {
+    console.log(error);
   }
-
-  const response = await axios(requestOptions);
-
-  if (response.status >= 400) {
-    throw new Error(response.data.message);
-  }
-
-  return response.data;
 }
+
+// async function refreshToken() {}
