@@ -3,7 +3,6 @@ import { Body, Controller, Post, Req, Res } from "@nestjs/common";
 import type { Request, Response } from "express";
 
 import { AuthService } from "./auth.service.js";
-import { Auth } from "./decorators/auth.decorator.js";
 import { AuthResponseDto } from "./dto/auth-response.dto.js";
 import { LoginUserDto } from "./dto/login-user.dto.js";
 import { RegisterUserDto } from "./dto/register-user.dto.js";

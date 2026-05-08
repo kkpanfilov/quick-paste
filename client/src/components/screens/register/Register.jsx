@@ -2,9 +2,9 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router";
 
-import Button from "@/components/ui/button/Button.jsx";
-import ErrorMessage from "@/components/ui/error-message/ErrorMessage.jsx";
-import Field from "@/components/ui/field/Field.jsx";
+import { Button } from "@/components/ui/button/Button.jsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
+import { Field } from "@/components/ui/field/Field.jsx";
 import { useRegister } from "@/hooks/auth/useRegister.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
@@ -13,7 +13,7 @@ import { login } from "@/store/auth/authSlice.js";
 
 import styles from "./Register.module.scss";
 
-const Register = () => {
+export const Register = () => {
   const {
     register,
     handleSubmit,
@@ -176,5 +176,3 @@ const Register = () => {
     </main>
   );
 };
-
-export default Register;

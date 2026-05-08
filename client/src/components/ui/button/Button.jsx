@@ -1,6 +1,6 @@
 import styles from "./Button.module.scss";
 
-const Button = ({
+export const Button = ({
   variant = "primary",
   className = "",
   type = "button",
@@ -17,5 +17,3 @@ const Button = ({
 
   return <button type={type} className={classes} {...rest}></button>;
 };
-
-export default Button;

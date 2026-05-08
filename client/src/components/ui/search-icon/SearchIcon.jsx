@@ -1,6 +1,6 @@
 import styles from "./SearchIcon.module.scss";
 
-const SearchIcon = () => {
+export const SearchIcon = () => {
   return (
     <span className={styles.searchIcon} aria-hidden="true">
       <svg viewBox="0 0 20 20" fill="none">
@@ -15,5 +15,3 @@ const SearchIcon = () => {
     </span>
   );
 };
-
-export default SearchIcon;

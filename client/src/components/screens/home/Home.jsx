@@ -3,7 +3,7 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./Home.module.scss";
 
-const Home = () => {
+export const Home = () => {
   useDocumentTitle("Home");
 
   const { goPaste } = useAppNavigation();
@@ -67,5 +67,3 @@ const Home = () => {
     </main>
   );
 };
-
-export default Home;

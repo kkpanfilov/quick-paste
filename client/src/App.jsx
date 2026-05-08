@@ -1,12 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import Layout from "@/components/layout/Layout.jsx";
+import { Layout } from "@/components/layout/Layout.jsx";
 
 import { useAuthBootstrap } from "./hooks/auth/useAuthBootstrap.js";
 
 const queryClient = new QueryClient();
 
-function App() {
+export function App() {
   useAuthBootstrap();
 
   return (
@@ -15,5 +15,3 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-export default App;

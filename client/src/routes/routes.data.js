@@ -1,8 +1,8 @@
-import Home from "@/components/screens/home/Home.jsx";
-import New from "@/components/screens/new/New.jsx";
-import Paste from "@/components/screens/paste/Paste.jsx";
-import Register from "@/components/screens/register/Register.jsx";
-import Signin from "@/components/screens/signin/Signin.jsx";
+import { Home } from "@/components/screens/home/Home.jsx";
+import { New } from "@/components/screens/new/New.jsx";
+import { Paste } from "@/components/screens/paste/Paste.jsx";
+import { Register } from "@/components/screens/register/Register.jsx";
+import { Signin } from "@/components/screens/signin/Signin.jsx";
 
 import { paths } from "./paths.config.js";
 

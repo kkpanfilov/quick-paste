@@ -1,10 +1,10 @@
-import Button from "@/components/ui/button/Button.jsx";
+import { Button } from "@/components/ui/button/Button.jsx";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./NotFound.module.scss";
 
-const NotFound = () => {
+export const NotFound = () => {
   useDocumentTitle("Page not found");
 
   const { goHome, goSignIn } = useAppNavigation();
@@ -40,5 +40,3 @@ const NotFound = () => {
     </main>
   );
 };
-
-export default NotFound;

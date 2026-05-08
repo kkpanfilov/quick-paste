@@ -1,6 +1,7 @@
 @use "@/styles/tokens" as *;
 
 .errorText {
+  display: inline;
   margin: 2px 0 0;
   color: $danger;
   font-weight: 500;

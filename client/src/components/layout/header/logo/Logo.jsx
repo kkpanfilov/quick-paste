@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 import styles from "./Logo.module.scss";
 
-const Logo = () => {
+export const Logo = () => {
   return (
     <Link className={styles.brand} to="/" aria-label="Quick Paste home">
       <span className={styles.brandMark}>QP</span>
@@ -10,5 +10,3 @@ const Logo = () => {
     </Link>
   );
 };
-
-export default Logo;

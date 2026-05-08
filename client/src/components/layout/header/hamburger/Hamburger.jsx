@@ -1,14 +1,14 @@
 import { useState } from "react";
 
-import Button from "@/components/ui/button/Button.jsx";
-import Field from "@/components/ui/field/Field.jsx";
-import SearchIcon from "@/components/ui/search-icon/SearchIcon.jsx";
+import { Button } from "@/components/ui/button/Button.jsx";
+import { Field } from "@/components/ui/field/Field.jsx";
+import { SearchIcon } from "@/components/ui/search-icon/SearchIcon.jsx";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 
 import styles from "./Hamburger.module.scss";
 
-const Hamburger = () => {
+export const Hamburger = () => {
   const [isShow, setIsShow] = useState(false);
 
   const { goNew, goSignIn, goMe } = useAppNavigation();
@@ -81,5 +81,3 @@ const Hamburger = () => {
     </div>
   );
 };
-
-export default Hamburger;

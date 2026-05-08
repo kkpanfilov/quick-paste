@@ -1,9 +1,9 @@
-import Button from "@/components/ui/button/Button.jsx";
+import { Button } from "@/components/ui/button/Button.jsx";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./Paste.module.scss";
 
-const Paste = () => {
+export const Paste = () => {
   useDocumentTitle("Paste");
 
   return (
@@ -68,5 +68,3 @@ const Paste = () => {
     </main>
   );
 };
-
-export default Paste;

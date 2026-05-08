@@ -1,9 +1,9 @@
-import Field from "@/components/ui/field/Field.jsx";
-import SearchIcon from "@/components/ui/search-icon/SearchIcon.jsx";
+import { Field } from "@/components/ui/field/Field.jsx";
+import { SearchIcon } from "@/components/ui/search-icon/SearchIcon.jsx";
 
 import styles from "./Search.module.scss";
 
-const Search = () => {
+export const Search = () => {
   return (
     <form className={styles.search} role="search">
       <SearchIcon />
@@ -17,5 +17,3 @@ const Search = () => {
     </form>
   );
 };
-
-export default Search;

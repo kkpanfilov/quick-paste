@@ -1,10 +1,10 @@
-import Button from "@/components/ui/button/Button.jsx";
+import { Button } from "@/components/ui/button/Button.jsx";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 
 import styles from "./Actions.module.scss";
 
-const Actions = () => {
+export const Actions = () => {
   const { goNew, goSignIn, goMe } = useAppNavigation();
 
   const { isAuth } = useAuth();
@@ -41,5 +41,3 @@ const Actions = () => {
     </div>
   );
 };
-
-export default Actions;

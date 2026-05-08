@@ -1,8 +1,8 @@
-import Routing from "@/routes/Routing.jsx";
+import { Routing } from "@/routes/Routing.jsx";
 
-import Header from "./header/Header.jsx";
+import { Header } from "./header/Header.jsx";
 
-const Layout = () => {
+export const Layout = () => {
   return (
     <div>
       <Header />
@@ -10,5 +10,3 @@ const Layout = () => {
     </div>
   );
 };
-
-export default Layout;

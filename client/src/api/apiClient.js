@@ -24,7 +24,7 @@ export async function apiClient(method, endpoint, data = null, options = {}) {
       ...options,
     };
 
-    if (!accessToken) {
+    if (!accessToken && !endpoint.includes("auth")) {
       const newToken = await refreshAccessToken();
 
       if (!newToken) return;
@@ -36,7 +36,11 @@ export async function apiClient(method, endpoint, data = null, options = {}) {
 
     const response = await axios(requestOptions);
 
-    if (response) return response.data;
+    console.log(response);
+
+    // if (!response.data) {}
+
+    return response.data;
   } catch (error) {
     console.log(error);
   }

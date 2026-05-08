@@ -2,9 +2,9 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router";
 
-import Button from "@/components/ui/button/Button.jsx";
-import ErrorMessage from "@/components/ui/error-message/ErrorMessage.jsx";
-import Field from "@/components/ui/field/Field.jsx";
+import { Button } from "@/components/ui/button/Button.jsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
+import { Field } from "@/components/ui/field/Field.jsx";
 import { useLogin } from "@/hooks/auth/useLogin.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
@@ -13,7 +13,7 @@ import { login } from "@/store/auth/authSlice.js";
 
 import styles from "./Signin.module.scss";
 
-const Signin = () => {
+export const Signin = () => {
   const {
     register,
     handleSubmit,
@@ -115,7 +115,12 @@ const Signin = () => {
           </div>
           {errors.agree && <ErrorMessage message={errors.agree.message} />}
 
-          <Button type="submit" variant="primary" className={styles.submit}>
+          <Button
+            type="submit"
+            variant="primary"
+            className={styles.submit}
+            disabled={isPending}
+          >
             {isPending ? "Logining..." : "Sign in"}
           </Button>
         </form>
@@ -130,5 +135,3 @@ const Signin = () => {
     </main>
   );
 };
-
-export default Signin;

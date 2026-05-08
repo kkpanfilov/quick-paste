@@ -13,6 +13,13 @@
     border-color 160ms ease,
     background-color 160ms ease,
     color 160ms ease;
+
+  &:disabled {
+    color: $button-disabled-text;
+    background: $button-disabled-bg;
+    border-color: $button-disabled-border;
+    cursor: not-allowed;
+  }
 }
 
 .primary-button {
@@ -20,11 +27,11 @@
   background: $primary;
   border: 1px solid transparent;
 
-  &:hover {
+  &:not(:disabled):hover {
     background: $primary-hover;
   }
 
-  &:active {
+  &:not(:disabled):active {
     background: $primary-active;
   }
 }
@@ -34,7 +41,7 @@
   background: transparent;
   border: 2px solid $button-ghost-text;
 
-  &:hover {
+  &:not(:disabled):hover {
     background: $button-ghost-bg-hover;
   }
 }
@@ -44,7 +51,7 @@
   background: $button-soft-bg;
   border: 1px solid rgba($accent, 0.28);
 
-  &:hover {
+  &:not(:disabled):hover {
     background: $button-soft-bg-hover;
     border-color: rgba($accent, 0.42);
   }
