@@ -11,6 +11,8 @@ import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
+import { expirationList, languageList } from "./new-paste.list.js";
+
 import styles from "./New.module.scss";
 
 export const New = () => {
@@ -99,35 +101,11 @@ export const New = () => {
                   required: "is required",
                 })}
               >
-                <option selected value="plain">
-                  Plain text
-                </option>
-                <option value="markdown">Markdown</option>
-                <option value="javascript">JavaScript</option>
-                <option value="typescript">TypeScript</option>
-                <option value="python">Python</option>
-                <option value="go">Go</option>
-                <option value="rust">Rust</option>
-                <option value="c">C</option>
-                <option value="cpp">C++</option>
-                <option value="csharp">C#</option>
-                <option value="java">Java</option>
-                <option value="sql">SQL</option>
-                <option value="html">HTML</option>
-                <option value="css">CSS</option>
-                <option value="json">JSON</option>
-                <option value="yaml">YAML</option>
-                <option value="toml">TOML</option>
-                <option value="bash">Bash</option>
-                <option value="dockerfile">Dockerfile</option>
-                <option value="lua">Lua</option>
-                <option value="php">PHP</option>
-                <option value="ruby">Ruby</option>
-                <option value="swift">Swift</option>
-                <option value="kotlin">Kotlin</option>
-                <option value="scala">Scala</option>
-                <option value="r">R</option>
-                <option value="dart">Dart</option>
+                {languageList.map(({ label, value, selected }) => (
+                  <option selected={selected} value={value}>
+                    {label}
+                  </option>
+                ))}
               </Select>
             </div>
 
@@ -146,19 +124,11 @@ export const New = () => {
                   required: "is required",
                 })}
               >
-                <option selected value="never">
-                  Never
-                </option>
-                <option value="burn">Burn after read</option>
-                <option value="10m">10 Minutes</option>
-                <option value="1h">1 Hour</option>
-                <option value="1d">1 Day</option>
-                <option value="3d">3 Days</option>
-                <option value="1w">1 Week</option>
-                <option value="2w">2 Weeks</option>
-                <option value="1m">1 Month</option>
-                <option value="6m">6 Months</option>
-                <option value="1y">1 Year</option>
+                {expirationList.map(({ label, value, selected }) => (
+                  <option selected={selected} value={value}>
+                    {label}
+                  </option>
+                ))}
               </Select>
             </div>
           </div>

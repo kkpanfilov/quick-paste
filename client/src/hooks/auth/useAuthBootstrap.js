@@ -17,7 +17,10 @@ export function useAuthBootstrap() {
   useEffect(() => {
     async function bootstrapAuth() {
       try {
-        if (isAuth) return;
+        if (isAuth) {
+          setIsAuthChecked(true);
+          return;
+        }
 
         const result = await refreshAccessToken();
 
