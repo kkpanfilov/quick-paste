@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router";
 
-import { apiClient } from "@/api/apiClient.js";
 import Button from "@/components/ui/button/Button.jsx";
 import ErrorMessage from "@/components/ui/error-message/ErrorMessage.jsx";
 import Field from "@/components/ui/field/Field.jsx";
+import { useRegister } from "@/hooks/auth/useRegister.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { setAccessToken } from "@/shared/authStore.js";
@@ -32,23 +32,27 @@ const Register = () => {
   const { goHome } = useAppNavigation();
   const dispatch = useDispatch();
 
+  const { mutateAsync: registerUser, isPending } = useRegister();
+
   useDocumentTitle("Register");
 
   const onSubmit = async (formData) => {
-    const data = {
+    const body = {
       email: formData.email,
       username: formData.username,
       password: formData.password,
     };
 
-    const response = await apiClient("POST", "auth/register", data);
+    const data = await registerUser(body);
 
-    if (response.accessToken) {
-      setAccessToken(response.accessToken);
+    if (!data) return;
+
+    if (data.accessToken) {
+      setAccessToken(data.accessToken);
       goHome();
     }
 
-    dispatch(login({ userId: response.id }));
+    dispatch(login({ userId: data.id }));
   };
 
   return (
@@ -152,8 +156,13 @@ const Register = () => {
             )}
           </div>
 
-          <Button type="submit" variant="primary" className={styles.submit}>
-            Create account
+          <Button
+            type="submit"
+            variant="primary"
+            className={styles.submit}
+            disabled={isPending}
+          >
+            {isPending ? "Creating..." : "Create account"}
           </Button>
         </form>
 

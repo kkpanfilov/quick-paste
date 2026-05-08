@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router";
 
-import { apiClient } from "@/api/apiClient.js";
 import Button from "@/components/ui/button/Button.jsx";
 import ErrorMessage from "@/components/ui/error-message/ErrorMessage.jsx";
 import Field from "@/components/ui/field/Field.jsx";
+import { useLogin } from "@/hooks/auth/useLogin.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { setAccessToken } from "@/shared/authStore.js";
@@ -30,17 +30,19 @@ const Signin = () => {
   const { goHome } = useAppNavigation();
   const dispatch = useDispatch();
 
+  const { mutateAsync: loginUser, isPending } = useLogin();
+
   useDocumentTitle("Sign in");
 
-  const onSubmit = async (data) => {
-    const response = await apiClient("POST", "auth/login", data);
+  const onSubmit = async (body) => {
+    const data = await loginUser(body);
 
-    if (response.accessToken) {
-      setAccessToken(response.accessToken);
+    if (data.accessToken) {
+      setAccessToken(data.accessToken);
       goHome();
     }
 
-    dispatch(login({ userId: response.id, isAuth: true }));
+    dispatch(login({ userId: data.id }));
   };
 
   return (
@@ -114,7 +116,7 @@ const Signin = () => {
           {errors.agree && <ErrorMessage message={errors.agree.message} />}
 
           <Button type="submit" variant="primary" className={styles.submit}>
-            Sign in
+            {isPending ? "Logining..." : "Sign in"}
           </Button>
         </form>
 

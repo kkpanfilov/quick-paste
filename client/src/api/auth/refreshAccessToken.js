@@ -22,7 +22,7 @@ async function requestRefreshAccessToken() {
   const data = response.data;
 
   if (!data?.accessToken) {
-    throw new Error("Failed to refresh access token");
+    return null;
   }
 
   return data;

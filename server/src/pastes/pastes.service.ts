@@ -3,14 +3,11 @@ import { Injectable } from "@nestjs/common";
 import { CreatePasteDto } from "./dto/create-paste.dto.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
 
+// TODO: implement pastes endpoints
 @Injectable()
 export class PastesService {
   create(createPasteDto: CreatePasteDto) {
     return "This action adds a new paste";
-  }
-
-  findAll() {
-    return `This action returns all pastes`;
   }
 
   findOne(id: number) {

@@ -23,12 +23,6 @@ export class PastesController {
     return this.pastesService.create(createPasteDto);
   }
 
-  @Get()
-  @Auth()
-  findAll() {
-    return this.pastesService.findAll();
-  }
-
   @Get(":id")
   @Auth()
   findOne(@Param("id") id: string) {

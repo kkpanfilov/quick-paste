@@ -1,11 +1,19 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import Layout from "@/components/layout/Layout.jsx";
 
 import { useAuthBootstrap } from "./hooks/auth/useAuthBootstrap.js";
 
-// TODO: implement loader
+const queryClient = new QueryClient();
+
 function App() {
   useAuthBootstrap();
-  return <Layout></Layout>;
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Layout></Layout>
+    </QueryClientProvider>
+  );
 }
 
 export default App;
