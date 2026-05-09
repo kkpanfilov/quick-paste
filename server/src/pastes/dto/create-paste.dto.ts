@@ -1,4 +1,4 @@
-import { IsDate, IsString, MaxLength } from "class-validator";
+import { IsString, MaxLength } from "class-validator";
 
 export class CreatePasteDto {
   @IsString({ message: "Title must be a string" })
@@ -14,6 +14,5 @@ export class CreatePasteDto {
   @IsString({ message: "Language must be a string" })
   language?: string;
 
-  @IsDate({ message: "ExpiresAt must be a date" })
-  expiresAt?: Date;
+  expiresAt?: Date | null;
 }

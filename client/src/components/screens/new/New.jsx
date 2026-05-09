@@ -33,7 +33,6 @@ export const New = () => {
   const { isAuth } = useAuth();
   const { goSignIn, goPaste } = useAppNavigation();
 
-  // TODO: even with access token user redirects to sign in
   useEffect(() => {
     if (!isAuth) goSignIn();
   });
@@ -102,7 +101,7 @@ export const New = () => {
                 })}
               >
                 {languageList.map(({ label, value, selected }) => (
-                  <option selected={selected} value={value}>
+                  <option selected={selected} key={value} value={value}>
                     {label}
                   </option>
                 ))}
@@ -125,7 +124,7 @@ export const New = () => {
                 })}
               >
                 {expirationList.map(({ label, value, selected }) => (
-                  <option selected={selected} value={value}>
+                  <option selected={selected} key={value} value={value}>
                     {label}
                   </option>
                 ))}

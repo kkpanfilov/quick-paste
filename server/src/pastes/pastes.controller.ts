@@ -12,6 +12,7 @@ import { Auth } from "../auth/decorators/auth.decorator.js";
 import { CreatePasteDto } from "./dto/create-paste.dto.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
 import { PastesService } from "./pastes.service.js";
+import { DurationToDatePipe } from "./pipes/duration-to-date.pipe.js";
 
 @Controller("pastes")
 export class PastesController {
@@ -19,8 +20,14 @@ export class PastesController {
 
   @Post()
   @Auth()
-  create(@Body() createPasteDto: CreatePasteDto) {
-    return this.pastesService.create(createPasteDto);
+  create(
+    @Body("expiration", DurationToDatePipe) expiresAt: Date | null,
+    @Body() createPasteDto: CreatePasteDto,
+  ) {
+    return this.pastesService.create({
+      ...createPasteDto,
+      expiresAt,
+    });
   }
 
   @Get(":id")
