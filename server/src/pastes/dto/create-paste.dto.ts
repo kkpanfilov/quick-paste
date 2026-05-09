@@ -1,4 +1,4 @@
-import { IsString, MaxLength } from "class-validator";
+import { IsBoolean, IsString, MaxLength } from "class-validator";
 
 export class CreatePasteDto {
   @IsString({ message: "Title must be a string" })
@@ -12,7 +12,21 @@ export class CreatePasteDto {
   content!: string;
 
   @IsString({ message: "Language must be a string" })
-  language?: string;
+  language!: string;
 
-  expiresAt?: Date | null;
+  @IsString({ message: "Expiration must be a string" })
+  expiration!: string | null;
+
+  @IsBoolean({ message: "IsBurn must be a boolean" })
+  isBurn!: boolean;
+
+  @IsString({ message: "Category must be a string" })
+  category!: string;
+
+  @IsString({ message: "Exposure must be a string" })
+  exposure!: string;
+
+  @IsString({ message: "Password must be a string" })
+  @MaxLength(32, { message: "Password must be at most 32 characters long" })
+  password?: string;
 }

@@ -9,10 +9,11 @@ import {
 } from "@nestjs/common";
 
 import { Auth } from "../auth/decorators/auth.decorator.js";
-import { CreatePasteDto } from "./dto/create-paste.dto.js";
+import { User } from "../auth/decorators/user.decorator.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
 import { PastesService } from "./pastes.service.js";
-import { DurationToDatePipe } from "./pipes/duration-to-date.pipe.js";
+import type { CreatePasteServiceDto } from "./pipes/expiration.pipe.js";
+import { ExpirationPipe } from "./pipes/expiration.pipe.js";
 
 @Controller("pastes")
 export class PastesController {
@@ -21,12 +22,13 @@ export class PastesController {
   @Post()
   @Auth()
   create(
-    @Body("expiration", DurationToDatePipe) expiresAt: Date | null,
-    @Body() createPasteDto: CreatePasteDto,
+    @Body(new ExpirationPipe()) createPasteDto: CreatePasteServiceDto,
+    @User("id") authorId: string,
   ) {
+    console.log("in controller", createPasteDto);
     return this.pastesService.create({
       ...createPasteDto,
-      expiresAt,
+      authorId,
     });
   }
 

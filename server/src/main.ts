@@ -15,8 +15,14 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.setGlobalPrefix("api");
-  app.useGlobalPipes(new ValidationPipe());
 
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
   await app.listen(process.env.PORT ?? 4200);
 }
 

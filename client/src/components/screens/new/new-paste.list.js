@@ -32,3 +32,20 @@ export const expirationList = [
   { label: "6 Months", value: "6m" },
   { label: "1 Year", value: "1y" },
 ];
+
+export const categoryList = [
+  { label: "None", value: "none" },
+  { label: "Programming", value: "programming" },
+  { label: "Gaming", value: "gaming" },
+  { label: "Art", value: "art" },
+  { label: "Music", value: "music" },
+  { label: "Science", value: "science" },
+  { label: "Math", value: "math" },
+  { label: "History", value: "history" },
+];
+
+export const exposureList = [
+  { label: "Public", value: "public" },
+  { label: "Unlisted", value: "unlisted" },
+  { label: "Private", value: "private" },
+];

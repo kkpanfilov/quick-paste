@@ -11,7 +11,12 @@ import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
-import { expirationList, languageList } from "./new-paste.list.js";
+import {
+  categoryList,
+  expirationList,
+  exposureList,
+  languageList,
+} from "./new-paste.list.js";
 
 import styles from "./New.module.scss";
 
@@ -27,6 +32,9 @@ export const New = () => {
       content: "",
       language: "plain",
       expiration: "never",
+      category: "none",
+      exposure: "public",
+      password: null,
     },
   });
 
@@ -42,9 +50,18 @@ export const New = () => {
   useDocumentTitle("New");
 
   const onSubmit = async (body) => {
+    if (body.expiration === "burn") {
+      body.isBurn = true;
+      body.expiration = null;
+    } else {
+      body.isBurn = false;
+    }
+
+    console.log("Body:", body);
+
     const data = await createPaste(body);
 
-    console.log(data);
+    console.log("Response:", data);
 
     if (data.id) goPaste(data.id);
   };
@@ -58,7 +75,7 @@ export const New = () => {
             New paste
           </h1>
           <p className={styles.subtitle}>
-            Add title, select language, and paste your content.
+            Create a new public or private paste.
           </p>
         </header>
 
@@ -130,6 +147,74 @@ export const New = () => {
                 ))}
               </Select>
             </div>
+
+            <div className={styles.group}>
+              <label htmlFor="new-category" className={styles.label}>
+                Category{" "}
+                {errors.category && (
+                  <ErrorMessage message={errors.category.message} />
+                )}
+              </label>
+              <Select
+                id="new-category"
+                name="category"
+                className={styles.select}
+                {...register("category", {
+                  required: "is required",
+                })}
+              >
+                {categoryList.map(({ label, value, selected }) => (
+                  <option selected={selected} key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <div className={styles.group}>
+              <label htmlFor="new-exposure" className={styles.label}>
+                Exposure{" "}
+                {errors.exposure && (
+                  <ErrorMessage message={errors.exposure.message} />
+                )}
+              </label>
+              <Select
+                id="new-exposure"
+                name="exposure"
+                className={styles.select}
+                {...register("exposure", {
+                  required: "is required",
+                })}
+              >
+                {exposureList.map(({ label, value, selected }) => (
+                  <option selected={selected} key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          </div>
+
+          <div className={styles.group}>
+            <label htmlFor="new-password" className={styles.label}>
+              Password{" "}
+              {errors.password && (
+                <ErrorMessage message={errors.password.message} />
+              )}
+            </label>
+            <Field
+              id="new-password"
+              name="password"
+              type="text"
+              className={styles.input}
+              placeholder="Password (optional)"
+              {...register("password", {
+                maxLength: {
+                  value: 32,
+                  message: "is too long",
+                },
+              })}
+            />
           </div>
 
           <div className={styles.group}>

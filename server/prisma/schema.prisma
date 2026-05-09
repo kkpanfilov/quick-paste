@@ -34,17 +34,20 @@ model User {
 }
 
 model Paste {
-  id        String    @id @default(cuid())
-  title     String
-  content   String
-  language  String?
-  expiresAt DateTime?
-  isPublic  Boolean   @default(false)
-  authorId  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  comments  Comment[]
+  id           String    @id @default(uuid())
+  title        String
+  content      String
+  category     String?
+  language     String?
+  expiresAt    DateTime?
+  isBurn       Boolean?  @default(false)
+  passwordHash String?
+  exposure     String
+  authorId     String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  author       User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments     Comment[]
 
   @@index([authorId])
   @@index([expiresAt])

@@ -1,13 +1,36 @@
 import { Injectable } from "@nestjs/common";
 
-import { CreatePasteDto } from "./dto/create-paste.dto.js";
+import * as argon2 from "argon2";
+
+import { PrismaService } from "../prisma/prisma.service.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
+import { CreatePasteServiceDto } from "./pipes/expiration.pipe.js";
 
 // TODO: implement pastes endpoints
 @Injectable()
 export class PastesService {
-  create(createPasteDto: CreatePasteDto) {
-    return "This action adds a new paste";
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(
+    createPasteDto: CreatePasteServiceDto & {
+      authorId: string;
+      passwordHash?: string;
+    },
+  ) {
+    const { password, ...rest } = createPasteDto;
+
+    const data = rest;
+
+    if (password) data.passwordHash = await argon2.hash(password);
+
+    const paste = await this.prisma.paste.create({
+      data,
+      select: {
+        id: true,
+      },
+    });
+
+    return paste;
   }
 
   findOne(id: number) {
