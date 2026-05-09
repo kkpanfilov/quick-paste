@@ -15,7 +15,7 @@ type RequestWithUser = Request & {
 };
 
 const NO_TOKEN_MESSAGE = "Access token is missing";
-const INVALID_TOKEN_MESSAGE = "Access token is invalid";
+const INVALID_TOKEN_MESSAGE = "Invalid access token";
 
 @Injectable()
 export class JwtGuard implements CanActivate {

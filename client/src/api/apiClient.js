@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { getAccessToken } from "@/shared/authStore.js";
+import { getAccessToken, setAccessToken } from "@/shared/authStore.js";
 
 import { refreshAccessToken } from "./auth/refreshAccessToken.js";
 
@@ -36,12 +36,38 @@ export async function apiClient(method, endpoint, data = null, options = {}) {
 
     const response = await axios(requestOptions);
 
-    console.log(response);
-
-    // if (!response.data) {}
-
     return response.data;
   } catch (error) {
-    console.log(error);
+    if (error.response) {
+      const errorData = error.response.data;
+      const errorDataMessage = errorData.message;
+
+      if (
+        errorDataMessage === "Invalid access token" ||
+        errorDataMessage === "Access token is missing"
+      ) {
+        console.log("Access token is expired or invalid. Trying to refresh...");
+
+        const newToken = await refreshAccessToken();
+
+        if (!newToken) return;
+
+        setAccessToken(newToken.accessToken);
+
+        console.log("Successfully refreshed token");
+
+        return apiClient(method, endpoint, data, options);
+      }
+
+      if (errorDataMessage === "Invalid refresh token") {
+        console.log("Invalid refresh token, please sign in again");
+      }
+
+      return error.response.data;
+    } else if (error.request) {
+      console.log("No response from server");
+    } else {
+      console.log("Request setup error:", error.message);
+    }
   }
 }

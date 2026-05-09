@@ -35,6 +35,7 @@ export const Signin = () => {
   useDocumentTitle("Sign in");
 
   const onSubmit = async (body) => {
+    delete body.agree;
     const data = await loginUser(body);
 
     if (data.accessToken) {

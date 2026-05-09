@@ -11,3 +11,6 @@ export function getAccessToken() {
 export function clearAccessToken() {
   accessToken = null;
 }
+
+window.getAccessToken = getAccessToken;
+window.clearAccessToken = clearAccessToken;

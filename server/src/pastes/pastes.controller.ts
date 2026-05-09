@@ -25,7 +25,6 @@ export class PastesController {
     @Body(new ExpirationPipe()) createPasteDto: CreatePasteServiceDto,
     @User("id") authorId: string,
   ) {
-    console.log("in controller", createPasteDto);
     return this.pastesService.create({
       ...createPasteDto,
       authorId,
