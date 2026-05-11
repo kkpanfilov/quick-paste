@@ -10,6 +10,7 @@ export const Button = ({
     primary: "primary-button",
     ghost: "ghost-button",
     soft: "soft-button",
+    red: "red-button",
   };
 
   const variantClass = styles[variants[variant]] || "";

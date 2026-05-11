@@ -2,7 +2,8 @@
 
 .primary-button,
 .ghost-button,
-.soft-button {
+.soft-button,
+.red-button {
   border-radius: $radius;
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
@@ -53,6 +54,17 @@
 
   &:not(:disabled):hover {
     background: $button-soft-bg-hover;
+    border-color: rgba($accent, 0.42);
+  }
+}
+
+.red-button {
+  color: $button-red-text;
+  background: $button-red-bg;
+  border: none;
+
+  &:not(:disabled):hover {
+    background: $button-red-bg-hover;
     border-color: rgba($accent, 0.42);
   }
 }

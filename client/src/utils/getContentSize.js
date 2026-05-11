@@ -1,7 +1,7 @@
 const BYTE_UNITS = ["B", "KB", "MB"];
 const UNIT_STEP = 1024;
 
-export function formatContentSize(content) {
+export function getContentSize(content) {
   let size = new TextEncoder().encode(content).length;
   let unitIndex = 0;
 

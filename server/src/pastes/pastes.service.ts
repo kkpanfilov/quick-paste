@@ -76,7 +76,23 @@ export class PastesService {
       throw new NotFoundException("Paste not found");
     }
 
-    return paste;
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: paste.authorId,
+      },
+      select: {
+        username: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    return {
+      ...paste,
+      author: user.username,
+    };
   }
 
   update(id: number, updatePasteDto: UpdatePasteDto) {
