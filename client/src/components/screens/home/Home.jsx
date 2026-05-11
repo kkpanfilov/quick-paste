@@ -8,7 +8,6 @@ import { formatData } from "./utils/formatData.js";
 
 import styles from "./Home.module.scss";
 
-// TODO: implement public pastes appearance
 export const Home = () => {
   useDocumentTitle("Home");
 

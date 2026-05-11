@@ -32,7 +32,12 @@ export const Paste = () => {
   }
 
   if (data.error === "Not Found") {
-    return <NotFound />;
+    return (
+      <NotFound
+        title="Paste not found"
+        description="The paste you are looking for does not exist"
+      />
+    );
   }
 
   return (
