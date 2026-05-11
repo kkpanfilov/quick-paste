@@ -4,6 +4,7 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./NotFound.module.scss";
 
+// TODO: implement props
 export const NotFound = () => {
   useDocumentTitle("Page not found");
 

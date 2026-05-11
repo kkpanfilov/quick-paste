@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
 import * as argon2 from "argon2";
 
@@ -33,8 +33,50 @@ export class PastesService {
     return paste;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} paste`;
+  async findPublic() {
+    const pastes = await this.prisma.paste.findMany({
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        category: true,
+        language: true,
+        createdAt: true,
+      },
+      where: {
+        exposure: "public",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 10,
+    });
+
+    return pastes;
+  }
+
+  async findOne(id: string) {
+    const paste = await this.prisma.paste.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        category: true,
+        language: true,
+        exposure: true,
+        authorId: true,
+        createdAt: true,
+      },
+    });
+
+    if (!paste) {
+      throw new NotFoundException("Paste not found");
+    }
+
+    return paste;
   }
 
   update(id: number, updatePasteDto: UpdatePasteDto) {

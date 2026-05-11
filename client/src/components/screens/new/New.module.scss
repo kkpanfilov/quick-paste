@@ -1,10 +1,8 @@
 @use "@/styles/tokens" as *;
 
 .screen {
-  min-height: $screen-min-height-desktop;
   margin: 0 auto;
   padding: 36px 0 56px;
-  background: $screen-bg-aurora;
   font-family: $font-family-sans;
   display: flex;
   justify-content: center;

@@ -21,20 +21,25 @@ export class PastesController {
 
   @Post()
   @Auth()
-  create(
+  async create(
     @Body(new ExpirationPipe()) createPasteDto: CreatePasteServiceDto,
     @User("id") authorId: string,
   ) {
-    return this.pastesService.create({
+    return await this.pastesService.create({
       ...createPasteDto,
       authorId,
     });
   }
 
+  @Get("public")
+  async findPublic() {
+    return await this.pastesService.findPublic();
+  }
+
   @Get(":id")
   @Auth()
-  findOne(@Param("id") id: string) {
-    return this.pastesService.findOne(+id);
+  async findOne(@Param("id") id: string) {
+    return await this.pastesService.findOne(id);
   }
 
   @Patch(":id")

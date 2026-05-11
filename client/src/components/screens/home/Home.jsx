@@ -1,12 +1,38 @@
+import { Loader } from "@/components/ui/loader/Loader.jsx";
+import { useGetPublicPaste } from "@/hooks/pastes/useGetPublicPastes.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
+import { NotFound } from "../not-found/NotFound.jsx";
+import { formatData } from "./utils/formatData.js";
+
 import styles from "./Home.module.scss";
 
+// TODO: implement public pastes appearance
 export const Home = () => {
   useDocumentTitle("Home");
 
   const { goPaste } = useAppNavigation();
+
+  const { data, isLoading, error } = useGetPublicPaste();
+
+  if (isLoading) {
+    return (
+      <main>
+        <Loader isVisible label="Loading pastes..." />
+      </main>
+    );
+  }
+
+  if (error) {
+    return <main>Failed to load paste</main>;
+  }
+
+  if (data.error === "Not Found") {
+    return <NotFound />;
+  }
+
+  const formattedData = formatData(data);
 
   return (
     <main className={styles.screen}>
@@ -21,47 +47,32 @@ export const Home = () => {
         </section>
 
         <section className={styles.feed} aria-label="Recent pastes">
-          <article className={styles.card} onClick={() => goPaste("1")}>
-            <header className={styles.cardHeader}>
-              <h2 className={styles.cardTitle}>auth-middleware-fix.js</h2>
-              <span className={styles.language}>JavaScript</span>
-            </header>
-            <pre className={styles.preview}>
-              <code>{`if (!token) return res.status(401).json({ error: "No token" });`}</code>
-            </pre>
-            <footer className={styles.meta}>
-              <span>2 min ago</span>
-              <span>18 lines</span>
-            </footer>
-          </article>
-
-          <article className={styles.card} onClick={() => goPaste("1")}>
-            <header className={styles.cardHeader}>
-              <h2 className={styles.cardTitle}>db-index-notes.sql</h2>
-              <span className={styles.language}>SQL</span>
-            </header>
-            <pre className={styles.preview}>
-              <code>{`CREATE INDEX idx_paste_created_at ON pastes(created_at DESC);`}</code>
-            </pre>
-            <footer className={styles.meta}>
-              <span>17 min ago</span>
-              <span>12 lines</span>
-            </footer>
-          </article>
-
-          <article className={styles.card} onClick={() => goPaste("1")}>
-            <header className={styles.cardHeader}>
-              <h2 className={styles.cardTitle}>release-checklist.md</h2>
-              <span className={styles.language}>Markdown</span>
-            </header>
-            <pre className={styles.preview}>
-              <code>{`- run lint\n- run tests\n- update changelog\n- ship`}</code>
-            </pre>
-            <footer className={styles.meta}>
-              <span>1 hour ago</span>
-              <span>9 lines</span>
-            </footer>
-          </article>
+          {formattedData.map((paste) => (
+            <article
+              className={styles.card}
+              key={paste.id}
+              onClick={() => goPaste(paste.id)}
+            >
+              <header className={styles.cardHeader}>
+                <h2 className={styles.cardTitle}>{paste.title}</h2>
+                <div className={styles.cardTags}>
+                  <span className={styles.category} hidden={!paste.category}>
+                    {paste.category}
+                  </span>
+                  <span className={styles.language}>{paste.language}</span>
+                </div>
+              </header>
+              <pre className={styles.preview}>
+                <code>{paste.content}</code>
+              </pre>
+              <footer className={styles.meta}>
+                <span>{paste.createdAt}</span>
+                <span>
+                  {paste.lines} lines / {paste.size}
+                </span>
+              </footer>
+            </article>
+          ))}
         </section>
       </section>
     </main>

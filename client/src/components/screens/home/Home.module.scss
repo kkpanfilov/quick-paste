@@ -1,10 +1,8 @@
 @use "@/styles/tokens" as *;
 
 .screen {
-  min-height: $screen-min-height-desktop;
   padding: 36px 0 56px;
   font-family: $font-family-sans;
-  background: $screen-bg-aurora;
 }
 
 .container {
@@ -81,7 +79,13 @@
   line-height: 1.4;
 }
 
-.language {
+.cardTags {
+  display: flex;
+  gap: 8px;
+}
+
+.language,
+.category {
   border: 1px solid $border-default;
   border-radius: 999px;
   padding: 4px 8px;
@@ -100,8 +104,11 @@
   color: $text-primary;
   font-family: $font-family-mono;
   font-size: $font-size-sm;
-  line-height: 1.55;
+  line-height: 1.4;
+  max-height: calc(1.4em * 4);
+  overflow: hidden;
   white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .meta {

@@ -16,7 +16,7 @@ import {
   expirationList,
   exposureList,
   languageList,
-} from "./new-paste.list.js";
+} from "./assets/new-paste.list.js";
 
 import styles from "./New.module.scss";
 
@@ -57,11 +57,7 @@ export const New = () => {
       body.isBurn = false;
     }
 
-    console.log("Body:", body);
-
     const data = await createPaste(body);
-
-    console.log("Response:", data);
 
     if (data.id) goPaste(data.id);
   };

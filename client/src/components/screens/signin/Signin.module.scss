@@ -1,11 +1,9 @@
 @use "@/styles/tokens" as *;
 
 .screen {
-  min-height: $screen-min-height-desktop;
   display: grid;
   place-items: center;
   padding: 48px 16px;
-  background: $screen-bg-aurora;
   font-family: $font-family-sans;
 }
 
