@@ -2,6 +2,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Link, useParams } from "react-router";
 
 import { Button } from "@/components/ui/button/Button.jsx";
+import { Field } from "@/components/ui/field/Field.jsx";
 import { Loader } from "@/components/ui/loader/Loader.jsx";
 import { useGetPaste } from "@/hooks/pastes/useGetPaste.js";
 import { useAuth } from "@/hooks/useAuth.js";
@@ -15,7 +16,6 @@ import { NotFound } from "../not-found/NotFound.jsx";
 
 import styles from "./Paste.module.scss";
 
-// TODO: implement comments section
 export const Paste = () => {
   useDocumentTitle("Paste");
 
@@ -112,6 +112,67 @@ export const Paste = () => {
             <pre className={styles.codeBlock}>
               <code>{data.content}</code>
             </pre>
+          </section>
+
+          <section className={styles.comments} aria-labelledby="comments-title">
+            <div className={styles.commentsHeader}>
+              <div>
+                <p className={styles.eyebrow}>Discussion</p>
+                <h2 id="comments-title" className={styles.commentsTitle}>
+                  Comments
+                </h2>
+              </div>
+              <span className={styles.commentsCount}>2</span>
+            </div>
+
+            <form className={styles.commentForm}>
+              <Field
+                tag="textarea"
+                className={styles.commentTextarea}
+                placeholder="Write a comment..."
+                aria-label="Write a comment"
+                rows={4}
+              />
+              <div className={styles.commentFormActions}>
+                <Button variant="primary" className={styles.commentButton}>
+                  Send comment
+                </Button>
+              </div>
+            </form>
+
+            <div className={styles.commentList}>
+              <article className={styles.comment}>
+                <header className={styles.commentHeader}>
+                  <div className={styles.avatar} aria-hidden="true">
+                    A
+                  </div>
+                  <div>
+                    <h3 className={styles.commentAuthor}>Alex Morgan</h3>
+                    <p className={styles.commentDate}>2 hours ago</p>
+                  </div>
+                </header>
+                <p className={styles.commentText}>
+                  This helper is clean. I would only keep the middleware naming
+                  consistent with the route guards.
+                </p>
+              </article>
+
+              <article className={styles.comment}>
+                <header className={styles.commentHeader}>
+                  <div className={styles.avatar} aria-hidden="true">
+                    M
+                  </div>
+                  <div>
+                    <h3 className={styles.commentAuthor}>Maya Chen</h3>
+                    <p className={styles.commentDate}>Yesterday</p>
+                  </div>
+                </header>
+                <p className={styles.commentText}>
+                  Worth adding one test for the expired token case before this
+                  becomes shared auth code.
+                </p>
+              </article>
+            </div>
           </section>
         </article>
       </main>
