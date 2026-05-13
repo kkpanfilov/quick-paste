@@ -10,6 +10,7 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { countLines } from "@/utils/countLines.js";
 import { getContentSize } from "@/utils/getContentSize.js";
 
+import { ErrorPage } from "../error/ErrorPage.jsx";
 import { categoryMap } from "../home/assets/category.map.js";
 import { languageMap } from "../home/assets/language.map.js";
 import { NotFound } from "../not-found/NotFound.jsx";
@@ -26,7 +27,6 @@ export const Paste = () => {
 
   const { data, isLoading, error } = useGetPaste(pasteId);
 
-  // TODO: implement error page
   if (isLoading) {
     return (
       <main>
@@ -36,16 +36,21 @@ export const Paste = () => {
   }
 
   if (error) {
-    return <main>Failed to load paste</main>;
-  }
-
-  if (data.error === "Not Found") {
-    return (
-      <NotFound
-        title="Paste not found"
-        description="The paste you are looking for does not exist"
-      />
-    );
+    if (error.message === "Paste not found") {
+      return (
+        <NotFound
+          title="Paste not found"
+          description="The paste you are looking for does not exist"
+        />
+      );
+    } else {
+      return (
+        <ErrorPage
+          title="Failed to load paste"
+          description="The paste is temporarily unavailable"
+        />
+      );
+    }
   }
 
   return (

@@ -37,7 +37,6 @@ export class PastesController {
   }
 
   @Get(":id")
-  @Auth()
   async findOne(@Param("id") id: string) {
     return await this.pastesService.findOne(id);
   }

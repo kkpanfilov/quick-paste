@@ -23,15 +23,8 @@ export async function apiClient(method, endpoint, data = null, options = {}) {
       ...options,
     };
 
-    if (!accessToken && !endpoint.includes("auth")) {
-      const newToken = await refreshAccessToken();
-
-      if (!newToken) return;
-
-      accessToken = newToken.accessToken;
-    }
-
-    requestOptions.headers.Authorization = `Bearer ${accessToken}`;
+    if (accessToken)
+      requestOptions.headers.Authorization = `Bearer ${accessToken}`;
 
     const response = await axios(requestOptions);
 
@@ -58,15 +51,20 @@ export async function apiClient(method, endpoint, data = null, options = {}) {
         return apiClient(method, endpoint, data, options);
       }
 
-      if (errorDataMessage === "Invalid refresh token") {
+      if (
+        errorDataMessage === "Invalid refresh token" ||
+        errorDataMessage === "Refresh token not found"
+      ) {
         console.log("Invalid refresh token, please sign in again");
       }
 
-      return error.response.data;
+      throw error.response.data;
     } else if (error.request) {
       console.log("No response from server");
+      throw { message: "No response from server" };
     } else {
       console.log("Request setup error:", error.message);
+      throw { message: error.message || "Request failed" };
     }
   }
 }

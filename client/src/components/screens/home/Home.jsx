@@ -3,7 +3,7 @@ import { useGetPublicPaste } from "@/hooks/pastes/useGetPublicPastes.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
-import { NotFound } from "../not-found/NotFound.jsx";
+import { ErrorPage } from "../error/ErrorPage.jsx";
 import { formatData } from "./utils/formatData.js";
 
 import styles from "./Home.module.scss";
@@ -24,11 +24,12 @@ export const Home = () => {
   }
 
   if (error) {
-    return <main>Failed to load paste</main>;
-  }
-
-  if (data.error === "Not Found") {
-    return <NotFound />;
+    return (
+      <ErrorPage
+        title="Failed to load pastes"
+        description="The paste feed is temporarily unavailable"
+      />
+    );
   }
 
   const formattedData = formatData(data);

@@ -1,0 +1,106 @@
+@use "@/styles/variables" as *;
+
+.container {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+  display: grid;
+  gap: 12px;
+}
+
+.notification {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+
+  width: min(360px, calc(100vw - 32px));
+  padding: 14px 16px;
+  border: 1px solid $border-subtle;
+  border-radius: $radius;
+
+  color: $text-primary;
+  background: $bg-surface-2;
+  box-shadow: $card-shadow;
+}
+
+.content {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  color: $text-primary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  line-height: 1.35;
+}
+
+.message {
+  margin: 0;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.close {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+
+  color: $text-tertiary;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease;
+
+  &:hover {
+    color: $text-primary;
+    background: rgba($white, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($border-focus, 0.9);
+    outline-offset: 2px;
+  }
+}
+
+.success {
+  border-color: rgba($success, 0.34);
+  background:
+    linear-gradient(90deg, rgba($success, 0.18), rgba($bg-surface-2, 0)),
+    $bg-surface-2;
+}
+
+.error {
+  border-color: rgba($danger, 0.38);
+  background:
+    linear-gradient(90deg, rgba($danger, 0.16), rgba($bg-surface-2, 0)),
+    $bg-surface-2;
+}
+
+.info {
+  border-color: rgba($info, 0.34);
+  background:
+    linear-gradient(90deg, rgba($info, 0.16), rgba($bg-surface-2, 0)),
+    $bg-surface-2;
+}
+
+.warning {
+  border-color: rgba($warning, 0.36);
+  background:
+    linear-gradient(90deg, rgba($warning, 0.16), rgba($bg-surface-2, 0)),
+    $bg-surface-2;
+}
