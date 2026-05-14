@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 
 import * as argon2 from "argon2";
 
@@ -95,11 +99,35 @@ export class PastesService {
     };
   }
 
-  update(id: number, updatePasteDto: UpdatePasteDto) {
+  update(id: string, updatePasteDto: UpdatePasteDto) {
     return `This action updates a #${id} paste`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} paste`;
+  async remove(id: string, authorId: string) {
+    const paste = await this.prisma.paste.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        authorId: true,
+      },
+    });
+
+    if (!paste) {
+      throw new NotFoundException("Paste not found");
+    }
+
+    if (paste.authorId !== authorId) {
+      throw new ForbiddenException("You are not the author of this paste");
+    }
+
+    return await this.prisma.paste.delete({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+      },
+    });
   }
 }

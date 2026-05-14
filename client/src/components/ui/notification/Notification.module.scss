@@ -3,7 +3,7 @@
 .container {
   position: fixed;
   right: 24px;
-  bottom: 24px;
+  top: 24px;
   z-index: 1000;
   display: grid;
   gap: 12px;
@@ -23,6 +23,7 @@
   color: $text-primary;
   background: $bg-surface-2;
   box-shadow: $card-shadow;
+  font-family: $font-family-sans;
 }
 
 .content {

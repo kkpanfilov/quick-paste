@@ -1,0 +1,108 @@
+@use "@/styles/tokens" as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba($bg-canvas, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.confirm {
+  width: min(420px, 100%);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid $border-subtle;
+  border-radius: 14px;
+  background: linear-gradient(
+    180deg,
+    rgba($bg-surface-2, 0.98) 0%,
+    rgba($bg-surface-1, 0.98) 100%
+  );
+  box-shadow: $card-shadow;
+  font-family: $font-family-sans;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba($danger, 0.36);
+  border-radius: 50%;
+  color: $danger;
+  background: rgba($danger, 0.12);
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+}
+
+.content {
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  color: $text-primary;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  line-height: 1.25;
+}
+
+.description {
+  margin: 8px 0 0;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  line-height: 1.55;
+}
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.cancelButton,
+.confirmButton {
+  min-width: 96px;
+  height: 40px;
+  padding: 0 16px;
+  width: 50%;
+}
+
+@media (max-width: 480px) {
+  .overlay {
+    align-items: end;
+    padding: 12px;
+  }
+
+  .confirm {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  .icon {
+    width: 36px;
+    height: 36px;
+    font-size: $font-size-md;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .cancelButton,
+  .confirmButton {
+    width: 100%;
+  }
+}

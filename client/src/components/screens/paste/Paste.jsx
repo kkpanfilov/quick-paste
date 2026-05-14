@@ -1,12 +1,18 @@
+import { useState } from "react";
+
 import { formatDistanceToNow } from "date-fns";
+import { useDispatch } from "react-redux";
 import { Link, useParams } from "react-router";
 
 import { Button } from "@/components/ui/button/Button.jsx";
+import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { Loader } from "@/components/ui/loader/Loader.jsx";
+import { useDeletePaste } from "@/hooks/pastes/useDeletePaste.js";
 import { useGetPaste } from "@/hooks/pastes/useGetPaste.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { addNotification } from "@/store/notification/notificationSlice.js";
 import { countLines } from "@/utils/countLines.js";
 import { getContentSize } from "@/utils/getContentSize.js";
 
@@ -21,11 +27,16 @@ export const Paste = () => {
   useDocumentTitle("Paste");
 
   const { isAuth, userId } = useAuth();
+  const dispatch = useDispatch();
 
   const params = useParams();
   const pasteId = params.id;
 
   const { data, isLoading, error } = useGetPaste(pasteId);
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const { mutateAsync: deletePaste } = useDeletePaste();
 
   if (isLoading) {
     return (
@@ -53,8 +64,33 @@ export const Paste = () => {
     }
   }
 
+  const onDelete = async (id) => {
+    const result = await deletePaste(id);
+
+    if (result.id) {
+      setIsConfirmOpen(false);
+      dispatch(
+        addNotification({
+          type: "success",
+          title: "Paste deleted",
+          message: "Paste has been deleted successfully",
+        }),
+      );
+      debugger;
+    }
+  };
+
   return (
     <>
+      {isConfirmOpen && (
+        <Confirm
+          title="Delete this paste?"
+          description="Are you sure you want to delete this paste?"
+          action="Delete"
+          onCancel={() => setIsConfirmOpen(false)}
+          onConfirm={() => onDelete(pasteId)}
+        />
+      )}
       <main className={styles.screen}>
         <article className={styles.container} aria-labelledby="paste-title">
           <header className={styles.header}>
@@ -66,7 +102,11 @@ export const Paste = () => {
               <dl className={styles.meta}>
                 <div>
                   <dt>Category</dt>
-                  <dd>{categoryMap[data.category]}</dd>
+                  <dd>
+                    {categoryMap[data.category]
+                      ? categoryMap[data.category]
+                      : "None"}
+                  </dd>
                 </div>
                 <div>
                   <dt>Language</dt>
@@ -98,7 +138,11 @@ export const Paste = () => {
               </Button>
               {isAuth && userId === data.authorId && (
                 <>
-                  <Button variant="red" className={styles.actionButton}>
+                  <Button
+                    variant="red"
+                    className={styles.actionButton}
+                    onClick={() => setIsConfirmOpen(true)}
+                  >
                     Delete
                   </Button>
                   <Button variant="primary" className={styles.actionButton}>

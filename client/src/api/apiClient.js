@@ -7,7 +7,7 @@ import { refreshAccessToken } from "./auth/refreshAccessToken.js";
 const BASE_URL = "http://localhost:4200";
 const PREFIX = "/api";
 
-export async function apiClient(method, endpoint, data = null, options = {}) {
+export async function apiClient(method, endpoint, data = {}, options = {}) {
   try {
     let accessToken = getAccessToken();
 

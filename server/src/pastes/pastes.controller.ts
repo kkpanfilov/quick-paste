@@ -44,12 +44,12 @@ export class PastesController {
   @Patch(":id")
   @Auth()
   update(@Param("id") id: string, @Body() updatePasteDto: UpdatePasteDto) {
-    return this.pastesService.update(+id, updatePasteDto);
+    return this.pastesService.update(id, updatePasteDto);
   }
 
   @Delete(":id")
   @Auth()
-  remove(@Param("id") id: string) {
-    return this.pastesService.remove(+id);
+  async remove(@Param("id") id: string, @User("id") authorId: string) {
+    return await this.pastesService.remove(id, authorId);
   }
 }
