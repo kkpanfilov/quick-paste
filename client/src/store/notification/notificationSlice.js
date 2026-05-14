@@ -10,19 +10,25 @@ const notificationSlice = createSlice({
   name: "notification",
   initialState,
   reducers: {
-    addNotification: (state, action) => {
-      // TODO: rewrite to prepare and reducer
-      if (!action.payload?.message) return;
+    addNotification: {
+      prepare: ({ type, title, message, timeout }) => {
+        if (!message) {
+          throw new Error("Notification message is required");
+        }
 
-      state.items.push({
-        id: nanoid(),
-        type: action.payload.type || "info",
-        title: action.payload.title,
-        message: action.payload.message,
-        timeout: action.payload.timeout
-          ? action.payload.timeout
-          : DEFAULT_TIMEOUT,
-      });
+        return {
+          payload: {
+            id: nanoid(),
+            type: type || "info",
+            title: title,
+            message: message,
+            timeout: timeout ? timeout : DEFAULT_TIMEOUT,
+          },
+        };
+      },
+      reducer: (state, action) => {
+        state.items.push(action.payload);
+      },
     },
 
     removeNotification: (state, action) => {

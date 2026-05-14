@@ -65,19 +65,29 @@ export const Paste = () => {
   }
 
   const onDelete = async (id) => {
-    const result = await deletePaste(id);
+    try {
+      const result = await deletePaste(id);
 
-    if (result.id) {
-      setIsConfirmOpen(false);
+      if (result.id) {
+        dispatch(
+          addNotification({
+            type: "success",
+            title: "Paste deleted",
+            message: "Paste has been deleted successfully",
+          }),
+        );
+      }
+    } catch (error) {
       dispatch(
         addNotification({
-          type: "success",
-          title: "Paste deleted",
-          message: "Paste has been deleted successfully",
+          type: "error",
+          title: "Paste not deleted",
+          message: error.message,
         }),
       );
-      debugger;
     }
+
+    setIsConfirmOpen(false);
   };
 
   return (
