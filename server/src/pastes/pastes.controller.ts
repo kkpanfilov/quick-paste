@@ -43,8 +43,12 @@ export class PastesController {
 
   @Patch(":id")
   @Auth()
-  update(@Param("id") id: string, @Body() updatePasteDto: UpdatePasteDto) {
-    return this.pastesService.update(id, updatePasteDto);
+  async update(
+    @Param("id") id: string,
+    @User("id") authorId: string,
+    @Body() updatePasteDto: UpdatePasteDto,
+  ) {
+    return await this.pastesService.update(id, authorId, updatePasteDto);
   }
 
   @Delete(":id")

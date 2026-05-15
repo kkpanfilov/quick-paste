@@ -16,7 +16,7 @@ import {
   expirationList,
   exposureList,
   languageList,
-} from "./assets/new-paste.list.js";
+} from "../home/assets/new-paste.list.js";
 
 import styles from "./New.module.scss";
 

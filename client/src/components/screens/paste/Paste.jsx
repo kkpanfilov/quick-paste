@@ -1,15 +1,20 @@
 import { useState } from "react";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
+import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useParams } from "react-router";
 
 import { Button } from "@/components/ui/button/Button.jsx";
 import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { Loader } from "@/components/ui/loader/Loader.jsx";
+import { Select } from "@/components/ui/select/Select.jsx";
 import { useDeletePaste } from "@/hooks/pastes/useDeletePaste.js";
 import { useGetPaste } from "@/hooks/pastes/useGetPaste.js";
+import { useUpdatePaste } from "@/hooks/pastes/useUpdatePaste.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
@@ -19,12 +24,23 @@ import { getContentSize } from "@/utils/getContentSize.js";
 import { ErrorPage } from "../error/ErrorPage.jsx";
 import { categoryMap } from "../home/assets/category.map.js";
 import { languageMap } from "../home/assets/language.map.js";
+import { categoryList, languageList } from "../home/assets/new-paste.list.js";
 import { NotFound } from "../not-found/NotFound.jsx";
 
 import styles from "./Paste.module.scss";
 
 export const Paste = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onSubmit",
+  });
+
   useDocumentTitle("Paste");
+
+  const queryClient = useQueryClient();
 
   const { isAuth, userId } = useAuth();
   const dispatch = useDispatch();
@@ -35,8 +51,10 @@ export const Paste = () => {
   const { data, isLoading, error } = useGetPaste(pasteId);
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const { mutateAsync: deletePaste } = useDeletePaste();
+  const { mutateAsync: updatePaste } = useUpdatePaste();
 
   if (isLoading) {
     return (
@@ -64,6 +82,8 @@ export const Paste = () => {
     }
   }
 
+  const author = data.author;
+
   const onDelete = async (id) => {
     try {
       const result = await deletePaste(id);
@@ -76,6 +96,8 @@ export const Paste = () => {
             message: "Paste has been deleted successfully",
           }),
         );
+
+        // TODO: do something after success
       }
     } catch (error) {
       dispatch(
@@ -88,6 +110,34 @@ export const Paste = () => {
     }
 
     setIsConfirmOpen(false);
+  };
+
+  const onUpdate = async (body) => {
+    try {
+      const result = await updatePaste({ id: pasteId, body });
+
+      if (result.id) {
+        dispatch(
+          addNotification({
+            type: "success",
+            title: "Paste updated",
+            message: "Paste has been updated successfully",
+          }),
+        );
+
+        queryClient.setQueryData(["paste", pasteId], { ...result, author });
+
+        setIsEditing(false);
+      }
+    } catch (error) {
+      dispatch(
+        addNotification({
+          type: "error",
+          title: "Paste not updated",
+          message: error.message,
+        }),
+      );
+    }
   };
 
   return (
@@ -106,33 +156,99 @@ export const Paste = () => {
           <header className={styles.header}>
             <div className={styles.heading}>
               <p className={styles.eyebrow}>{data.exposure} paste</p>
-              <h1 id="paste-title" className={styles.title}>
-                {data.title}
-              </h1>
+              {errors.title && <ErrorMessage message={errors.title.message} />}
+              {isEditing ? (
+                <Field
+                  tag="input"
+                  id="new-title"
+                  name="title"
+                  type="text"
+                  className={styles.pasteInput}
+                  defaultValue={data.title}
+                  {...register("title", {
+                    required: "Title is required",
+                    maxLength: {
+                      value: 64,
+                      message: "Title is too long",
+                    },
+                  })}
+                />
+              ) : (
+                <h1 id="paste-title" className={styles.title}>
+                  {data.title}
+                </h1>
+              )}
               <dl className={styles.meta}>
                 <div>
                   <dt>Category</dt>
-                  <dd>
-                    {categoryMap[data.category]
-                      ? categoryMap[data.category]
-                      : "None"}
-                  </dd>
+                  {isEditing ? (
+                    <Select
+                      id="new-language"
+                      name="language"
+                      className={styles.pasteSelect}
+                      {...register("category", {
+                        required: "Category is required",
+                      })}
+                    >
+                      {categoryList.map(({ label, value }) => (
+                        <option
+                          selected={value === data.category}
+                          key={value}
+                          value={value}
+                        >
+                          {label}
+                        </option>
+                      ))}
+                    </Select>
+                  ) : (
+                    <dd>
+                      {categoryMap[data.category]
+                        ? categoryMap[data.category]
+                        : "None"}
+                    </dd>
+                  )}
                 </div>
                 <div>
                   <dt>Language</dt>
-                  <dd>{languageMap[data.language]}</dd>
+                  {isEditing ? (
+                    <Select
+                      id="new-language"
+                      name="language"
+                      className={styles.pasteSelect}
+                      {...register("language", {
+                        required: "Language is required",
+                      })}
+                    >
+                      {languageList.map(({ label, value }) => (
+                        <option
+                          selected={value === data.language}
+                          key={value}
+                          value={value}
+                        >
+                          {label}
+                        </option>
+                      ))}
+                    </Select>
+                  ) : (
+                    <dd>{languageMap[data.language]}</dd>
+                  )}
                 </div>
-                <div>
+                <div hidden={isEditing}>
                   <dt>Created</dt>
-                  <dd>{formatDistanceToNow(new Date(data.createdAt))} ago</dd>
-                </div>
-                <div>
-                  <dt>Created by</dt>
                   <dd>
-                    <Link to={`/users/${data.authorId}`}>{data.author}</Link>
+                    {formatDistanceToNow(new Date(data.createdAt), {
+                      includeSeconds: true,
+                      addSuffix: true,
+                    })}
                   </dd>
                 </div>
-                <div>
+                <div hidden={isEditing}>
+                  <dt>Created by</dt>
+                  <dd>
+                    <Link to={`/users/${data.authorId}`}>{author}</Link>
+                  </dd>
+                </div>
+                <div hidden={isEditing}>
                   <dt>Size</dt>
                   <dd>
                     {countLines(data.content)} lines /{" "}
@@ -143,7 +259,11 @@ export const Paste = () => {
             </div>
 
             <div className={styles.actions} aria-label="Paste actions">
-              <Button variant="ghost" className={styles.actionButton}>
+              <Button
+                variant="ghost"
+                className={styles.actionButton}
+                hidden={isEditing}
+              >
                 Copy
               </Button>
               {isAuth && userId === data.authorId && (
@@ -152,11 +272,25 @@ export const Paste = () => {
                     variant="red"
                     className={styles.actionButton}
                     onClick={() => setIsConfirmOpen(true)}
+                    hidden={isEditing}
                   >
                     Delete
                   </Button>
-                  <Button variant="primary" className={styles.actionButton}>
-                    Edit
+                  {isEditing && (
+                    <Button
+                      variant="primary"
+                      className={styles.actionButton}
+                      onClick={handleSubmit(onUpdate)}
+                    >
+                      Save
+                    </Button>
+                  )}
+                  <Button
+                    variant={isEditing ? "red" : "primary"}
+                    className={styles.actionButton}
+                    onClick={() => setIsEditing(!isEditing)}
+                  >
+                    {isEditing ? "Cancel" : "Edit"}
                   </Button>
                 </>
               )}
@@ -165,12 +299,33 @@ export const Paste = () => {
 
           <section className={styles.content} aria-label="Paste content">
             <div className={styles.toolbar}>
-              <span className={styles.fileName}>auth-middleware-fix.js</span>
+              <span className={styles.fileName}>
+                {errors.content && (
+                  <ErrorMessage message={errors.content.message} />
+                )}
+              </span>
               <span className={styles.status}>Read only</span>
             </div>
-            <pre className={styles.codeBlock}>
-              <code>{data.content}</code>
-            </pre>
+            {isEditing ? (
+              <Field
+                tag="textarea"
+                id="paste-content"
+                name="content"
+                className={styles.pasteTextarea}
+                defaultValue={data.content}
+                {...register("content", {
+                  required: "Content is required",
+                  maxLength: {
+                    value: 10000,
+                    message: "Content is too long",
+                  },
+                })}
+              />
+            ) : (
+              <pre className={styles.codeBlock}>
+                <code>{data.content}</code>
+              </pre>
+            )}
           </section>
 
           <section className={styles.comments} aria-labelledby="comments-title">

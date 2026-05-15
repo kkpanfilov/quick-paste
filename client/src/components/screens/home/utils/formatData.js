@@ -10,7 +10,7 @@ export function formatData(data) {
     ...paste,
     category: categoryMap[paste.category],
     language: languageMap[paste.language],
-    createdAt: `${formatDistanceToNow(new Date(paste.createdAt))} ago`,
+    createdAt: `${formatDistanceToNow(new Date(paste.createdAt), { includeSeconds: true, addSuffix: true })}`,
     lines: countLines(paste.content),
     size: getContentSize(paste.content),
   }));

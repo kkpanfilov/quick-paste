@@ -10,7 +10,6 @@ import { PrismaService } from "../prisma/prisma.service.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
 import { CreatePasteServiceDto } from "./pipes/expiration.pipe.js";
 
-// TODO: implement pastes endpoints
 @Injectable()
 export class PastesService {
   constructor(private readonly prisma: PrismaService) {}
@@ -99,8 +98,46 @@ export class PastesService {
     };
   }
 
-  update(id: string, updatePasteDto: UpdatePasteDto) {
-    return `This action updates a #${id} paste`;
+  async update(id: string, authorId: string, updatePasteDto: UpdatePasteDto) {
+    const paste = await this.prisma.paste.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        authorId: true,
+      },
+    });
+
+    if (!paste) {
+      throw new NotFoundException("Paste not found");
+    }
+
+    if (paste.authorId !== authorId) {
+      throw new ForbiddenException("You are not the author of this paste");
+    }
+
+    const updatedPaste = await this.prisma.paste.update({
+      where: {
+        id,
+      },
+      data: {
+        ...updatePasteDto,
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        category: true,
+        language: true,
+        exposure: true,
+        authorId: true,
+        createdAt: true,
+      },
+    });
+
+    return {
+      ...updatedPaste,
+    };
   }
 
   async remove(id: string, authorId: string) {

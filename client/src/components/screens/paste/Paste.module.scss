@@ -57,7 +57,6 @@
   gap: 12px;
 
   div {
-    min-width: 118px;
     border: 1px solid $border-subtle;
     border-radius: 10px;
     background: rgba($bg-surface-2, 0.56);
@@ -142,6 +141,30 @@
   code {
     font: inherit;
   }
+}
+
+.pasteTextarea {
+  min-height: 420px;
+  width: 100%;
+  overflow: auto;
+  padding: 20px 22px;
+  font-family: $font-family-mono;
+  line-height: 1.65;
+  tab-size: 2;
+}
+
+.pasteInput {
+  height: 44px;
+  width: 100%;
+  padding: 0 13px;
+  margin-top: 10px;
+  font-family: $font-family-mono;
+}
+
+.pasteSelect {
+  height: 32px;
+  padding: 0 8px;
+  margin-top: 8px;
 }
 
 .comments {
@@ -282,10 +305,11 @@
 
   .actions {
     width: 100%;
+    flex-direction: column;
   }
 
   .actionButton {
-    flex: 1;
+    width: 100%;
   }
 
   .codeBlock {
@@ -310,12 +334,6 @@
 
   .title {
     font-size: $font-size-xl;
-  }
-
-  .meta {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
   }
 
   .toolbar {
