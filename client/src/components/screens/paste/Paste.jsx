@@ -17,6 +17,7 @@ import { Select } from "@/components/ui/select/Select.jsx";
 import { useDeletePaste } from "@/hooks/pastes/useDeletePaste.js";
 import { useGetPaste } from "@/hooks/pastes/useGetPaste.js";
 import { useUpdatePaste } from "@/hooks/pastes/useUpdatePaste.js";
+import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
@@ -31,7 +32,6 @@ import { NotFound } from "../not-found/NotFound.jsx";
 
 import styles from "./Paste.module.scss";
 
-// TODO: implement copy button to clipboard
 // TODO: implement password protection
 // TODO: implement unlisted/private paste protection
 export const Paste = () => {
@@ -44,6 +44,8 @@ export const Paste = () => {
   });
 
   useDocumentTitle("Paste");
+
+  const { reload } = useAppNavigation();
 
   const queryClient = useQueryClient();
 
@@ -112,9 +114,9 @@ export const Paste = () => {
             message: "Paste has been deleted successfully",
           }),
         );
-
-        // TODO: do redirect or something after success
       }
+
+      reload();
     } catch (error) {
       dispatch(
         addNotification({
@@ -333,7 +335,7 @@ export const Paste = () => {
                 {...register("content", {
                   required: "Content is required",
                   maxLength: {
-                    value: 10000,
+                    value: 100000,
                     message: "Content is too long",
                   },
                 })}

@@ -229,7 +229,7 @@ export const New = () => {
               {...register("content", {
                 required: "is required",
                 maxLength: {
-                  value: 10000,
+                  value: 100000,
                   message: "is too long",
                 },
               })}

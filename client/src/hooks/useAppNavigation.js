@@ -13,5 +13,6 @@ export function useAppNavigation() {
     goNew: () => navigate(paths.new),
     goPaste: (id) => navigate(paths.paste(id)),
     goBack: () => navigate(-1),
+    reload: () => navigate(0),
   };
 }

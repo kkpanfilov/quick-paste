@@ -6,8 +6,8 @@ export class CreatePasteDto {
   title!: string;
 
   @IsString({ message: "Content must be a string" })
-  @MaxLength(10000, {
-    message: "Content must be at most 10000 characters long",
+  @MaxLength(100000, {
+    message: "Content must be at most 100000 characters long",
   })
   content!: string;
 
