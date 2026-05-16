@@ -99,7 +99,7 @@
   margin: 12px 0 0;
   border: 1px solid $border-subtle;
   border-radius: 10px;
-  background: $code-bg;
+  background: $code-bg !important;
   padding: 12px;
   color: $text-primary;
   font-family: $font-family-mono;

@@ -1,3 +1,6 @@
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { anOldHope } from "react-syntax-highlighter/dist/esm/styles/hljs";
+
 import { Loader } from "@/components/ui/loader/Loader.jsx";
 import { useGetPublicPaste } from "@/hooks/pastes/useGetPublicPastes.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
@@ -62,9 +65,13 @@ export const Home = () => {
                   <span className={styles.language}>{paste.language}</span>
                 </div>
               </header>
-              <pre className={styles.preview}>
-                <code>{paste.content}</code>
-              </pre>
+              <SyntaxHighlighter
+                className={styles.preview}
+                language={data.language}
+                style={anOldHope}
+              >
+                {paste.content}
+              </SyntaxHighlighter>
               <footer className={styles.meta}>
                 <span>{paste.createdAt}</span>
                 <span>

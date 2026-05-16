@@ -130,7 +130,7 @@
   margin: 0;
   min-height: 420px;
   overflow: auto;
-  background: $code-bg;
+  background: $code-bg !important;
   padding: 20px 22px;
   color: $text-primary;
   font-family: $font-family-mono;

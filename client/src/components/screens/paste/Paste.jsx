@@ -5,6 +5,8 @@ import { formatDistanceToNow } from "date-fns";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useParams } from "react-router";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { anOldHope } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import { Button } from "@/components/ui/button/Button.jsx";
 import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
@@ -29,6 +31,9 @@ import { NotFound } from "../not-found/NotFound.jsx";
 
 import styles from "./Paste.module.scss";
 
+// TODO: implement copy button to clipboard
+// TODO: implement password protection
+// TODO: implement unlisted/private paste protection
 export const Paste = () => {
   const {
     register,
@@ -84,6 +89,17 @@ export const Paste = () => {
 
   const author = data.author;
 
+  const onCopy = () => {
+    navigator.clipboard.writeText(data.content);
+    dispatch(
+      addNotification({
+        type: "success",
+        title: "Paste copied",
+        message: "Paste has been copied to clipboard",
+      }),
+    );
+  };
+
   const onDelete = async (id) => {
     try {
       const result = await deletePaste(id);
@@ -97,7 +113,7 @@ export const Paste = () => {
           }),
         );
 
-        // TODO: do something after success
+        // TODO: do redirect or something after success
       }
     } catch (error) {
       dispatch(
@@ -262,6 +278,7 @@ export const Paste = () => {
               <Button
                 variant="ghost"
                 className={styles.actionButton}
+                onClick={onCopy}
                 hidden={isEditing}
               >
                 Copy
@@ -322,9 +339,13 @@ export const Paste = () => {
                 })}
               />
             ) : (
-              <pre className={styles.codeBlock}>
-                <code>{data.content}</code>
-              </pre>
+              <SyntaxHighlighter
+                className={styles.codeBlock}
+                language={data.language}
+                style={anOldHope}
+              >
+                {data.content}
+              </SyntaxHighlighter>
             )}
           </section>
 
