@@ -58,7 +58,7 @@ export class PastesService {
     return pastes;
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, userId: string) {
     const paste = await this.prisma.paste.findUnique({
       where: {
         id,
@@ -76,6 +76,10 @@ export class PastesService {
     });
 
     if (!paste) {
+      throw new NotFoundException("Paste not found");
+    }
+
+    if (paste.exposure === "private" && paste.authorId !== userId) {
       throw new NotFoundException("Paste not found");
     }
 

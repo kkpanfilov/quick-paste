@@ -37,8 +37,8 @@ export class PastesController {
   }
 
   @Get(":id")
-  async findOne(@Param("id") id: string) {
-    return await this.pastesService.findOne(id);
+  async findOne(@Param("id") id: string, @User("id") userId: string) {
+    return await this.pastesService.findOne(id, userId);
   }
 
   @Patch(":id")
