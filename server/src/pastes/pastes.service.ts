@@ -3,16 +3,23 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 
 import * as argon2 from "argon2";
+import { Request } from "express";
 
 import { PrismaService } from "../prisma/prisma.service.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
 import { CreatePasteServiceDto } from "./pipes/expiration.pipe.js";
+import { Password } from "./types/password.type.js";
+import { PasteUnlockTokenType } from "./types/paste-unlock-token.type.js";
 
 @Injectable()
 export class PastesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async create(
     createPasteDto: CreatePasteServiceDto & {
@@ -58,7 +65,12 @@ export class PastesService {
     return pastes;
   }
 
-  async findOne(id: string, userId: string) {
+  async findOne(
+    id: string,
+    userId: string,
+    request: Request | null,
+    password?: Password,
+  ) {
     const paste = await this.prisma.paste.findUnique({
       where: {
         id,
@@ -70,6 +82,7 @@ export class PastesService {
         category: true,
         language: true,
         exposure: true,
+        passwordHash: true,
         authorId: true,
         createdAt: true,
       },
@@ -96,8 +109,39 @@ export class PastesService {
       throw new NotFoundException("User not found");
     }
 
+    const { passwordHash, ...safePaste } = paste;
+
+    if (request) {
+      const cookies = request.cookies;
+
+      if (cookies[`paste_access_${id}`]) {
+        const token = cookies[`paste_access_${id}`] as string;
+        const isTokenValid =
+          await this.jwtService.verifyAsync<PasteUnlockTokenType>(token);
+
+        if (isTokenValid) {
+          return {
+            ...safePaste,
+            author: user.username,
+          };
+        }
+      }
+    }
+
+    if (passwordHash && !password && paste.authorId !== userId) {
+      throw new ForbiddenException("Password is required");
+    }
+
+    if (passwordHash && password) {
+      const isPasswordValid = await argon2.verify(passwordHash, password);
+
+      if (!isPasswordValid) {
+        throw new ForbiddenException("Password is incorrect");
+      }
+    }
+
     return {
-      ...paste,
+      ...safePaste,
       author: user.username,
     };
   }

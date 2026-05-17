@@ -8,6 +8,7 @@ import { Link, useParams } from "react-router";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { anOldHope } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
+import { PastePassword } from "@/components/screens/paste-password/PastePassword.jsx";
 import { Button } from "@/components/ui/button/Button.jsx";
 import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
@@ -32,8 +33,7 @@ import { NotFound } from "../not-found/NotFound.jsx";
 
 import styles from "./Paste.module.scss";
 
-// TODO: implement password protection
-// TODO: implement unlisted/private paste protection
+// TODO: implement comments
 export const Paste = () => {
   const {
     register,
@@ -45,7 +45,7 @@ export const Paste = () => {
 
   useDocumentTitle("Paste");
 
-  const { reload } = useAppNavigation();
+  const { reload, goHome } = useAppNavigation();
 
   const queryClient = useQueryClient();
 
@@ -79,6 +79,8 @@ export const Paste = () => {
           description="The paste you are looking for does not exist"
         />
       );
+    } else if (error.message === "Password is required") {
+      return <PastePassword pasteId={pasteId} onCancel={goHome} />;
     } else {
       return (
         <ErrorPage
