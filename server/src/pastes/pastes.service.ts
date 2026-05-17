@@ -82,9 +82,11 @@ export class PastesService {
         category: true,
         language: true,
         exposure: true,
+        isBurn: true,
         passwordHash: true,
         authorId: true,
         createdAt: true,
+        expiresAt: true,
       },
     });
 
@@ -93,6 +95,11 @@ export class PastesService {
     }
 
     if (paste.exposure === "private" && paste.authorId !== userId) {
+      throw new NotFoundException("Paste not found");
+    }
+
+    if (paste.expiresAt && paste.expiresAt < new Date()) {
+      await this.burn(id);
       throw new NotFoundException("Paste not found");
     }
 
@@ -120,6 +127,7 @@ export class PastesService {
           await this.jwtService.verifyAsync<PasteUnlockTokenType>(token);
 
         if (isTokenValid) {
+          if (paste.isBurn && paste.authorId !== userId) await this.burn(id);
           return {
             ...safePaste,
             author: user.username,
@@ -140,6 +148,7 @@ export class PastesService {
       }
     }
 
+    if (paste.isBurn && paste.authorId !== userId) await this.burn(id);
     return {
       ...safePaste,
       author: user.username,
@@ -214,5 +223,24 @@ export class PastesService {
         id: true,
       },
     });
+  }
+
+  private async burn(id: string) {
+    const paste = await this.prisma.paste.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!paste) return false;
+
+    return await this.prisma.paste
+      .delete({
+        where: {
+          id,
+        },
+      })
+      .then(() => true)
+      .catch(() => false);
   }
 }
