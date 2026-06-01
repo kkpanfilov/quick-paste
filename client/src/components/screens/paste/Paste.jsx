@@ -34,6 +34,7 @@ import { NotFound } from "../not-found/NotFound.jsx";
 import styles from "./Paste.module.scss";
 
 // TODO: implement comments
+// TODO: add likes the pastes
 export const Paste = () => {
   const {
     register,

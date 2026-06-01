@@ -1,11 +1,13 @@
 import { useState } from "react";
 
+import cn from "clsx";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { anOldHope } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import { Loader } from "@/components/ui/loader/Loader.jsx";
 import { Pagination } from "@/components/ui/pagination/Pagination.jsx";
 import { useGetOwnPaste } from "@/hooks/pastes/useGetOwnPastes.js";
+import { useGetPublicPaste } from "@/hooks/pastes/useGetPublicPastes.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
@@ -14,14 +16,25 @@ import { formatData } from "./utils/formatData.js";
 
 import styles from "./Home.module.scss";
 
+// TODO: divide home page (your workspace) and feed page
 export const Home = () => {
   useDocumentTitle("Home");
 
   const [page, setPage] = useState(1);
+  const [currentCategory, setCurrentCategory] = useState("workspace");
 
   const { goPaste } = useAppNavigation();
 
-  const { data, isLoading, error } = useGetOwnPaste(page);
+  const ownPasteQuery = useGetOwnPaste(page, {
+    enabled: currentCategory === "workspace",
+  });
+
+  const publicPasteQuery = useGetPublicPaste(page, {
+    enabled: currentCategory === "feed",
+  });
+
+  const { data, isLoading, error } =
+    currentCategory === "workspace" ? ownPasteQuery : publicPasteQuery;
 
   if (isLoading) {
     return (
@@ -51,10 +64,38 @@ export const Home = () => {
       <section className={styles.container}>
         <section className={styles.hero}>
           <p className={styles.eyebrow}>Recent pastes</p>
-          <h1 className={styles.title}>Your workspace</h1>
+          <h1 className={styles.title}>
+            <span
+              className={cn(
+                styles.title_option,
+                currentCategory === "workspace" && styles.title_option_active,
+              )}
+              onClick={() => {
+                setCurrentCategory("workspace");
+                setPage(1);
+              }}
+            >
+              Workspace
+            </span>{" "}
+            /{" "}
+            <span
+              className={cn(
+                styles.title_option,
+                currentCategory === "feed" && styles.title_option_active,
+              )}
+              onClick={() => {
+                setCurrentCategory("feed");
+                setPage(1);
+              }}
+            >
+              Feed
+            </span>
+          </h1>
           <p className={styles.subtitle}>
-            Latest snippets from your workspace. Quickly preview and continue
-            where you left off.
+            {currentCategory === "workspace"
+              ? `Latest snippets from your workspace. Quickly preview and continue
+            where you left off.`
+              : `The public feed of all the latest pastes from the community.`}
           </p>
         </section>
         <section className={styles.feed} aria-label="Recent pastes">
@@ -75,7 +116,7 @@ export const Home = () => {
               </header>
               <SyntaxHighlighter
                 className={styles.preview}
-                language={data.language}
+                language={paste.language}
                 style={anOldHope}
               >
                 {paste.content}
