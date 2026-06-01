@@ -43,7 +43,7 @@ export class PastesService {
     return paste;
   }
 
-  async findPublic() {
+  async findPublic(page: number = 1) {
     const pastes = await this.prisma.paste.findMany({
       select: {
         id: true,
@@ -60,9 +60,64 @@ export class PastesService {
         createdAt: "desc",
       },
       take: 10,
+      skip: (page - 1) * 10,
     });
 
     return pastes;
+  }
+
+  async findAuthorPastes(authorId: string, page: number = 1) {
+    if (!authorId) {
+      throw new NotFoundException("Author not found");
+    }
+
+    const author = await this.prisma.user.findUnique({
+      where: {
+        id: authorId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!author) {
+      throw new NotFoundException("Author not found");
+    }
+
+    const [pastes, total] = await this.prisma.$transaction([
+      this.prisma.paste.findMany({
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          category: true,
+          language: true,
+          createdAt: true,
+        },
+        where: {
+          authorId,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 10,
+        skip: (page - 1) * 10,
+      }),
+      this.prisma.paste.count({
+        where: {
+          authorId,
+        },
+      }),
+    ]);
+
+    return {
+      items: pastes,
+      meta: {
+        currentPage: page,
+        totalPages: Math.ceil(total / 10),
+        hasNextPage: page < Math.ceil(total / 10),
+      },
+    };
   }
 
   async findOne(

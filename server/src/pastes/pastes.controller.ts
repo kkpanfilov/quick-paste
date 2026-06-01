@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   Res,
 } from "@nestjs/common";
@@ -41,8 +42,17 @@ export class PastesController {
   }
 
   @Get("public")
-  async findPublic() {
-    return await this.pastesService.findPublic();
+  async findPublic(@Query("page") page: number) {
+    return await this.pastesService.findPublic(page);
+  }
+
+  @Get("me")
+  @Auth()
+  async findAuthorPastes(
+    @User("id") userId: string,
+    @Query("page") page: number,
+  ) {
+    return await this.pastesService.findAuthorPastes(userId, page);
   }
 
   @Get(":id")

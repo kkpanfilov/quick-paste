@@ -6,7 +6,10 @@ import { categoryMap } from "../assets/category.map.js";
 import { languageMap } from "../assets/language.map.js";
 
 export function formatData(data) {
-  return data.map((paste) => ({
+  const meta = data.meta;
+  const items = data.items;
+
+  const formattedItems = items.map((paste) => ({
     ...paste,
     category: categoryMap[paste.category],
     language: languageMap[paste.language],
@@ -14,4 +17,9 @@ export function formatData(data) {
     lines: countLines(paste.content),
     size: getContentSize(paste.content),
   }));
+
+  return {
+    items: formattedItems,
+    meta,
+  };
 }

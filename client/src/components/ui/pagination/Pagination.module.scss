@@ -1,0 +1,125 @@
+@use "@/styles/tokens" as *;
+
+.pagination {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.paginationPages {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.paginationButton {
+  min-width: 38px;
+  height: 38px;
+  border: 1px solid $border-default;
+  border-radius: $radius;
+  background: rgba($bg-surface-2, 0.88);
+  padding: 0 12px;
+  color: $text-secondary;
+  font: inherit;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  line-height: 1;
+  transition: $transition-button-interactive;
+
+  &:hover:not(:disabled) {
+    border-color: $border-strong;
+    background: rgba($bg-surface-3, 0.9);
+    color: $text-primary;
+    cursor: pointer;
+  }
+
+  &:active:not(:disabled) {
+    transform: $active-press-transform;
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-outline;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    border-color: $border-subtle;
+    background: rgba($bg-surface-1, 0.72);
+    color: $text-tertiary;
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+.paginationButtonActive {
+  border-color: rgba($accent, 0.72);
+  background: $button-soft-bg;
+  color: $button-soft-text;
+}
+
+.paginationDots {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 38px;
+  color: $text-tertiary;
+  font-size: $font-size-sm;
+}
+
+@media (max-width: 768px) {
+  .screen {
+    min-height: $screen-min-height-mobile;
+    padding: 28px 0 44px;
+  }
+
+  .title {
+    font-size: $font-size-2xl;
+  }
+}
+
+@media (max-width: 480px) {
+  .screen {
+    padding: 24px 0 34px;
+  }
+
+  .subtitle {
+    font-size: $font-size-sm;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .meta {
+    font-size: 11px;
+  }
+
+  .pagination {
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .paginationPages {
+    gap: 6px;
+  }
+
+  .paginationButton {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    font-size: $font-size-xs;
+  }
+
+  .paginationDots {
+    min-width: 18px;
+    height: 34px;
+  }
+}
