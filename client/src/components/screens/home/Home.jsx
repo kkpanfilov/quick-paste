@@ -16,7 +16,6 @@ import { formatData } from "./utils/formatData.js";
 
 import styles from "./Home.module.scss";
 
-// TODO: divide home page (your workspace) and feed page
 export const Home = () => {
   useDocumentTitle("Home");
 
