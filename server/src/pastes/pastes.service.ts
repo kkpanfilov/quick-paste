@@ -44,26 +44,40 @@ export class PastesService {
   }
 
   async findPublic(page: number = 1) {
-    const pastes = await this.prisma.paste.findMany({
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        category: true,
-        language: true,
-        createdAt: true,
-      },
-      where: {
-        exposure: "public",
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: 10,
-      skip: (page - 1) * 10,
-    });
+    const [pastes, total] = await this.prisma.$transaction([
+      this.prisma.paste.findMany({
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          category: true,
+          language: true,
+          createdAt: true,
+        },
+        where: {
+          exposure: "public",
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 10,
+        skip: (page - 1) * 10,
+      }),
+      this.prisma.paste.count({
+        where: {
+          exposure: "public",
+        },
+      }),
+    ]);
 
-    return pastes;
+    return {
+      items: pastes,
+      meta: {
+        currentPage: page,
+        totalPages: Math.ceil(total / 10),
+        hasNextPage: page < Math.ceil(total / 10),
+      },
+    };
   }
 
   async findAuthorPastes(authorId: string, page: number = 1) {

@@ -2,11 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 
 import { apiClient } from "@/api/apiClient.js";
 
-export function useGetOwnPaste(page = 1) {
+export function useGetOwnPaste(page = 1, options = {}) {
   const url = `pastes/me?page=${page}`;
 
   return useQuery({
-    queryKey: ["own_pastes", page],
+    queryKey: ["own-pastes", page],
     queryFn: () => apiClient("get", url),
+    ...options,
   });
 }

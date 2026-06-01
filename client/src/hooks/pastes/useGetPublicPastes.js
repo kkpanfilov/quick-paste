@@ -2,9 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 
 import { apiClient } from "@/api/apiClient.js";
 
-export function useGetPublicPaste() {
+export function useGetPublicPaste(page = 1, options = {}) {
+  const url = `pastes/public?page=${page}`;
+
   return useQuery({
-    queryKey: ["public-pastes"],
-    queryFn: () => apiClient("get", `pastes/public`),
+    queryKey: ["public-pastes", page],
+    queryFn: () => apiClient("get", url),
+    ...options,
   });
 }
