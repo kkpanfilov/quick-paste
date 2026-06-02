@@ -142,7 +142,6 @@ export class PastesService {
     };
   }
 
-  // TODO: if paste password protected - content is hidden
   async findOne(
     id: string,
     userId: string,
