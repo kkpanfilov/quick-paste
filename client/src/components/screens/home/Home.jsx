@@ -23,7 +23,7 @@ export const Home = () => {
   const [page, setPage] = useState(1);
   const [currentCategory, setCurrentCategory] = useState("workspace");
 
-  const { goPaste } = useAppNavigation();
+  const { goNew, goPaste } = useAppNavigation();
 
   const ownPasteQuery = useGetOwnPaste(page, {
     enabled: currentCategory === "workspace",
@@ -99,6 +99,29 @@ export const Home = () => {
           </p>
         </section>
         <section className={styles.feed} aria-label="Recent pastes">
+          {!items.length && (
+            <div className={styles.empty}>
+              <p className={styles.emptyTitle}>
+                {currentCategory === "workspace"
+                  ? "No pastes in your workspace yet"
+                  : "No public pastes yet"}
+              </p>
+              <p className={styles.emptyText}>
+                {currentCategory === "workspace"
+                  ? "Create your first paste and it will appear here."
+                  : "The public feed is empty. Check back later or publish a paste."}
+              </p>
+              {currentCategory === "workspace" && (
+                <button
+                  className={styles.emptyButton}
+                  type="button"
+                  onClick={goNew}
+                >
+                  Create paste
+                </button>
+              )}
+            </div>
+          )}
           {items.map((paste) => (
             <article
               className={styles.card}
@@ -130,7 +153,9 @@ export const Home = () => {
             </article>
           ))}
         </section>
-        <Pagination {...meta} pageLimit={4} onPageChange={onPageChange} />
+        {!!items.length && (
+          <Pagination {...meta} pageLimit={4} onPageChange={onPageChange} />
+        )}
       </section>
     </main>
   );

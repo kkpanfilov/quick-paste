@@ -63,6 +63,54 @@
   gap: 14px;
 }
 
+.empty {
+  border: 1px dashed $border-default;
+  border-radius: 12px;
+  background: rgba($card-bg-hover, 0.6);
+  padding: 28px 18px;
+  text-align: center;
+}
+
+.emptyTitle {
+  margin: 0;
+  color: $text-primary;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-semibold;
+  line-height: 1.4;
+}
+
+.emptyText {
+  margin: 8px auto 0;
+  max-width: 420px;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  line-height: 1.6;
+}
+
+.emptyButton {
+  margin-top: 18px;
+  border: 1px solid transparent;
+  border-radius: $radius;
+  background: $primary;
+  padding: 10px 14px;
+  color: $button-text;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    transform 120ms ease;
+
+  &:hover {
+    background: $primary-hover;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
 .card {
   border: 1px solid $card-border;
   border-radius: 12px;
