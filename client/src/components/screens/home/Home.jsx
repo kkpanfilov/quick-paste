@@ -16,6 +16,7 @@ import { formatData } from "./utils/formatData.js";
 
 import styles from "./Home.module.scss";
 
+// TODO: add auto switch to feed if not authorized
 export const Home = () => {
   useDocumentTitle("Home");
 

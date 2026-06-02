@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import styles from "./Pagination.module.scss";
 
+// TODO: refactor pagination when page quantity < page limit
 export const Pagination = ({
   currentPage,
   totalPages,

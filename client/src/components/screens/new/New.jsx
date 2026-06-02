@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
@@ -24,6 +24,8 @@ export const New = () => {
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: "onSubmit",
@@ -34,7 +36,7 @@ export const New = () => {
       expiration: "never",
       category: "none",
       exposure: "public",
-      password: null,
+      password: "",
     },
   });
 
@@ -48,6 +50,28 @@ export const New = () => {
   const { mutateAsync: createPaste, isPending } = useCreatePaste();
 
   useDocumentTitle("New");
+
+  const password = useWatch({
+    control,
+    name: "password",
+  });
+
+  const exposure = useWatch({
+    control,
+    name: "exposure",
+  });
+
+  const hasPassword = password?.trim().length > 0;
+
+  const availableExposureList = hasPassword
+    ? exposureList.filter((item) => item.value !== "public")
+    : exposureList;
+
+  useEffect(() => {
+    if (hasPassword && exposure === "public") {
+      setValue("exposure", "unlisted");
+    }
+  }, [hasPassword, exposure, setValue]);
 
   const onSubmit = async (body) => {
     if (body.expiration === "burn") {
@@ -113,8 +137,8 @@ export const New = () => {
                   required: "is required",
                 })}
               >
-                {languageList.map(({ label, value, selected }) => (
-                  <option selected={selected} key={value} value={value}>
+                {languageList.map(({ label, value }) => (
+                  <option key={value} value={value}>
                     {label}
                   </option>
                 ))}
@@ -136,8 +160,8 @@ export const New = () => {
                   required: "is required",
                 })}
               >
-                {expirationList.map(({ label, value, selected }) => (
-                  <option selected={selected} key={value} value={value}>
+                {expirationList.map(({ label, value }) => (
+                  <option key={value} value={value}>
                     {label}
                   </option>
                 ))}
@@ -159,8 +183,8 @@ export const New = () => {
                   required: "is required",
                 })}
               >
-                {categoryList.map(({ label, value, selected }) => (
-                  <option selected={selected} key={value} value={value}>
+                {categoryList.map(({ label, value }) => (
+                  <option key={value} value={value}>
                     {label}
                   </option>
                 ))}
@@ -182,8 +206,8 @@ export const New = () => {
                   required: "is required",
                 })}
               >
-                {exposureList.map(({ label, value, selected }) => (
-                  <option selected={selected} key={value} value={value}>
+                {availableExposureList.map(({ label, value }) => (
+                  <option key={value} value={value}>
                     {label}
                   </option>
                 ))}
@@ -193,7 +217,7 @@ export const New = () => {
 
           <div className={styles.group}>
             <label htmlFor="new-password" className={styles.label}>
-              Password{" "}
+              Password
               {errors.password && (
                 <ErrorMessage message={errors.password.message} />
               )}

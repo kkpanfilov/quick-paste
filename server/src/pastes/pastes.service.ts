@@ -14,6 +14,7 @@ import { CreatePasteServiceDto } from "./pipes/expiration.pipe.js";
 import { Password } from "./types/password.type.js";
 import { PasteUnlockTokenType } from "./types/paste-unlock-token.type.js";
 
+// TODO: realize trim pipe
 @Injectable()
 export class PastesService {
   constructor(
@@ -31,7 +32,14 @@ export class PastesService {
 
     const data = rest;
 
-    if (password) data.passwordHash = await argon2.hash(password);
+    if (password) {
+      if (data.exposure === "public")
+        throw new ForbiddenException(
+          "You cannot create a public paste with a password",
+        );
+
+      data.passwordHash = await argon2.hash(password);
+    }
 
     const paste = await this.prisma.paste.create({
       data,
@@ -134,6 +142,7 @@ export class PastesService {
     };
   }
 
+  // TODO: if paste password protected - content is hidden
   async findOne(
     id: string,
     userId: string,
