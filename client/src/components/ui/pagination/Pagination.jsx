@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import styles from "./Pagination.module.scss";
 
-// TODO: refactor pagination when page quantity < page limit
 export const Pagination = ({
   currentPage,
   totalPages,
@@ -32,6 +31,8 @@ export const Pagination = ({
   const afterCurrentPage = visiblePages.filter((page) => page > activePage);
 
   useEffect(() => onPageChange(activePage), [activePage, onPageChange]);
+
+  if (totalPages <= 1) return null;
 
   return (
     <nav className={styles.pagination} aria-label="Pastes pagination">
