@@ -2,6 +2,7 @@ import { Body, Controller, Post, Req, Res } from "@nestjs/common";
 
 import type { Request, Response } from "express";
 
+import { TrimPipe } from "../common/pipes/trim.pipe.js";
 import { AuthService } from "./auth.service.js";
 import { AuthResponseDto } from "./dto/auth-response.dto.js";
 import { LoginUserDto } from "./dto/login-user.dto.js";
@@ -14,7 +15,8 @@ export class AuthController {
 
   @Post("register")
   async register(
-    @Body() registerUserDto: RegisterUserDto,
+    @Body(new TrimPipe(["username", "email", "password"]))
+    registerUserDto: RegisterUserDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AuthResponseDto> {
     const user = await this.authService.register(registerUserDto);
@@ -33,7 +35,8 @@ export class AuthController {
 
   @Post("login")
   async login(
-    @Body() loginUserDto: LoginUserDto,
+    @Body(new TrimPipe(["email", "password"]))
+    loginUserDto: LoginUserDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AuthResponseDto> {
     const user = await this.authService.login(loginUserDto);

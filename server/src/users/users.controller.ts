@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch } from "@nestjs/common";
 
+import { TrimPipe } from "../common/pipes/trim.pipe.js";
 import { CreateUserDto } from "./dto/create-user.dto.js";
 import { UsersService } from "./users.service.js";
 
@@ -7,7 +8,10 @@ import { UsersService } from "./users.service.js";
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  create(@Body() createUserDto: CreateUserDto) {
+  create(
+    @Body()
+    createUserDto: CreateUserDto,
+  ) {
     return this.usersService.create(createUserDto);
   }
 
@@ -17,7 +21,10 @@ export class UsersController {
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updateUserDto: CreateUserDto) {
+  update(
+    @Param("id") id: string,
+    @Body(new TrimPipe(["username", "email"])) updateUserDto: CreateUserDto,
+  ) {
     return this.usersService.update(+id, updateUserDto);
   }
 

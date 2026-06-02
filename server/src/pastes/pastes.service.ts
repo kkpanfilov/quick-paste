@@ -14,7 +14,6 @@ import { CreatePasteServiceDto } from "./pipes/expiration.pipe.js";
 import { Password } from "./types/password.type.js";
 import { PasteUnlockTokenType } from "./types/paste-unlock-token.type.js";
 
-// TODO: realize trim pipe
 @Injectable()
 export class PastesService {
   constructor(
