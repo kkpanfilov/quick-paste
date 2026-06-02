@@ -1,1 +1,1 @@
-export type Password = "string" | null | undefined;
+export type Password = string | null | undefined;
