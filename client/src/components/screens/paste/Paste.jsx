@@ -17,6 +17,8 @@ import { Loader } from "@/components/ui/loader/Loader.jsx";
 import { Select } from "@/components/ui/select/Select.jsx";
 import { useDeletePaste } from "@/hooks/pastes/useDeletePaste.js";
 import { useGetPaste } from "@/hooks/pastes/useGetPaste.js";
+import { useLikePaste } from "@/hooks/pastes/useLikePaste.js";
+import { useUnlikePaste } from "@/hooks/pastes/useUnlikePaste.js";
 import { useUpdatePaste } from "@/hooks/pastes/useUpdatePaste.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
@@ -61,8 +63,12 @@ export const Paste = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  const [likeState, setLikeState] = useState(null);
+
   const { mutateAsync: deletePaste } = useDeletePaste();
   const { mutateAsync: updatePaste } = useUpdatePaste();
+  const { mutateAsync: likePaste } = useLikePaste();
+  const { mutateAsync: unlikePaste } = useUnlikePaste();
 
   if (isLoading) {
     return (
@@ -93,6 +99,9 @@ export const Paste = () => {
   }
 
   const author = data.author;
+  const currentLikeState = likeState?.pasteId === pasteId ? likeState : null;
+  const isLiked = currentLikeState?.isLiked ?? Boolean(data.isLiked);
+  const likesCount = currentLikeState?.likesCount ?? data.likesCount;
 
   const onCopy = () => {
     navigator.clipboard.writeText(data.content);
@@ -155,6 +164,61 @@ export const Paste = () => {
         addNotification({
           type: "error",
           title: "Paste not updated",
+          message: error.message,
+        }),
+      );
+    }
+  };
+
+  const onLike = async (id) => {
+    if (!isAuth) {
+      dispatch(
+        addNotification({
+          type: "error",
+          title: "Paste not liked",
+          message: "You must be logged in to like a paste",
+        }),
+      );
+      return;
+    }
+
+    try {
+      const result = await likePaste(id);
+
+      if (result.isLiked === true) {
+        setLikeState({
+          pasteId,
+          isLiked: true,
+          likesCount: result.likesCount,
+        });
+      }
+    } catch (error) {
+      dispatch(
+        addNotification({
+          type: "error",
+          title: "Paste not liked",
+          message: error.message,
+        }),
+      );
+    }
+  };
+
+  const onUnlike = async (id) => {
+    try {
+      const result = await unlikePaste(id);
+
+      if (result.isLiked === false) {
+        setLikeState({
+          pasteId,
+          isLiked: false,
+          likesCount: result.likesCount,
+        });
+      }
+    } catch (error) {
+      dispatch(
+        addNotification({
+          type: "error",
+          title: "Paste not unliked",
           message: error.message,
         }),
       );
@@ -322,11 +386,33 @@ export const Paste = () => {
           <section className={styles.content} aria-label="Paste content">
             <div className={styles.toolbar}>
               <span className={styles.fileName}>
+                <button
+                  type="button"
+                  className={styles.likeButton}
+                  aria-label="Like paste"
+                  aria-pressed={isLiked}
+                  title="Like paste"
+                  onClick={() =>
+                    isLiked ? onUnlike(pasteId) : onLike(pasteId)
+                  }
+                >
+                  <svg
+                    className={styles.likeIcon}
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d="M12 21s-6.7-4.4-9.3-8.4C.4 9.1 2.3 4.5 6.4 4.2c2-.2 3.5.8 4.4 2.1.9-1.3 2.4-2.3 4.4-2.1 4.1.3 6 4.9 3.7 8.4C16.7 16.6 12 21 12 21Z" />
+                  </svg>
+                  <span className={styles.likeCount}>{likesCount}</span>
+                </button>
                 {errors.content && (
                   <ErrorMessage message={errors.content.message} />
                 )}
               </span>
-              <span className={styles.status}>Read only</span>
+              <span className={styles.status}>
+                {isAuth && userId === data.authorId ? "Owner" : "Read only"}
+              </span>
             </div>
             {isEditing ? (
               <Field

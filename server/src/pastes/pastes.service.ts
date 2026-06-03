@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -8,9 +9,11 @@ import { JwtService } from "@nestjs/jwt";
 import * as argon2 from "argon2";
 import { Request } from "express";
 
+import { Prisma } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
 import { CreatePasteServiceDto } from "./pipes/expiration.pipe.js";
+import { FindOneOptions } from "./types/find-one-paste.type.js";
 import { Password } from "./types/password.type.js";
 import { PasteUnlockTokenType } from "./types/paste-unlock-token.type.js";
 
@@ -114,6 +117,11 @@ export class PastesService {
           category: true,
           language: true,
           createdAt: true,
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
         },
         where: {
           authorId,
@@ -132,7 +140,15 @@ export class PastesService {
     ]);
 
     return {
-      items: pastes,
+      items: pastes.map((paste) => ({
+        id: paste.id,
+        title: paste.title,
+        content: paste.content,
+        category: paste.category,
+        language: paste.language,
+        createdAt: paste.createdAt,
+        likesCount: paste._count.likes,
+      })),
       meta: {
         currentPage: page,
         totalPages: Math.ceil(total / 10),
@@ -143,9 +159,10 @@ export class PastesService {
 
   async findOne(
     id: string,
-    userId: string,
+    userId: string | undefined,
     request: Request | null,
     password?: Password,
+    options: FindOneOptions = {},
   ) {
     const paste = await this.prisma.paste.findUnique({
       where: {
@@ -170,11 +187,14 @@ export class PastesService {
       throw new NotFoundException("Paste not found");
     }
 
+    const shouldBurnAfterRead = options.burnAfterRead ?? true;
+    const { passwordHash, isBurn, expiresAt, ...safePaste } = paste;
+
     if (paste.exposure === "private" && paste.authorId !== userId) {
       throw new NotFoundException("Paste not found");
     }
 
-    if (paste.expiresAt && paste.expiresAt < new Date()) {
+    if (expiresAt && expiresAt < new Date()) {
       await this.burn(id);
       throw new NotFoundException("Paste not found");
     }
@@ -192,7 +212,20 @@ export class PastesService {
       throw new NotFoundException("User not found");
     }
 
-    const { passwordHash, ...safePaste } = paste;
+    const likesCount = await this.prisma.like.count({
+      where: {
+        pasteId: id,
+      },
+    });
+
+    const isLikedByUser = userId
+      ? await this.prisma.like.count({
+          where: {
+            userId,
+            pasteId: id,
+          },
+        })
+      : false;
 
     if (request) {
       const cookies = request.cookies;
@@ -203,9 +236,13 @@ export class PastesService {
           await this.jwtService.verifyAsync<PasteUnlockTokenType>(token);
 
         if (isTokenValid) {
-          if (paste.isBurn && paste.authorId !== userId) await this.burn(id);
+          if (isBurn && paste.authorId !== userId && shouldBurnAfterRead)
+            await this.burn(id);
           return {
             ...safePaste,
+            isBurn,
+            likesCount,
+            isLiked: isLikedByUser ? true : false,
             author: user.username,
           };
         }
@@ -224,10 +261,87 @@ export class PastesService {
       }
     }
 
-    if (paste.isBurn && paste.authorId !== userId) await this.burn(id);
+    if (isBurn && paste.authorId !== userId && shouldBurnAfterRead)
+      await this.burn(id);
+
     return {
       ...safePaste,
+      isBurn,
+      likesCount,
+      isLiked: isLikedByUser ? true : false,
       author: user.username,
+    };
+  }
+
+  async like(id: string, userId: string, request: Request | null) {
+    const paste = await this.findOne(id, userId, request, null, {
+      burnAfterRead: false,
+    });
+
+    if (paste.isBurn) {
+      throw new BadRequestException("This paste has been burned");
+    }
+
+    try {
+      await this.prisma.like.create({
+        data: {
+          userId,
+          pasteId: id,
+        },
+      });
+
+      const currentLikesCount = await this.prisma.like.count({
+        where: {
+          pasteId: id,
+        },
+      });
+
+      return {
+        id,
+        isLiked: true,
+        likesCount: currentLikesCount,
+      };
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        throw new BadRequestException(`Paste already liked`);
+      }
+      throw error;
+    }
+  }
+
+  async unlike(id: string, userId: string, request: Request | null) {
+    const paste = await this.findOne(id, userId, request, null, {
+      burnAfterRead: false,
+    });
+
+    if (paste.isBurn) {
+      throw new BadRequestException("This paste has been burned");
+    }
+
+    const unliked = await this.prisma.like.deleteMany({
+      where: {
+        userId,
+        pasteId: id,
+      },
+    });
+
+    if (unliked.count === 0) {
+      throw new BadRequestException(`Paste already unliked`);
+    }
+
+    const currentLikesCount = await this.prisma.like.count({
+      where: {
+        pasteId: id,
+      },
+    });
+
+    return {
+      id,
+      isLiked: false,
+      likesCount: currentLikesCount,
     };
   }
 
