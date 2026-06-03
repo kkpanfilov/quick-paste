@@ -67,6 +67,26 @@ export class PastesController {
     return await this.pastesService.findOne(id, userId, request);
   }
 
+  @Post(":id/like")
+  @Auth()
+  async like(
+    @Param("id") id: string,
+    @User("id") userId: string,
+    @Req() request: Request,
+  ) {
+    return await this.pastesService.like(id, userId, request);
+  }
+
+  @Post(":id/unlike")
+  @Auth()
+  async unlike(
+    @Param("id") id: string,
+    @User("id") userId: string,
+    @Req() request: Request,
+  ) {
+    return await this.pastesService.unlike(id, userId, request);
+  }
+
   @Post(":id/unlock")
   async unlockPaste(
     @Param("id") id: string,

@@ -240,6 +240,7 @@ export type PasteWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Paste"> | Date | string
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   comments?: Prisma.CommentListRelationFilter
+  likes?: Prisma.LikeListRelationFilter
 }
 
 export type PasteOrderByWithRelationInput = {
@@ -257,6 +258,7 @@ export type PasteOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   author?: Prisma.UserOrderByWithRelationInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
+  likes?: Prisma.LikeOrderByRelationAggregateInput
 }
 
 export type PasteWhereUniqueInput = Prisma.AtLeast<{
@@ -277,6 +279,7 @@ export type PasteWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Paste"> | Date | string
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   comments?: Prisma.CommentListRelationFilter
+  likes?: Prisma.LikeListRelationFilter
 }, "id">
 
 export type PasteOrderByWithAggregationInput = {
@@ -329,6 +332,7 @@ export type PasteCreateInput = {
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutPastesInput
   comments?: Prisma.CommentCreateNestedManyWithoutPasteInput
+  likes?: Prisma.LikeCreateNestedManyWithoutPasteInput
 }
 
 export type PasteUncheckedCreateInput = {
@@ -345,6 +349,7 @@ export type PasteUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPasteInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPasteInput
 }
 
 export type PasteUpdateInput = {
@@ -361,6 +366,7 @@ export type PasteUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutPastesNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPasteNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutPasteNestedInput
 }
 
 export type PasteUncheckedUpdateInput = {
@@ -377,6 +383,7 @@ export type PasteUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPasteNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutPasteNestedInput
 }
 
 export type PasteCreateManyInput = {
@@ -547,6 +554,20 @@ export type PasteUpdateOneRequiredWithoutCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PasteUpdateToOneWithWhereWithoutCommentsInput, Prisma.PasteUpdateWithoutCommentsInput>, Prisma.PasteUncheckedUpdateWithoutCommentsInput>
 }
 
+export type PasteCreateNestedOneWithoutLikesInput = {
+  create?: Prisma.XOR<Prisma.PasteCreateWithoutLikesInput, Prisma.PasteUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.PasteCreateOrConnectWithoutLikesInput
+  connect?: Prisma.PasteWhereUniqueInput
+}
+
+export type PasteUpdateOneRequiredWithoutLikesNestedInput = {
+  create?: Prisma.XOR<Prisma.PasteCreateWithoutLikesInput, Prisma.PasteUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.PasteCreateOrConnectWithoutLikesInput
+  upsert?: Prisma.PasteUpsertWithoutLikesInput
+  connect?: Prisma.PasteWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PasteUpdateToOneWithWhereWithoutLikesInput, Prisma.PasteUpdateWithoutLikesInput>, Prisma.PasteUncheckedUpdateWithoutLikesInput>
+}
+
 export type PasteCreateWithoutAuthorInput = {
   id?: string
   title: string
@@ -560,6 +581,7 @@ export type PasteCreateWithoutAuthorInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutPasteInput
+  likes?: Prisma.LikeCreateNestedManyWithoutPasteInput
 }
 
 export type PasteUncheckedCreateWithoutAuthorInput = {
@@ -575,6 +597,7 @@ export type PasteUncheckedCreateWithoutAuthorInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPasteInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPasteInput
 }
 
 export type PasteCreateOrConnectWithoutAuthorInput = {
@@ -634,6 +657,7 @@ export type PasteCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutPastesInput
+  likes?: Prisma.LikeCreateNestedManyWithoutPasteInput
 }
 
 export type PasteUncheckedCreateWithoutCommentsInput = {
@@ -649,6 +673,7 @@ export type PasteUncheckedCreateWithoutCommentsInput = {
   authorId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPasteInput
 }
 
 export type PasteCreateOrConnectWithoutCommentsInput = {
@@ -680,6 +705,7 @@ export type PasteUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutPastesNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutPasteNestedInput
 }
 
 export type PasteUncheckedUpdateWithoutCommentsInput = {
@@ -695,6 +721,87 @@ export type PasteUncheckedUpdateWithoutCommentsInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutPasteNestedInput
+}
+
+export type PasteCreateWithoutLikesInput = {
+  id?: string
+  title: string
+  content: string
+  category?: string | null
+  language?: string | null
+  expiresAt?: Date | string | null
+  isBurn?: boolean | null
+  passwordHash?: string | null
+  exposure: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author: Prisma.UserCreateNestedOneWithoutPastesInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPasteInput
+}
+
+export type PasteUncheckedCreateWithoutLikesInput = {
+  id?: string
+  title: string
+  content: string
+  category?: string | null
+  language?: string | null
+  expiresAt?: Date | string | null
+  isBurn?: boolean | null
+  passwordHash?: string | null
+  exposure: string
+  authorId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPasteInput
+}
+
+export type PasteCreateOrConnectWithoutLikesInput = {
+  where: Prisma.PasteWhereUniqueInput
+  create: Prisma.XOR<Prisma.PasteCreateWithoutLikesInput, Prisma.PasteUncheckedCreateWithoutLikesInput>
+}
+
+export type PasteUpsertWithoutLikesInput = {
+  update: Prisma.XOR<Prisma.PasteUpdateWithoutLikesInput, Prisma.PasteUncheckedUpdateWithoutLikesInput>
+  create: Prisma.XOR<Prisma.PasteCreateWithoutLikesInput, Prisma.PasteUncheckedCreateWithoutLikesInput>
+  where?: Prisma.PasteWhereInput
+}
+
+export type PasteUpdateToOneWithWhereWithoutLikesInput = {
+  where?: Prisma.PasteWhereInput
+  data: Prisma.XOR<Prisma.PasteUpdateWithoutLikesInput, Prisma.PasteUncheckedUpdateWithoutLikesInput>
+}
+
+export type PasteUpdateWithoutLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.UserUpdateOneRequiredWithoutPastesNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPasteNestedInput
+}
+
+export type PasteUncheckedUpdateWithoutLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPasteNestedInput
 }
 
 export type PasteCreateManyAuthorInput = {
@@ -724,6 +831,7 @@ export type PasteUpdateWithoutAuthorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutPasteNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutPasteNestedInput
 }
 
 export type PasteUncheckedUpdateWithoutAuthorInput = {
@@ -739,6 +847,7 @@ export type PasteUncheckedUpdateWithoutAuthorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPasteNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutPasteNestedInput
 }
 
 export type PasteUncheckedUpdateManyWithoutAuthorInput = {
@@ -762,10 +871,12 @@ export type PasteUncheckedUpdateManyWithoutAuthorInput = {
 
 export type PasteCountOutputType = {
   comments: number
+  likes: number
 }
 
 export type PasteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   comments?: boolean | PasteCountOutputTypeCountCommentsArgs
+  likes?: boolean | PasteCountOutputTypeCountLikesArgs
 }
 
 /**
@@ -785,6 +896,13 @@ export type PasteCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.CommentWhereInput
 }
 
+/**
+ * PasteCountOutputType without action
+ */
+export type PasteCountOutputTypeCountLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LikeWhereInput
+}
+
 
 export type PasteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -801,6 +919,7 @@ export type PasteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   updatedAt?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comments?: boolean | Prisma.Paste$commentsArgs<ExtArgs>
+  likes?: boolean | Prisma.Paste$likesArgs<ExtArgs>
   _count?: boolean | Prisma.PasteCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["paste"]>
 
@@ -855,6 +974,7 @@ export type PasteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
 export type PasteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comments?: boolean | Prisma.Paste$commentsArgs<ExtArgs>
+  likes?: boolean | Prisma.Paste$likesArgs<ExtArgs>
   _count?: boolean | Prisma.PasteCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PasteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -869,6 +989,7 @@ export type $PastePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     author: Prisma.$UserPayload<ExtArgs>
     comments: Prisma.$CommentPayload<ExtArgs>[]
+    likes: Prisma.$LikePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1279,6 +1400,7 @@ export interface Prisma__PasteClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   comments<T extends Prisma.Paste$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Paste$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  likes<T extends Prisma.Paste$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Paste$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1742,6 +1864,30 @@ export type Paste$commentsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+}
+
+/**
+ * Paste.likes
+ */
+export type Paste$likesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Like
+   */
+  select?: Prisma.LikeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Like
+   */
+  omit?: Prisma.LikeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LikeInclude<ExtArgs> | null
+  where?: Prisma.LikeWhereInput
+  orderBy?: Prisma.LikeOrderByWithRelationInput | Prisma.LikeOrderByWithRelationInput[]
+  cursor?: Prisma.LikeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LikeScalarFieldEnum | Prisma.LikeScalarFieldEnum[]
 }
 
 /**

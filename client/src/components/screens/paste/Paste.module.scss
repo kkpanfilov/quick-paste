@@ -96,24 +96,87 @@
 }
 
 .toolbar {
-  min-height: 46px;
+  min-height: 55px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 0 18px;
+  padding: 0 18px 0 18px;
   border-bottom: 1px solid $border-subtle;
   background: rgba($bg-surface-2, 0.58);
 }
 
 .fileName {
   min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   color: $text-secondary;
   font-family: $font-family-mono;
   font-size: $font-size-sm;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.likeButton {
+  height: 32px;
+  min-width: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 2px solid $border-default;
+  border-radius: $radius;
+  padding: 0 10px;
+  background: rgba($bg-surface-3, 0.58);
+  color: $text-secondary;
+  cursor: pointer;
+  font-family: $font-family-sans;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  line-height: 1;
+  transition: $transition-button-interactive;
+
+  &:hover {
+    border-color: rgba($danger, 0.62);
+    background: rgba($danger, 0.1);
+    color: $text-primary;
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-outline;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: $active-press-transform;
+  }
+
+  &[aria-pressed="true"] {
+    border-color: rgba($danger, 0.78);
+    background: rgba($danger, 0.16);
+    color: $danger;
+  }
+}
+
+.likeIcon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  fill: transparent;
+  stroke: currentColor;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+
+  .likeButton[aria-pressed="true"] & {
+    fill: currentColor;
+    stroke: currentColor;
+  }
+}
+
+.likeCount {
+  min-width: 1ch;
 }
 
 .status {

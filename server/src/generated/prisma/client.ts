@@ -56,3 +56,8 @@ export type Paste = Prisma.PasteModel
  * 
  */
 export type Comment = Prisma.CommentModel
+/**
+ * Model Like
+ * 
+ */
+export type Like = Prisma.LikeModel
