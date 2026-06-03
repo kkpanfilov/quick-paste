@@ -63,6 +63,11 @@ export class PastesService {
           category: true,
           language: true,
           createdAt: true,
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
         },
         where: {
           exposure: "public",
@@ -81,7 +86,15 @@ export class PastesService {
     ]);
 
     return {
-      items: pastes,
+      items: pastes.map((paste) => ({
+        id: paste.id,
+        title: paste.title,
+        content: paste.content,
+        category: paste.category,
+        language: paste.language,
+        createdAt: paste.createdAt,
+        likesCount: paste._count.likes,
+      })),
       meta: {
         currentPage: page,
         totalPages: Math.ceil(total / 10),
