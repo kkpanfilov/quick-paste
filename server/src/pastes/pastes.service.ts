@@ -9,7 +9,7 @@ import { JwtService } from "@nestjs/jwt";
 import * as argon2 from "argon2";
 import { Request } from "express";
 
-import { Prisma } from "../generated/prisma/client.js";
+import { PasteExposure, Prisma } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
 import { CreatePasteServiceDto } from "./pipes/expiration.pipe.js";
@@ -35,7 +35,7 @@ export class PastesService {
     const data = rest;
 
     if (password) {
-      if (data.exposure === "public")
+      if (data.exposure === PasteExposure.PUBLIC)
         throw new ForbiddenException(
           "You cannot create a public paste with a password",
         );
@@ -70,7 +70,7 @@ export class PastesService {
           },
         },
         where: {
-          exposure: "public",
+          exposure: PasteExposure.PUBLIC,
         },
         orderBy: {
           createdAt: "desc",
@@ -80,7 +80,7 @@ export class PastesService {
       }),
       this.prisma.paste.count({
         where: {
-          exposure: "public",
+          exposure: PasteExposure.PUBLIC,
         },
       }),
     ]);
@@ -203,7 +203,7 @@ export class PastesService {
     const shouldBurnAfterRead = options.burnAfterRead ?? true;
     const { passwordHash, isBurn, expiresAt, ...safePaste } = paste;
 
-    if (paste.exposure === "private" && paste.authorId !== userId) {
+    if (paste.exposure === PasteExposure.PRIVATE && paste.authorId !== userId) {
       throw new NotFoundException("Paste not found");
     }
 

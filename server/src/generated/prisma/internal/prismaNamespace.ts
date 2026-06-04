@@ -777,8 +777,11 @@ export type PasteScalarFieldEnum = (typeof PasteScalarFieldEnum)[keyof typeof Pa
 export const CommentScalarFieldEnum = {
   id: 'id',
   content: 'content',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
   authorId: 'authorId',
   pasteId: 'pasteId',
+  parentId: 'parentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -873,6 +876,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'PasteExposure'
+ */
+export type EnumPasteExposureFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PasteExposure'>
+    
+
+
+/**
+ * Reference to a field of type 'PasteExposure[]'
+ */
+export type ListEnumPasteExposureFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PasteExposure[]'>
     
 
 

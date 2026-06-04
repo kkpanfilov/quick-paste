@@ -18,6 +18,14 @@ enum UserRole {
   ADMIN
 }
 
+enum PasteExposure {
+  PUBLIC
+  UNLISTED
+  PROTECTED
+  PRIVATE
+  SHARED
+}
+
 model User {
   id               String    @id @default(cuid())
   username         String    @unique
@@ -35,19 +43,19 @@ model User {
 }
 
 model Paste {
-  id           String    @id @default(uuid())
+  id           String        @id @default(uuid())
   title        String
   content      String
   category     String?
   language     String?
   expiresAt    DateTime?
-  isBurn       Boolean?  @default(false)
+  isBurn       Boolean       @default(false)
   passwordHash String?
-  exposure     String
+  exposure     PasteExposure
   authorId     String
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  author       User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  author       User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments     Comment[]
   likes        Like[]
 
@@ -57,19 +65,28 @@ model Paste {
 }
 
 model Comment {
-  id        String   @id @default(cuid())
-  content   String
-  authorId  String
-  pasteId   String
-  parentId  String
+  id        String    @id @default(cuid())
+  content   String?
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  authorId String
+  pasteId  String
+  parentId String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  paste     Paste    @relation(fields: [pasteId], references: [id], onDelete: Cascade)
+
+  author User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  paste  Paste @relation(fields: [pasteId], references: [id], onDelete: Cascade)
+
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Restrict)
+  replies Comment[] @relation("CommentReplies")
 
   @@index([authorId])
   @@index([pasteId])
-  @@index([createdAt])
+  @@index([parentId])
+  @@index([pasteId, parentId, createdAt])
 }
 
 model Like {

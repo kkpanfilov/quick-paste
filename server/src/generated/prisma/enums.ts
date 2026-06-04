@@ -16,3 +16,14 @@ export const UserRole = {
 } as const
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
+export const PasteExposure = {
+  PUBLIC: 'PUBLIC',
+  UNLISTED: 'UNLISTED',
+  PROTECTED: 'PROTECTED',
+  PRIVATE: 'PRIVATE',
+  SHARED: 'SHARED'
+} as const
+
+export type PasteExposure = (typeof PasteExposure)[keyof typeof PasteExposure]

@@ -451,20 +451,35 @@ export const Paste = () => {
               <span className={styles.commentsCount}>2</span>
             </div>
 
-            <form className={styles.commentForm}>
-              <Field
-                tag="textarea"
-                className={styles.commentTextarea}
-                placeholder="Write a comment..."
-                aria-label="Write a comment"
-                rows={4}
-              />
-              <div className={styles.commentFormActions}>
-                <Button variant="primary" className={styles.commentButton}>
-                  Send comment
-                </Button>
+            {isAuth ? (
+              <form className={styles.commentForm}>
+                <Field
+                  tag="textarea"
+                  className={styles.commentTextarea}
+                  placeholder="Write a comment..."
+                  aria-label="Write a comment"
+                  rows={4}
+                />
+                <div className={styles.commentFormActions}>
+                  <Button variant="primary" className={styles.commentButton}>
+                    Send comment
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <div className={styles.commentAuthPlaceholder}>
+                <p className={styles.commentAuthTitle}>
+                  Sign in to leave a comment
+                </p>
+                <p className={styles.commentAuthText}>
+                  Anonymous users can read the discussion, but cannot post new
+                  comments.
+                </p>
+                <Link to="/signin" className={styles.commentAuthLink}>
+                  Sign in
+                </Link>
               </div>
-            </form>
+            )}
 
             <div className={styles.commentList}>
               <article className={styles.comment}>
