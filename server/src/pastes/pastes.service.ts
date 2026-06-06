@@ -9,14 +9,15 @@ import { JwtService } from "@nestjs/jwt";
 import * as argon2 from "argon2";
 import { Request } from "express";
 
-import { Prisma } from "../generated/prisma/client.js";
+import { PasteExposure, Prisma } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { CreatePasteDto } from "./dto/create-paste.dto.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
-import { CreatePasteServiceDto } from "./pipes/expiration.pipe.js";
 import { FindOneOptions } from "./types/find-one-paste.type.js";
 import { Password } from "./types/password.type.js";
 import { PasteUnlockTokenType } from "./types/paste-unlock-token.type.js";
 
+// TODO: move accessible paste check in separated method
 @Injectable()
 export class PastesService {
   constructor(
@@ -25,17 +26,21 @@ export class PastesService {
   ) {}
 
   async create(
-    createPasteDto: CreatePasteServiceDto & {
-      authorId: string;
-      passwordHash?: string;
+    createPasteDto: CreatePasteDto & {
+      exposure: PasteExposure;
     },
+    authorId: string,
   ) {
     const { password, ...rest } = createPasteDto;
 
-    const data = rest;
+    const data = { ...rest, authorId } as CreatePasteDto & {
+      authorId: string;
+      exposure: PasteExposure;
+      passwordHash?: string;
+    };
 
     if (password) {
-      if (data.exposure === "public")
+      if (data.exposure === PasteExposure.PUBLIC)
         throw new ForbiddenException(
           "You cannot create a public paste with a password",
         );
@@ -63,9 +68,14 @@ export class PastesService {
           category: true,
           language: true,
           createdAt: true,
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
         },
         where: {
-          exposure: "public",
+          exposure: PasteExposure.PUBLIC,
         },
         orderBy: {
           createdAt: "desc",
@@ -75,13 +85,21 @@ export class PastesService {
       }),
       this.prisma.paste.count({
         where: {
-          exposure: "public",
+          exposure: PasteExposure.PUBLIC,
         },
       }),
     ]);
 
     return {
-      items: pastes,
+      items: pastes.map((paste) => ({
+        id: paste.id,
+        title: paste.title,
+        content: paste.content,
+        category: paste.category,
+        language: paste.language,
+        createdAt: paste.createdAt,
+        likesCount: paste._count.likes,
+      })),
       meta: {
         currentPage: page,
         totalPages: Math.ceil(total / 10),
@@ -180,6 +198,39 @@ export class PastesService {
         authorId: true,
         createdAt: true,
         expiresAt: true,
+        comments: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            author: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+            replies: {
+              select: {
+                id: true,
+                content: true,
+                createdAt: true,
+                author: {
+                  select: {
+                    id: true,
+                    username: true,
+                  },
+                },
+              },
+            },
+          },
+          where: {
+            parentId: null,
+          },
+          take: 10,
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
 
@@ -188,9 +239,9 @@ export class PastesService {
     }
 
     const shouldBurnAfterRead = options.burnAfterRead ?? true;
-    const { passwordHash, isBurn, expiresAt, ...safePaste } = paste;
+    const { passwordHash, isBurn, expiresAt, exposure, ...rest } = paste;
 
-    if (paste.exposure === "private" && paste.authorId !== userId) {
+    if (exposure === PasteExposure.PRIVATE && paste.authorId !== userId) {
       throw new NotFoundException("Paste not found");
     }
 
@@ -239,7 +290,8 @@ export class PastesService {
           if (isBurn && paste.authorId !== userId && shouldBurnAfterRead)
             await this.burn(id);
           return {
-            ...safePaste,
+            ...rest,
+            exposure: exposure.toLowerCase(),
             isBurn,
             likesCount,
             isLiked: isLikedByUser ? true : false,
@@ -265,7 +317,8 @@ export class PastesService {
       await this.burn(id);
 
     return {
-      ...safePaste,
+      ...rest,
+      exposure: exposure.toLowerCase(),
       isBurn,
       likesCount,
       isLiked: isLikedByUser ? true : false,
@@ -345,7 +398,11 @@ export class PastesService {
     };
   }
 
-  async update(id: string, authorId: string, updatePasteDto: UpdatePasteDto) {
+  async update(
+    id: string,
+    authorId: string,
+    updatePasteDto: UpdatePasteDto & { password?: string },
+  ) {
     const paste = await this.prisma.paste.findUnique({
       where: {
         id,
@@ -363,7 +420,15 @@ export class PastesService {
       throw new ForbiddenException("You are not the author of this paste");
     }
 
-    const updatedPaste = await this.prisma.paste.update({
+    const data = updatePasteDto as UpdatePasteDto & {
+      passwordHash?: string;
+    };
+
+    if (data.password) {
+      data.passwordHash = await argon2.hash(data.password);
+    }
+
+    const { exposure, ...updatedPaste } = await this.prisma.paste.update({
       where: {
         id,
       },
@@ -379,10 +444,44 @@ export class PastesService {
         exposure: true,
         authorId: true,
         createdAt: true,
+        comments: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            author: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+            replies: {
+              select: {
+                id: true,
+                content: true,
+                createdAt: true,
+                author: {
+                  select: {
+                    id: true,
+                    username: true,
+                  },
+                },
+              },
+            },
+          },
+          where: {
+            parentId: null,
+          },
+          take: 10,
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
 
     return {
+      exposure: exposure.toLowerCase(),
       ...updatedPaste,
     };
   }

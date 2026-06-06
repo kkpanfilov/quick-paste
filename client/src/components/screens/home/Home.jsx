@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import cn from "clsx";
+import { useDispatch } from "react-redux";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { anOldHope } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
@@ -9,7 +9,9 @@ import { Pagination } from "@/components/ui/pagination/Pagination.jsx";
 import { useGetOwnPaste } from "@/hooks/pastes/useGetOwnPastes.js";
 import { useGetPublicPaste } from "@/hooks/pastes/useGetPublicPastes.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { addNotification } from "@/store/notification/notificationSlice.js";
 
 import { ErrorPage } from "../error/ErrorPage.jsx";
 import { formatData } from "./utils/formatData.js";
@@ -20,8 +22,13 @@ import styles from "./Home.module.scss";
 export const Home = () => {
   useDocumentTitle("Home");
 
+  const { isAuth } = useAuth();
+  const dispatch = useDispatch();
+
   const [page, setPage] = useState(1);
-  const [currentCategory, setCurrentCategory] = useState("workspace");
+  const [currentCategory, setCurrentCategory] = useState(
+    isAuth ? "workspace" : "feed",
+  );
 
   const { goNew, goPaste } = useAppNavigation();
 
@@ -66,11 +73,22 @@ export const Home = () => {
           <p className={styles.eyebrow}>Recent pastes</p>
           <h1 className={styles.title}>
             <span
-              className={cn(
-                styles.title_option,
-                currentCategory === "workspace" && styles.title_option_active,
-              )}
+              className={styles.title_option}
+              aria-disabled={!isAuth}
+              aria-pressed={currentCategory === "workspace"}
               onClick={() => {
+                if (!isAuth) {
+                  dispatch(
+                    addNotification({
+                      type: "warning",
+                      title:
+                        "You need to be logged in to access your workspace",
+                      message: "Please log in to continue",
+                    }),
+                  );
+                  return;
+                }
+
                 setCurrentCategory("workspace");
                 setPage(1);
               }}
@@ -79,10 +97,8 @@ export const Home = () => {
             </span>{" "}
             /{" "}
             <span
-              className={cn(
-                styles.title_option,
-                currentCategory === "feed" && styles.title_option_active,
-              )}
+              className={styles.title_option}
+              aria-pressed={currentCategory === "feed"}
               onClick={() => {
                 setCurrentCategory("feed");
                 setPage(1);

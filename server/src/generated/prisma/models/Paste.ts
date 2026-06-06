@@ -33,7 +33,7 @@ export type PasteMinAggregateOutputType = {
   expiresAt: Date | null
   isBurn: boolean | null
   passwordHash: string | null
-  exposure: string | null
+  exposure: $Enums.PasteExposure | null
   authorId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -48,7 +48,7 @@ export type PasteMaxAggregateOutputType = {
   expiresAt: Date | null
   isBurn: boolean | null
   passwordHash: string | null
-  exposure: string | null
+  exposure: $Enums.PasteExposure | null
   authorId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -196,9 +196,9 @@ export type PasteGroupByOutputType = {
   category: string | null
   language: string | null
   expiresAt: Date | null
-  isBurn: boolean | null
+  isBurn: boolean
   passwordHash: string | null
-  exposure: string
+  exposure: $Enums.PasteExposure
   authorId: string
   createdAt: Date
   updatedAt: Date
@@ -232,9 +232,9 @@ export type PasteWhereInput = {
   category?: Prisma.StringNullableFilter<"Paste"> | string | null
   language?: Prisma.StringNullableFilter<"Paste"> | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Paste"> | Date | string | null
-  isBurn?: Prisma.BoolNullableFilter<"Paste"> | boolean | null
+  isBurn?: Prisma.BoolFilter<"Paste"> | boolean
   passwordHash?: Prisma.StringNullableFilter<"Paste"> | string | null
-  exposure?: Prisma.StringFilter<"Paste"> | string
+  exposure?: Prisma.EnumPasteExposureFilter<"Paste"> | $Enums.PasteExposure
   authorId?: Prisma.StringFilter<"Paste"> | string
   createdAt?: Prisma.DateTimeFilter<"Paste"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Paste"> | Date | string
@@ -250,7 +250,7 @@ export type PasteOrderByWithRelationInput = {
   category?: Prisma.SortOrderInput | Prisma.SortOrder
   language?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  isBurn?: Prisma.SortOrderInput | Prisma.SortOrder
+  isBurn?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   exposure?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -271,9 +271,9 @@ export type PasteWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.StringNullableFilter<"Paste"> | string | null
   language?: Prisma.StringNullableFilter<"Paste"> | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Paste"> | Date | string | null
-  isBurn?: Prisma.BoolNullableFilter<"Paste"> | boolean | null
+  isBurn?: Prisma.BoolFilter<"Paste"> | boolean
   passwordHash?: Prisma.StringNullableFilter<"Paste"> | string | null
-  exposure?: Prisma.StringFilter<"Paste"> | string
+  exposure?: Prisma.EnumPasteExposureFilter<"Paste"> | $Enums.PasteExposure
   authorId?: Prisma.StringFilter<"Paste"> | string
   createdAt?: Prisma.DateTimeFilter<"Paste"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Paste"> | Date | string
@@ -289,7 +289,7 @@ export type PasteOrderByWithAggregationInput = {
   category?: Prisma.SortOrderInput | Prisma.SortOrder
   language?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  isBurn?: Prisma.SortOrderInput | Prisma.SortOrder
+  isBurn?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   exposure?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -310,9 +310,9 @@ export type PasteScalarWhereWithAggregatesInput = {
   category?: Prisma.StringNullableWithAggregatesFilter<"Paste"> | string | null
   language?: Prisma.StringNullableWithAggregatesFilter<"Paste"> | string | null
   expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Paste"> | Date | string | null
-  isBurn?: Prisma.BoolNullableWithAggregatesFilter<"Paste"> | boolean | null
+  isBurn?: Prisma.BoolWithAggregatesFilter<"Paste"> | boolean
   passwordHash?: Prisma.StringNullableWithAggregatesFilter<"Paste"> | string | null
-  exposure?: Prisma.StringWithAggregatesFilter<"Paste"> | string
+  exposure?: Prisma.EnumPasteExposureWithAggregatesFilter<"Paste"> | $Enums.PasteExposure
   authorId?: Prisma.StringWithAggregatesFilter<"Paste"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Paste"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Paste"> | Date | string
@@ -325,9 +325,9 @@ export type PasteCreateInput = {
   category?: string | null
   language?: string | null
   expiresAt?: Date | string | null
-  isBurn?: boolean | null
+  isBurn?: boolean
   passwordHash?: string | null
-  exposure: string
+  exposure: $Enums.PasteExposure
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutPastesInput
@@ -342,9 +342,9 @@ export type PasteUncheckedCreateInput = {
   category?: string | null
   language?: string | null
   expiresAt?: Date | string | null
-  isBurn?: boolean | null
+  isBurn?: boolean
   passwordHash?: string | null
-  exposure: string
+  exposure: $Enums.PasteExposure
   authorId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -359,9 +359,9 @@ export type PasteUpdateInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isBurn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  exposure?: Prisma.EnumPasteExposureFieldUpdateOperationsInput | $Enums.PasteExposure
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutPastesNestedInput
@@ -376,9 +376,9 @@ export type PasteUncheckedUpdateInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isBurn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  exposure?: Prisma.EnumPasteExposureFieldUpdateOperationsInput | $Enums.PasteExposure
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -393,9 +393,9 @@ export type PasteCreateManyInput = {
   category?: string | null
   language?: string | null
   expiresAt?: Date | string | null
-  isBurn?: boolean | null
+  isBurn?: boolean
   passwordHash?: string | null
-  exposure: string
+  exposure: $Enums.PasteExposure
   authorId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -408,9 +408,9 @@ export type PasteUpdateManyMutationInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isBurn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  exposure?: Prisma.EnumPasteExposureFieldUpdateOperationsInput | $Enums.PasteExposure
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -422,9 +422,9 @@ export type PasteUncheckedUpdateManyInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isBurn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  exposure?: Prisma.EnumPasteExposureFieldUpdateOperationsInput | $Enums.PasteExposure
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -536,8 +536,12 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
-export type NullableBoolFieldUpdateOperationsInput = {
-  set?: boolean | null
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type EnumPasteExposureFieldUpdateOperationsInput = {
+  set?: $Enums.PasteExposure
 }
 
 export type PasteCreateNestedOneWithoutCommentsInput = {
@@ -575,9 +579,9 @@ export type PasteCreateWithoutAuthorInput = {
   category?: string | null
   language?: string | null
   expiresAt?: Date | string | null
-  isBurn?: boolean | null
+  isBurn?: boolean
   passwordHash?: string | null
-  exposure: string
+  exposure: $Enums.PasteExposure
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutPasteInput
@@ -591,9 +595,9 @@ export type PasteUncheckedCreateWithoutAuthorInput = {
   category?: string | null
   language?: string | null
   expiresAt?: Date | string | null
-  isBurn?: boolean | null
+  isBurn?: boolean
   passwordHash?: string | null
-  exposure: string
+  exposure: $Enums.PasteExposure
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPasteInput
@@ -636,9 +640,9 @@ export type PasteScalarWhereInput = {
   category?: Prisma.StringNullableFilter<"Paste"> | string | null
   language?: Prisma.StringNullableFilter<"Paste"> | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Paste"> | Date | string | null
-  isBurn?: Prisma.BoolNullableFilter<"Paste"> | boolean | null
+  isBurn?: Prisma.BoolFilter<"Paste"> | boolean
   passwordHash?: Prisma.StringNullableFilter<"Paste"> | string | null
-  exposure?: Prisma.StringFilter<"Paste"> | string
+  exposure?: Prisma.EnumPasteExposureFilter<"Paste"> | $Enums.PasteExposure
   authorId?: Prisma.StringFilter<"Paste"> | string
   createdAt?: Prisma.DateTimeFilter<"Paste"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Paste"> | Date | string
@@ -651,9 +655,9 @@ export type PasteCreateWithoutCommentsInput = {
   category?: string | null
   language?: string | null
   expiresAt?: Date | string | null
-  isBurn?: boolean | null
+  isBurn?: boolean
   passwordHash?: string | null
-  exposure: string
+  exposure: $Enums.PasteExposure
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutPastesInput
@@ -667,9 +671,9 @@ export type PasteUncheckedCreateWithoutCommentsInput = {
   category?: string | null
   language?: string | null
   expiresAt?: Date | string | null
-  isBurn?: boolean | null
+  isBurn?: boolean
   passwordHash?: string | null
-  exposure: string
+  exposure: $Enums.PasteExposure
   authorId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -699,9 +703,9 @@ export type PasteUpdateWithoutCommentsInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isBurn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  exposure?: Prisma.EnumPasteExposureFieldUpdateOperationsInput | $Enums.PasteExposure
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutPastesNestedInput
@@ -715,9 +719,9 @@ export type PasteUncheckedUpdateWithoutCommentsInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isBurn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  exposure?: Prisma.EnumPasteExposureFieldUpdateOperationsInput | $Enums.PasteExposure
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -731,9 +735,9 @@ export type PasteCreateWithoutLikesInput = {
   category?: string | null
   language?: string | null
   expiresAt?: Date | string | null
-  isBurn?: boolean | null
+  isBurn?: boolean
   passwordHash?: string | null
-  exposure: string
+  exposure: $Enums.PasteExposure
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutPastesInput
@@ -747,9 +751,9 @@ export type PasteUncheckedCreateWithoutLikesInput = {
   category?: string | null
   language?: string | null
   expiresAt?: Date | string | null
-  isBurn?: boolean | null
+  isBurn?: boolean
   passwordHash?: string | null
-  exposure: string
+  exposure: $Enums.PasteExposure
   authorId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -779,9 +783,9 @@ export type PasteUpdateWithoutLikesInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isBurn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  exposure?: Prisma.EnumPasteExposureFieldUpdateOperationsInput | $Enums.PasteExposure
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutPastesNestedInput
@@ -795,9 +799,9 @@ export type PasteUncheckedUpdateWithoutLikesInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isBurn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  exposure?: Prisma.EnumPasteExposureFieldUpdateOperationsInput | $Enums.PasteExposure
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -811,9 +815,9 @@ export type PasteCreateManyAuthorInput = {
   category?: string | null
   language?: string | null
   expiresAt?: Date | string | null
-  isBurn?: boolean | null
+  isBurn?: boolean
   passwordHash?: string | null
-  exposure: string
+  exposure: $Enums.PasteExposure
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -825,9 +829,9 @@ export type PasteUpdateWithoutAuthorInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isBurn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  exposure?: Prisma.EnumPasteExposureFieldUpdateOperationsInput | $Enums.PasteExposure
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutPasteNestedInput
@@ -841,9 +845,9 @@ export type PasteUncheckedUpdateWithoutAuthorInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isBurn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  exposure?: Prisma.EnumPasteExposureFieldUpdateOperationsInput | $Enums.PasteExposure
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPasteNestedInput
@@ -857,9 +861,9 @@ export type PasteUncheckedUpdateManyWithoutAuthorInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  isBurn?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isBurn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  exposure?: Prisma.StringFieldUpdateOperationsInput | string
+  exposure?: Prisma.EnumPasteExposureFieldUpdateOperationsInput | $Enums.PasteExposure
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -998,9 +1002,9 @@ export type $PastePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     category: string | null
     language: string | null
     expiresAt: Date | null
-    isBurn: boolean | null
+    isBurn: boolean
     passwordHash: string | null
-    exposure: string
+    exposure: $Enums.PasteExposure
     authorId: string
     createdAt: Date
     updatedAt: Date
@@ -1438,7 +1442,7 @@ export interface PasteFieldRefs {
   readonly expiresAt: Prisma.FieldRef<"Paste", 'DateTime'>
   readonly isBurn: Prisma.FieldRef<"Paste", 'Boolean'>
   readonly passwordHash: Prisma.FieldRef<"Paste", 'String'>
-  readonly exposure: Prisma.FieldRef<"Paste", 'String'>
+  readonly exposure: Prisma.FieldRef<"Paste", 'PasteExposure'>
   readonly authorId: Prisma.FieldRef<"Paste", 'String'>
   readonly createdAt: Prisma.FieldRef<"Paste", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Paste", 'DateTime'>

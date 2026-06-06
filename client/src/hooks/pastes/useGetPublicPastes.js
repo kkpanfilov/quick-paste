@@ -7,7 +7,7 @@ export function useGetPublicPaste(page = 1, options = {}) {
 
   return useQuery({
     queryKey: ["public-pastes", page],
-    queryFn: () => apiClient("get", url),
+    queryFn: () => apiClient("GET", url),
     ...options,
   });
 }

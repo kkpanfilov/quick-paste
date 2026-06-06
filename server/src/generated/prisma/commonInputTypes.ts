@@ -138,9 +138,16 @@ export type DateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
 }
 
-export type BoolNullableFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
+export type BoolFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+}
+
+export type EnumPasteExposureFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasteExposure | Prisma.EnumPasteExposureFieldRefInput<$PrismaModel>
+  in?: $Enums.PasteExposure[] | Prisma.ListEnumPasteExposureFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PasteExposure[] | Prisma.ListEnumPasteExposureFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPasteExposureFilter<$PrismaModel> | $Enums.PasteExposure
 }
 
 export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -157,12 +164,22 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
-export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedBoolNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolFilter<$PrismaModel>
+}
+
+export type EnumPasteExposureWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasteExposure | Prisma.EnumPasteExposureFieldRefInput<$PrismaModel>
+  in?: $Enums.PasteExposure[] | Prisma.ListEnumPasteExposureFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PasteExposure[] | Prisma.ListEnumPasteExposureFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPasteExposureWithAggregatesFilter<$PrismaModel> | $Enums.PasteExposure
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPasteExposureFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPasteExposureFilter<$PrismaModel>
 }
 
 export type NestedStringFilter<$PrismaModel = never> = {
@@ -302,9 +319,16 @@ export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
 }
 
-export type NestedBoolNullableFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
+export type NestedBoolFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+}
+
+export type NestedEnumPasteExposureFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasteExposure | Prisma.EnumPasteExposureFieldRefInput<$PrismaModel>
+  in?: $Enums.PasteExposure[] | Prisma.ListEnumPasteExposureFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PasteExposure[] | Prisma.ListEnumPasteExposureFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPasteExposureFilter<$PrismaModel> | $Enums.PasteExposure
 }
 
 export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -321,12 +345,22 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
-export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedBoolNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolFilter<$PrismaModel>
+}
+
+export type NestedEnumPasteExposureWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasteExposure | Prisma.EnumPasteExposureFieldRefInput<$PrismaModel>
+  in?: $Enums.PasteExposure[] | Prisma.ListEnumPasteExposureFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PasteExposure[] | Prisma.ListEnumPasteExposureFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPasteExposureWithAggregatesFilter<$PrismaModel> | $Enums.PasteExposure
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPasteExposureFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPasteExposureFilter<$PrismaModel>
 }
 
 

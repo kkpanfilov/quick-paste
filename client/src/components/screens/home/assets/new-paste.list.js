@@ -48,4 +48,6 @@ export const exposureList = [
   { label: "Public", value: "public" },
   { label: "Unlisted", value: "unlisted" },
   { label: "Private", value: "private" },
+  { label: "Protected", value: "protected" },
+  { label: "Shared", value: "shared" },
 ];

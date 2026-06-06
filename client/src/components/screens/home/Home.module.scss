@@ -31,23 +31,29 @@
 }
 
 .title_option {
+  margin: 8px 0 0;
+  font-size: $font-size-4xl;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .title_option:hover {
   color: $primary-hover;
-  text-shadow: 0 0 4px rgba($primary-hover, 0.5);
   transition: 0.3s;
 }
 
-.title_option_active {
-  margin: 8px 0 0;
+.title_option[aria-pressed="true"] {
   color: $primary;
-  font-size: $font-size-4xl;
-  line-height: 1.2;
-  text-shadow: 0 0 4px rgba($primary, 0.5);
-  cursor: pointer;
+  text-shadow: 0 0 4px;
+}
+
+.title_option[aria-disabled="true"] {
+  color: rgba($button-disabled-text, 0.5);
+  cursor: not-allowed;
+}
+
+.title_option[aria-disabled="true"]:hover {
+  text-shadow: none;
 }
 
 .subtitle {

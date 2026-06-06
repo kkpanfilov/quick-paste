@@ -7,7 +7,7 @@ export function useGetOwnPaste(page = 1, options = {}) {
 
   return useQuery({
     queryKey: ["own-pastes", page],
-    queryFn: () => apiClient("get", url),
+    queryFn: () => apiClient("GET", url),
     ...options,
   });
 }

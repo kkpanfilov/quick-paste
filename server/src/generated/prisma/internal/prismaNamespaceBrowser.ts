@@ -108,8 +108,11 @@ export type PasteScalarFieldEnum = (typeof PasteScalarFieldEnum)[keyof typeof Pa
 export const CommentScalarFieldEnum = {
   id: 'id',
   content: 'content',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
   authorId: 'authorId',
   pasteId: 'pasteId',
+  parentId: 'parentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
