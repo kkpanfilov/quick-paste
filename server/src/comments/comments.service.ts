@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CreateCommentDto } from "./dto/create-comment.dto.js";
+import { CreateReplyDto } from "./dto/create-reply.dto.js";
 import { UpdateCommentDto } from "./dto/update-comment.dto.js";
 
 @Injectable()
@@ -42,6 +43,9 @@ export class CommentsService {
           },
           take: 10,
           skip: (page - 1) * 10,
+          orderBy: {
+            createdAt: "desc",
+          },
         },
       },
     });
@@ -75,6 +79,26 @@ export class CommentsService {
       select: {
         id: true,
         content: true,
+        createdAt: true,
+        author: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        replies: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            author: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -82,11 +106,50 @@ export class CommentsService {
   }
 
   async reply(
-    createCommentDto: CreateCommentDto,
-    pasteId: string,
+    createReplyDto: CreateReplyDto,
+    parentId: string,
     authorId: string,
   ) {
-    return "This action adds a new reply";
+    const paste = await this.prisma.paste.findUnique({
+      where: {
+        id: createReplyDto.pasteId,
+      },
+    });
+
+    if (!paste) {
+      throw new NotFoundException("Paste not found");
+    }
+
+    const parent = await this.prisma.comment.findUnique({
+      where: {
+        id: parentId,
+      },
+    });
+
+    if (!parent) {
+      throw new NotFoundException("Parent comment not found");
+    }
+
+    const reply = await this.prisma.comment.create({
+      data: {
+        ...createReplyDto,
+        authorId,
+        parentId,
+      },
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        author: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return reply;
   }
 
   async update(updateCommentDto: UpdateCommentDto, id: string, userId: string) {

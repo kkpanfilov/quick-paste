@@ -21,7 +21,6 @@
 }
 
 
-
 @media (max-width: 768px) {
   .screen {
     min-height: $screen-min-height-mobile;
@@ -30,30 +29,6 @@
 
   .container {
     width: $layout-width-tablet;
-  }
-
-  .header {
-    flex-direction: column;
-    gap: 18px;
-    padding: 20px 18px;
-  }
-
-  .title {
-    font-size: $font-size-2xl;
-  }
-
-  .actions {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .actionButton {
-    width: 100%;
-  }
-
-  .codeBlock {
-    min-height: 360px;
-    padding: 18px;
   }
 }
 
@@ -65,19 +40,5 @@
   .container {
     width: $layout-width-mobile;
     border-radius: 14px;
-  }
-
-  .title {
-    font-size: $font-size-xl;
-  }
-
-  .toolbar {
-    padding: 0 14px;
-  }
-
-  .codeBlock {
-    min-height: 300px;
-    padding: 14px;
-    font-size: $font-size-xs;
   }
 }

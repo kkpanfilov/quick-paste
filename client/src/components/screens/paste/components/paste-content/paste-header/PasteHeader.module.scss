@@ -70,3 +70,30 @@
   min-width: 96px;
   padding: 0 14px;
 }
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px 18px;
+  }
+
+  .title {
+    font-size: $font-size-2xl;
+  }
+
+  .actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .actionButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: $font-size-xl;
+  }
+}

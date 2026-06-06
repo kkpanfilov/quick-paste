@@ -138,3 +138,22 @@
   padding: 0 8px;
   margin-top: 8px;
 }
+
+@media (max-width: 768px) {
+  .codeBlock {
+    min-height: 360px;
+    padding: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toolbar {
+    padding: 0 14px;
+  }
+
+  .codeBlock {
+    min-height: 300px;
+    padding: 14px;
+    font-size: $font-size-xs;
+  }
+}

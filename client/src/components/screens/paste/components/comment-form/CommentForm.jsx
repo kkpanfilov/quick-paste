@@ -1,7 +1,9 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 
 import { Button } from "@/components/ui/button/Button.jsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { useCreateComment } from "@/hooks/comments/useCreateComment.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
@@ -9,11 +11,17 @@ import { addNotification } from "@/store/notification/notificationSlice.js";
 import styles from "./CommentForm.module.scss";
 
 export const CommentForm = ({ isAuth, dispatch, pasteId }) => {
-  const commentForm = useForm({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
     mode: "onSubmit",
   });
 
   const { mutateAsync: commentPaste } = useCreateComment();
+  const queryClient = useQueryClient();
 
   const onComment = async (body) => {
     try {
@@ -27,6 +35,15 @@ export const CommentForm = ({ isAuth, dispatch, pasteId }) => {
             message: "Comment has been added successfully",
           }),
         );
+
+        queryClient.setQueryData(["paste", pasteId], (oldData) => {
+          return {
+            ...oldData,
+            comments: [result, ...oldData.comments],
+          };
+        });
+
+        reset();
       }
     } catch (error) {
       dispatch(
@@ -47,7 +64,9 @@ export const CommentForm = ({ isAuth, dispatch, pasteId }) => {
           <h2 id="comments-title" className={styles.commentsTitle}>
             Comments
           </h2>
+          {errors.content && <ErrorMessage message={errors.content.message} />}
         </div>
+
         <span className={styles.commentsCount}>2</span>
       </div>
 
@@ -59,7 +78,7 @@ export const CommentForm = ({ isAuth, dispatch, pasteId }) => {
             placeholder="Write a comment..."
             aria-label="Write a comment"
             rows={4}
-            {...commentForm.register("content", {
+            {...register("content", {
               required: "Comment is required",
               maxLength: {
                 value: 1000,
@@ -71,7 +90,7 @@ export const CommentForm = ({ isAuth, dispatch, pasteId }) => {
             <Button
               variant="primary"
               className={styles.commentButton}
-              onClick={commentForm.handleSubmit(onComment)}
+              onClick={handleSubmit(onComment)}
             >
               Send comment
             </Button>

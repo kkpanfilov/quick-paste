@@ -223,7 +223,13 @@ export class PastesService {
               },
             },
           },
+          where: {
+            parentId: null,
+          },
           take: 10,
+          orderBy: {
+            createdAt: "desc",
+          },
         },
       },
     });
@@ -233,9 +239,9 @@ export class PastesService {
     }
 
     const shouldBurnAfterRead = options.burnAfterRead ?? true;
-    const { passwordHash, isBurn, expiresAt, ...safePaste } = paste;
+    const { passwordHash, isBurn, expiresAt, exposure, ...rest } = paste;
 
-    if (paste.exposure === PasteExposure.PRIVATE && paste.authorId !== userId) {
+    if (exposure === PasteExposure.PRIVATE && paste.authorId !== userId) {
       throw new NotFoundException("Paste not found");
     }
 
@@ -284,7 +290,8 @@ export class PastesService {
           if (isBurn && paste.authorId !== userId && shouldBurnAfterRead)
             await this.burn(id);
           return {
-            ...safePaste,
+            ...rest,
+            exposure: exposure.toLowerCase(),
             isBurn,
             likesCount,
             isLiked: isLikedByUser ? true : false,
@@ -310,7 +317,8 @@ export class PastesService {
       await this.burn(id);
 
     return {
-      ...safePaste,
+      ...rest,
+      exposure: exposure.toLowerCase(),
       isBurn,
       likesCount,
       isLiked: isLikedByUser ? true : false,
@@ -420,7 +428,7 @@ export class PastesService {
       data.passwordHash = await argon2.hash(data.password);
     }
 
-    const updatedPaste = await this.prisma.paste.update({
+    const { exposure, ...updatedPaste } = await this.prisma.paste.update({
       where: {
         id,
       },
@@ -436,10 +444,44 @@ export class PastesService {
         exposure: true,
         authorId: true,
         createdAt: true,
+        comments: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            author: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+            replies: {
+              select: {
+                id: true,
+                content: true,
+                createdAt: true,
+                author: {
+                  select: {
+                    id: true,
+                    username: true,
+                  },
+                },
+              },
+            },
+          },
+          where: {
+            parentId: null,
+          },
+          take: 10,
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
 
     return {
+      exposure: exposure.toLowerCase(),
       ...updatedPaste,
     };
   }

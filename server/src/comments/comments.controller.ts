@@ -46,12 +46,12 @@ export class CommentsController {
   @Auth()
   async reply(
     @Body() createCommentDto: CreateReplyDto,
-    @Param("id") pasteId: string,
+    @Param("id") parentId: string,
     @User("id") authorId: string,
   ) {
     return await this.commentsService.reply(
       createCommentDto,
-      pasteId,
+      parentId,
       authorId,
     );
   }

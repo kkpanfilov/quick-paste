@@ -6,7 +6,4 @@ export class CreateReplyDto {
 
   @IsString({ message: "Paste ID must be a string" })
   pasteId!: string;
-
-  @IsString({ message: "Parent ID must be a string" })
-  parentId!: string;
 }

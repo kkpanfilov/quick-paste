@@ -2,9 +2,11 @@ import { formatDistanceToNow } from "date-fns";
 import { Link } from "react-router";
 
 import { categoryMap } from "@/components/screens/home/assets/category.map.js";
+import { exposureMap } from "@/components/screens/home/assets/exposure.map.js";
 import { languageMap } from "@/components/screens/home/assets/language.map.js";
 import {
   categoryList,
+  exposureList,
   languageList,
 } from "@/components/screens/home/assets/new-paste.list.js";
 import { Button } from "@/components/ui/button/Button.jsx";
@@ -12,10 +14,10 @@ import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { Select } from "@/components/ui/select/Select.jsx";
 import { addNotification } from "@/store/notification/notificationSlice.js";
-
-import styles from "./PasteHeader.module.scss";
 import { countLines } from "@/utils/countLines.js";
 import { getContentSize } from "@/utils/getContentSize.js";
+
+import styles from "./PasteHeader.module.scss";
 
 export const PasteHeader = ({
   dispatch,
@@ -122,6 +124,31 @@ export const PasteHeader = ({
               </Select>
             ) : (
               <dd>{languageMap[data.language]}</dd>
+            )}
+          </div>
+          <div>
+            <dt>Exposure</dt>
+            {isEditing ? (
+              <Select
+                id="new-exposure"
+                name="exposure"
+                className={styles.pasteSelect}
+                {...editForm.register("exposure", {
+                  required: "Exposure is required",
+                })}
+              >
+                {exposureList.map(({ label, value }) => (
+                  <option
+                    selected={value === data.exposure}
+                    key={value}
+                    value={value}
+                  >
+                    {label}
+                  </option>
+                ))}
+              </Select>
+            ) : (
+              <dd>{exposureMap[data.exposure]}</dd>
             )}
           </div>
           <div hidden={isEditing}>

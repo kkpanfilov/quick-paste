@@ -17,9 +17,8 @@ import { PasteContent } from "./components/paste-content/PasteContent.jsx";
 import styles from "./Paste.module.scss";
 
 // TODO: implement comments
-// TODO: add sub-components
 // TODO: add expand paste button
-// TODO: extend list of editable params
+// TODO: add password change if paste exposure is protected
 export const Paste = () => {
   useDocumentTitle("Paste");
 
@@ -73,7 +72,12 @@ export const Paste = () => {
             data={data}
           />
           <CommentForm dispatch={dispatch} isAuth={isAuth} pasteId={pasteId} />
-          <Comments isAuth={isAuth} data={data} />
+          <Comments
+            dispatch={dispatch}
+            isAuth={isAuth}
+            pasteId={pasteId}
+            data={data}
+          />
         </article>
       </main>
     </>

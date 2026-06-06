@@ -66,6 +66,40 @@
   font-size: $font-size-xs;
 }
 
+.replyForm {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid $border-subtle;
+  border-radius: 10px;
+  background: rgba($bg-surface-1, 0.42);
+}
+
+.replyTextarea {
+  width: 100%;
+  min-height: 86px;
+  resize: vertical;
+  padding: 10px 12px;
+  font-family: $font-family-sans;
+  font-size: $font-size-sm;
+  line-height: 1.5;
+}
+
+.replyFormActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.replyCancelButton,
+.replySubmitButton {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: $font-size-xs;
+}
+
 .replies {
   display: grid;
   gap: 10px;
@@ -110,5 +144,14 @@
   .replies {
     margin-left: 10px;
     padding-left: 10px;
+  }
+
+  .replyFormActions {
+    display: grid;
+  }
+
+  .replyCancelButton,
+  .replySubmitButton {
+    width: 100%;
   }
 }
