@@ -11,12 +11,13 @@ import { Request } from "express";
 
 import { PasteExposure, Prisma } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { CreatePasteDto } from "./dto/create-paste.dto.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
-import { CreatePasteServiceDto } from "./pipes/expiration.pipe.js";
 import { FindOneOptions } from "./types/find-one-paste.type.js";
 import { Password } from "./types/password.type.js";
 import { PasteUnlockTokenType } from "./types/paste-unlock-token.type.js";
 
+// TODO: move accessible paste check in separated method
 @Injectable()
 export class PastesService {
   constructor(
@@ -25,14 +26,18 @@ export class PastesService {
   ) {}
 
   async create(
-    createPasteDto: CreatePasteServiceDto & {
-      authorId: string;
-      passwordHash?: string;
+    createPasteDto: CreatePasteDto & {
+      exposure: PasteExposure;
     },
+    authorId: string,
   ) {
     const { password, ...rest } = createPasteDto;
 
-    const data = rest;
+    const data = { ...rest, authorId } as CreatePasteDto & {
+      authorId: string;
+      exposure: PasteExposure;
+      passwordHash?: string;
+    };
 
     if (password) {
       if (data.exposure === PasteExposure.PUBLIC)
@@ -193,6 +198,33 @@ export class PastesService {
         authorId: true,
         createdAt: true,
         expiresAt: true,
+        comments: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            author: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+            replies: {
+              select: {
+                id: true,
+                content: true,
+                createdAt: true,
+                author: {
+                  select: {
+                    id: true,
+                    username: true,
+                  },
+                },
+              },
+            },
+          },
+          take: 10,
+        },
       },
     });
 
@@ -358,7 +390,11 @@ export class PastesService {
     };
   }
 
-  async update(id: string, authorId: string, updatePasteDto: UpdatePasteDto) {
+  async update(
+    id: string,
+    authorId: string,
+    updatePasteDto: UpdatePasteDto & { password?: string },
+  ) {
     const paste = await this.prisma.paste.findUnique({
       where: {
         id,
@@ -374,6 +410,14 @@ export class PastesService {
 
     if (paste.authorId !== authorId) {
       throw new ForbiddenException("You are not the author of this paste");
+    }
+
+    const data = updatePasteDto as UpdatePasteDto & {
+      passwordHash?: string;
+    };
+
+    if (data.password) {
+      data.passwordHash = await argon2.hash(data.password);
     }
 
     const updatedPaste = await this.prisma.paste.update({

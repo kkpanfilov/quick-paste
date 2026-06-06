@@ -17,10 +17,11 @@ import type { Request, Response } from "express";
 import { Auth } from "../auth/decorators/auth.decorator.js";
 import { User } from "../auth/decorators/user.decorator.js";
 import { TrimPipe } from "../common/pipes/trim.pipe.js";
+import { CreatePasteDto } from "./dto/create-paste.dto.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
 import { PastesService } from "./pastes.service.js";
-import type { CreatePasteServiceDto } from "./pipes/expiration.pipe.js";
-import { ExpirationPipe } from "./pipes/expiration.pipe.js";
+import { CreatePastePipe } from "./pipes/create-paste.pipe.js";
+import { UpdatePastePipe } from "./pipes/update-paste.pipe.js";
 import type { Password } from "./types/password.type.js";
 
 @Controller("pastes")
@@ -33,14 +34,11 @@ export class PastesController {
   @Post()
   @Auth()
   async create(
-    @Body(new TrimPipe(["title", "password"]), new ExpirationPipe())
-    createPasteDto: CreatePasteServiceDto,
+    @Body(new TrimPipe(["title", "password"]), new CreatePastePipe())
+    createPasteDto: CreatePasteDto,
     @User("id") authorId: string,
   ) {
-    return await this.pastesService.create({
-      ...createPasteDto,
-      authorId,
-    });
+    return await this.pastesService.create(createPasteDto, authorId);
   }
 
   @Get("public")
@@ -62,7 +60,6 @@ export class PastesController {
     @Param("id") id: string,
     @User("id") userId: string,
     @Req() request: Request,
-    // @Body("password") password?: Password,
   ) {
     return await this.pastesService.findOne(id, userId, request);
   }
@@ -117,7 +114,8 @@ export class PastesController {
   async update(
     @Param("id") id: string,
     @User("id") authorId: string,
-    @Body(new TrimPipe(["title", "password"])) updatePasteDto: UpdatePasteDto,
+    @Body(new TrimPipe(["title", "password"]), new UpdatePastePipe())
+    updatePasteDto: UpdatePasteDto,
   ) {
     return await this.pastesService.update(id, authorId, updatePasteDto);
   }

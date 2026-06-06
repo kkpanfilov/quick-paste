@@ -1,0 +1,191 @@
+import { formatDistanceToNow } from "date-fns";
+import { Link } from "react-router";
+
+import { categoryMap } from "@/components/screens/home/assets/category.map.js";
+import { languageMap } from "@/components/screens/home/assets/language.map.js";
+import {
+  categoryList,
+  languageList,
+} from "@/components/screens/home/assets/new-paste.list.js";
+import { Button } from "@/components/ui/button/Button.jsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
+import { Field } from "@/components/ui/field/Field.jsx";
+import { Select } from "@/components/ui/select/Select.jsx";
+import { addNotification } from "@/store/notification/notificationSlice.js";
+
+import styles from "./PasteHeader.module.scss";
+import { countLines } from "@/utils/countLines.js";
+import { getContentSize } from "@/utils/getContentSize.js";
+
+export const PasteHeader = ({
+  dispatch,
+  isAuth,
+  userId,
+  data,
+  isEditing,
+  setIsEditing,
+  setIsConfirmOpen,
+  onUpdate,
+  editForm,
+}) => {
+  const author = data.author;
+
+  const onCopy = () => {
+    navigator.clipboard.writeText(data.content);
+    dispatch(
+      addNotification({
+        type: "success",
+        title: "Paste copied",
+        message: "Paste has been copied to clipboard",
+      }),
+    );
+  };
+
+  return (
+    <header className={styles.header}>
+      <div className={styles.heading}>
+        <p className={styles.eyebrow}>{data.exposure} paste</p>
+        {editForm.formState.errors.title && (
+          <ErrorMessage message={editForm.formState.errors.title.message} />
+        )}
+        {isEditing ? (
+          <Field
+            tag="input"
+            id="new-title"
+            name="title"
+            type="text"
+            className={styles.pasteInput}
+            defaultValue={data.title}
+            {...editForm.register("title", {
+              required: "Title is required",
+              maxLength: {
+                value: 64,
+                message: "Title is too long",
+              },
+            })}
+          />
+        ) : (
+          <h1 id="paste-title" className={styles.title}>
+            {data.title}
+          </h1>
+        )}
+        <dl className={styles.meta}>
+          <div>
+            <dt>Category</dt>
+            {isEditing ? (
+              <Select
+                id="new-language"
+                name="language"
+                className={styles.pasteSelect}
+                {...editForm.register("category", {
+                  required: "Category is required",
+                })}
+              >
+                {categoryList.map(({ label, value }) => (
+                  <option
+                    selected={value === data.category}
+                    key={value}
+                    value={value}
+                  >
+                    {label}
+                  </option>
+                ))}
+              </Select>
+            ) : (
+              <dd>
+                {categoryMap[data.category]
+                  ? categoryMap[data.category]
+                  : "None"}
+              </dd>
+            )}
+          </div>
+          <div>
+            <dt>Language</dt>
+            {isEditing ? (
+              <Select
+                id="new-language"
+                name="language"
+                className={styles.pasteSelect}
+                {...editForm.register("language", {
+                  required: "Language is required",
+                })}
+              >
+                {languageList.map(({ label, value }) => (
+                  <option
+                    selected={value === data.language}
+                    key={value}
+                    value={value}
+                  >
+                    {label}
+                  </option>
+                ))}
+              </Select>
+            ) : (
+              <dd>{languageMap[data.language]}</dd>
+            )}
+          </div>
+          <div hidden={isEditing}>
+            <dt>Created</dt>
+            <dd>
+              {formatDistanceToNow(new Date(data.createdAt), {
+                includeSeconds: true,
+                addSuffix: true,
+              })}
+            </dd>
+          </div>
+          <div hidden={isEditing}>
+            <dt>Created by</dt>
+            <dd>
+              <Link to={`/users/${data.authorId}`}>{author}</Link>
+            </dd>
+          </div>
+          <div hidden={isEditing}>
+            <dt>Size</dt>
+            <dd>
+              {countLines(data.content)} lines / {getContentSize(data.content)}
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div className={styles.actions} aria-label="Paste actions">
+        <Button
+          variant="ghost"
+          className={styles.actionButton}
+          onClick={onCopy}
+          hidden={isEditing}
+        >
+          Copy
+        </Button>
+        {isAuth && userId === data.authorId && (
+          <>
+            <Button
+              variant="red"
+              className={styles.actionButton}
+              onClick={() => setIsConfirmOpen(true)}
+              hidden={isEditing}
+            >
+              Delete
+            </Button>
+            {isEditing && (
+              <Button
+                variant="primary"
+                className={styles.actionButton}
+                onClick={editForm.handleSubmit(onUpdate)}
+              >
+                Save
+              </Button>
+            )}
+            <Button
+              variant={isEditing ? "red" : "primary"}
+              className={styles.actionButton}
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              {isEditing ? "Cancel" : "Edit"}
+            </Button>
+          </>
+        )}
+      </div>
+    </header>
+  );
+};

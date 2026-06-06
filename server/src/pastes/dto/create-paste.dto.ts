@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsEnum,
-  IsOptional,
-  IsString,
-  MaxLength,
-} from "class-validator";
+import { IsBoolean, IsOptional, IsString, MaxLength } from "class-validator";
 
 import { PasteExposure } from "../../generated/prisma/enums.js";
 
@@ -32,7 +26,6 @@ export class CreatePasteDto {
   category!: string;
 
   @IsString({ message: "Exposure must be a string" })
-  @IsEnum(PasteExposure, { message: "Exposure must be a valid exposure" })
   exposure!: PasteExposure;
 
   @IsOptional()
