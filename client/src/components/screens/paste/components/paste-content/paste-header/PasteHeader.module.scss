@@ -4,22 +4,43 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
-  padding: 24px;
+  gap: 35px;
+  padding: 0px 24px 24px 24px;
   border-bottom: 1px solid $border-subtle;
 }
 
 .heading {
-  min-width: 0;
+  width: 100%;
 }
 
 .eyebrow {
-  margin: 0;
+  margin: 24px 0 10px 24px;
   color: $text-link;
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
   letter-spacing: 0.03em;
   text-transform: uppercase;
+}
+
+.pasteInput {
+  height: 44px;
+  width: 100%;
+  padding: 0 13px;
+  font-family: $font-family-mono;
+}
+
+.pasteSelect {
+  height: 32px;
+  padding: 0 8px;
+  margin-top: 8px;
+}
+
+.passwordBlock {
+  width: 100%
+}
+
+.passwordInput {
+  margin-top: 8px
 }
 
 .title {
