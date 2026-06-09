@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import clsx from "clsx";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { anOldHope } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
@@ -8,8 +9,11 @@ import { Field } from "@/components/ui/field/Field.jsx";
 import { useLikePaste } from "@/hooks/pastes/useLikePaste.js";
 import { useUnlikePaste } from "@/hooks/pastes/useUnlikePaste.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
+import { countLines } from "@/utils/countLines.js";
 
 import styles from "./PasteTextarea.module.scss";
+
+const VISIBLE_LINES_COUNT = 12;
 
 export const PasteTextarea = ({
   dispatch,
@@ -28,6 +32,12 @@ export const PasteTextarea = ({
   const currentLikeState = likeState?.pasteId === pasteId ? likeState : null;
   const isLiked = currentLikeState?.isLiked ?? Boolean(data.isLiked);
   const likesCount = currentLikeState?.likesCount ?? data.likesCount;
+
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const linesCount = countLines(data.content);
+  const canExpandContent = linesCount > VISIBLE_LINES_COUNT;
+  const isContentCollapsed = canExpandContent && !isExpanded;
 
   const onLike = async (id) => {
     if (!isAuth) {
@@ -130,13 +140,31 @@ export const PasteTextarea = ({
           })}
         />
       ) : (
-        <SyntaxHighlighter
-          className={styles.codeBlock}
-          language={data.language}
-          style={anOldHope}
-        >
-          {data.content}
-        </SyntaxHighlighter>
+        <div className={styles.codeBlockWrapper}>
+          <SyntaxHighlighter
+            id="paste-content-code"
+            className={clsx(
+              styles.codeBlock,
+              isContentCollapsed && styles.codeBlockCollapsed,
+            )}
+            language={data.language}
+            style={anOldHope}
+          >
+            {data.content}
+          </SyntaxHighlighter>
+          {isContentCollapsed && <div className={styles.codeBlockFade} />}
+          {canExpandContent && (
+            <button
+              type="button"
+              className={styles.expandButton}
+              aria-controls="paste-content-code"
+              aria-expanded={isExpanded}
+              onClick={() => setIsExpanded((current) => !current)}
+            >
+              {isExpanded ? "Show less" : "Show more"}
+            </button>
+          )}
+        </div>
       )}
     </section>
   );

@@ -108,6 +108,7 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
         editForm={editForm}
       />
       <PasteTextarea
+        key={pasteId}
         dispatch={dispatch}
         isAuth={isAuth}
         userId={userId}
