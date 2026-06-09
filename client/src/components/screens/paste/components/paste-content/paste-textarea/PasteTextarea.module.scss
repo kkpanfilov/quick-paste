@@ -207,19 +207,7 @@
   tab-size: 2;
 }
 
-.pasteInput {
-  height: 44px;
-  width: 100%;
-  padding: 0 13px;
-  margin-top: 10px;
-  font-family: $font-family-mono;
-}
 
-.pasteSelect {
-  height: 32px;
-  padding: 0 8px;
-  margin-top: 8px;
-}
 
 @media (max-width: 768px) {
   .codeBlock {
