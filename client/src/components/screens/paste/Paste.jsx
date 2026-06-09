@@ -16,7 +16,6 @@ import { PasteContent } from "./components/paste-content/PasteContent.jsx";
 
 import styles from "./Paste.module.scss";
 
-// TODO: add expand paste button
 // TODO: add password change if paste exposure is protected
 export const Paste = () => {
   useDocumentTitle("Paste");

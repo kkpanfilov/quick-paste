@@ -1,3 +1,3 @@
 export function countLines(content) {
-  return content.split("\n").length;
+  return content.split(/\r\n|\r|\n/).length;
 }
