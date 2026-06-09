@@ -48,6 +48,7 @@ export const PasteHeader = ({
   const exposure = useWatch({
     control: editForm.control,
     name: "exposure",
+    defaultValue: data.exposure,
   });
 
   return (

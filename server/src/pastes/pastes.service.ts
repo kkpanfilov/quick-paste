@@ -400,7 +400,7 @@ export class PastesService {
 
   async update(
     id: string,
-    authorId: string,
+    userId: string,
     updatePasteDto: UpdatePasteDto & { password?: string },
   ) {
     const paste = await this.prisma.paste.findUnique({
@@ -416,25 +416,27 @@ export class PastesService {
       throw new NotFoundException("Paste not found");
     }
 
-    if (paste.authorId !== authorId) {
+    if (paste.authorId !== userId) {
       throw new ForbiddenException("You are not the author of this paste");
     }
 
-    const data = updatePasteDto as UpdatePasteDto & {
-      passwordHash?: string;
+    const { password, ...data } = updatePasteDto as UpdatePasteDto & {
+      passwordHash?: string | null;
     };
 
-    if (data.password) {
-      data.passwordHash = await argon2.hash(data.password);
+    if (data.exposure && data.exposure !== PasteExposure.PROTECTED) {
+      data.passwordHash = null;
+    }
+
+    if (data.exposure === PasteExposure.PROTECTED && password) {
+      data.passwordHash = await argon2.hash(password);
     }
 
     const { exposure, ...updatedPaste } = await this.prisma.paste.update({
       where: {
         id,
       },
-      data: {
-        ...updatePasteDto,
-      },
+      data,
       select: {
         id: true,
         title: true,
@@ -442,8 +444,10 @@ export class PastesService {
         category: true,
         language: true,
         exposure: true,
+        isBurn: true,
         authorId: true,
         createdAt: true,
+        expiresAt: true,
         comments: {
           select: {
             id: true,
@@ -480,7 +484,24 @@ export class PastesService {
       },
     });
 
+    const likesCount = await this.prisma.like.count({
+      where: {
+        pasteId: id,
+      },
+    });
+
+    const isLikedByUser = userId
+      ? await this.prisma.like.count({
+          where: {
+            userId,
+            pasteId: id,
+          },
+        })
+      : false;
+
     return {
+      likesCount,
+      isLikedByUser,
       exposure: exposure.toLowerCase(),
       ...updatedPaste,
     };

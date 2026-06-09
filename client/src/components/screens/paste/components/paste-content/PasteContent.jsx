@@ -8,6 +8,7 @@ import { useDeletePaste } from "@/hooks/pastes/useDeletePaste.js";
 import { useUpdatePaste } from "@/hooks/pastes/useUpdatePaste.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
+import { removeEmptyFields } from "@/utils/removeEmptyFields.js";
 
 import { PasteHeader } from "./paste-header/PasteHeader.jsx";
 import { PasteTextarea } from "./paste-textarea/PasteTextarea.jsx";
@@ -19,6 +20,7 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
 
   const editForm = useForm({
     mode: "onSubmit",
+    shouldUnregister: true,
   });
 
   const { reload } = useAppNavigation();
@@ -53,7 +55,8 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
 
   const onUpdate = async (body) => {
     try {
-      const result = await updatePaste({ id: pasteId, body });
+      const filteredBody = removeEmptyFields(body);
+      const result = await updatePaste({ id: pasteId, body: filteredBody });
 
       if (result.id) {
         dispatch(
