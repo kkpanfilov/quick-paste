@@ -17,7 +17,6 @@ import { FindOneOptions } from "./types/find-one-paste.type.js";
 import { Password } from "./types/password.type.js";
 import { PasteUnlockTokenType } from "./types/paste-unlock-token.type.js";
 
-// TODO: move accessible paste check in separated method
 @Injectable()
 export class PastesService {
   constructor(

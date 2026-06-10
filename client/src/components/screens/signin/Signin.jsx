@@ -23,7 +23,7 @@ export const Signin = () => {
     defaultValues: {
       email: "",
       password: "",
-      agree: false,
+      remember: false,
     },
   });
 
@@ -35,7 +35,6 @@ export const Signin = () => {
   useDocumentTitle("Sign in");
 
   const onSubmit = async (body) => {
-    delete body.agree;
     const data = await loginUser(body);
 
     if (data.accessToken) {
@@ -103,19 +102,13 @@ export const Signin = () => {
           </div>
           <div className={styles.actions}>
             <label className={styles.remember}>
-              <input
-                type="checkbox"
-                name="remember"
-                {...register("agree", { required: "Agree is required" })}
-              />
+              <input type="checkbox" name="remember" {...register("remember")} />
               <span>Remember me</span>
             </label>
             <Link to="/forgot" className={styles.link}>
               Forgot password?
             </Link>
           </div>
-          {errors.agree && <ErrorMessage message={errors.agree.message} />}
-
           <Button
             type="submit"
             variant="primary"

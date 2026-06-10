@@ -82,7 +82,7 @@ export class AuthService {
       expiresIn: "30m",
     });
     const refreshToken = await this.jwtService.signAsync(payload, {
-      expiresIn: "15d",
+      expiresIn: loginUserDto.remember ? "30d" : "12h",
     });
 
     await this.usersService.updateRefreshTokenHash(

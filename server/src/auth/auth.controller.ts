@@ -24,7 +24,7 @@ export class AuthController {
     response.cookie("refreshToken", user.refreshToken, {
       httpOnly: true,
       secure: true,
-      maxAge: 15 * 24 * 60 * 60 * 1000,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
     return {
@@ -44,7 +44,9 @@ export class AuthController {
     response.cookie("refreshToken", user.refreshToken, {
       httpOnly: true,
       secure: true,
-      maxAge: 15 * 24 * 60 * 60 * 1000,
+      maxAge: loginUserDto.remember
+        ? 30 * 24 * 60 * 60 * 1000
+        : 12 * 60 * 60 * 1000,
     });
 
     return {
