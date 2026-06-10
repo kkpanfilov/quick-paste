@@ -21,6 +21,8 @@ import { getContentSize } from "@/utils/getContentSize.js";
 
 import styles from "./PasteHeader.module.scss";
 
+// TODO: implement zod: 
+// check if data changed, if not - disable button
 export const PasteHeader = ({
   dispatch,
   isAuth,
@@ -66,7 +68,6 @@ export const PasteHeader = ({
               name="title"
               type="text"
               className={styles.pasteInput}
-              defaultValue={data.title}
               {...editForm.register("title", {
                 required: "Title is required",
                 maxLength: {
@@ -94,7 +95,6 @@ export const PasteHeader = ({
                 >
                   {categoryList.map(({ label, value }) => (
                     <option
-                      selected={value === data.category}
                       key={value}
                       value={value}
                     >
@@ -123,7 +123,6 @@ export const PasteHeader = ({
                 >
                   {languageList.map(({ label, value }) => (
                     <option
-                      selected={value === data.language}
                       key={value}
                       value={value}
                     >
@@ -148,7 +147,6 @@ export const PasteHeader = ({
                 >
                   {exposureList.map(({ label, value }) => (
                     <option
-                      selected={value === data.exposure}
                       key={value}
                       value={value}
                     >
@@ -162,7 +160,14 @@ export const PasteHeader = ({
             </div>
             {isEditing && exposure === "protected" && (
               <div className={styles.passwordBlock}>
-                <dt>New password</dt>
+                <dt>
+                  New password{" "}
+                  {editForm.formState.errors.password && (
+                    <ErrorMessage
+                      message={editForm.formState.errors.password.message}
+                    />
+                  )}
+                </dt>
                 <Field
                   tag="input"
                   id="new-password"
