@@ -182,136 +182,10 @@ export class PastesService {
     password?: Password,
     options: FindOneOptions = {},
   ) {
-    const paste = await this.prisma.paste.findUnique({
-      where: {
-        id,
-      },
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        category: true,
-        language: true,
-        exposure: true,
-        isBurn: true,
-        passwordHash: true,
-        authorId: true,
-        createdAt: true,
-        expiresAt: true,
-        comments: {
-          select: {
-            id: true,
-            content: true,
-            createdAt: true,
-            author: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-            replies: {
-              select: {
-                id: true,
-                content: true,
-                createdAt: true,
-                author: {
-                  select: {
-                    id: true,
-                    username: true,
-                  },
-                },
-              },
-            },
-          },
-          where: {
-            parentId: null,
-          },
-          take: 10,
-          orderBy: {
-            createdAt: "desc",
-          },
-        },
-      },
-    });
-
-    if (!paste) {
-      throw new NotFoundException("Paste not found");
-    }
+    const paste = await this.getAccessiblePaste(id, userId, request, password);
 
     const shouldBurnAfterRead = options.burnAfterRead ?? true;
-    const { passwordHash, isBurn, expiresAt, exposure, ...rest } = paste;
-
-    if (exposure === PasteExposure.PRIVATE && paste.authorId !== userId) {
-      throw new NotFoundException("Paste not found");
-    }
-
-    if (expiresAt && expiresAt < new Date()) {
-      await this.burn(id);
-      throw new NotFoundException("Paste not found");
-    }
-
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: paste.authorId,
-      },
-      select: {
-        username: true,
-      },
-    });
-
-    if (!user) {
-      throw new NotFoundException("User not found");
-    }
-
-    const likesCount = await this.prisma.like.count({
-      where: {
-        pasteId: id,
-      },
-    });
-
-    const isLikedByUser = userId
-      ? await this.prisma.like.count({
-          where: {
-            userId,
-            pasteId: id,
-          },
-        })
-      : false;
-
-    if (request) {
-      const cookies = request.cookies;
-
-      if (cookies[`paste_access_${id}`]) {
-        const token = cookies[`paste_access_${id}`] as string;
-        const isTokenValid =
-          await this.jwtService.verifyAsync<PasteUnlockTokenType>(token);
-
-        if (isTokenValid) {
-          if (isBurn && paste.authorId !== userId && shouldBurnAfterRead)
-            await this.burn(id);
-          return {
-            ...rest,
-            exposure: exposure.toLowerCase(),
-            isBurn,
-            likesCount,
-            isLiked: isLikedByUser ? true : false,
-            author: user.username,
-          };
-        }
-      }
-    }
-
-    if (passwordHash && !password && paste.authorId !== userId) {
-      throw new ForbiddenException("Password is required");
-    }
-
-    if (passwordHash && password) {
-      const isPasswordValid = await argon2.verify(passwordHash, password);
-
-      if (!isPasswordValid) {
-        throw new ForbiddenException("Password is incorrect");
-      }
-    }
+    const { isBurn, exposure, ...rest } = paste;
 
     if (isBurn && paste.authorId !== userId && shouldBurnAfterRead)
       await this.burn(id);
@@ -320,9 +194,9 @@ export class PastesService {
       ...rest,
       exposure: exposure.toLowerCase(),
       isBurn,
-      likesCount,
-      isLiked: isLikedByUser ? true : false,
-      author: user.username,
+      likesCount: paste.likesCount,
+      isLiked: paste.isLiked ? true : false,
+      author: paste.author,
     };
   }
 
@@ -552,5 +426,149 @@ export class PastesService {
       })
       .then(() => true)
       .catch(() => false);
+  }
+
+  private async getAccessiblePaste(
+    id: string,
+    userId: string | undefined,
+    request: Request | null,
+    password?: Password,
+  ) {
+    const paste = await this.prisma.paste.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        category: true,
+        language: true,
+        exposure: true,
+        isBurn: true,
+        passwordHash: true,
+        authorId: true,
+        createdAt: true,
+        expiresAt: true,
+        comments: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            author: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+            replies: {
+              select: {
+                id: true,
+                content: true,
+                createdAt: true,
+                author: {
+                  select: {
+                    id: true,
+                    username: true,
+                  },
+                },
+              },
+            },
+          },
+          where: {
+            parentId: null,
+          },
+          take: 10,
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+
+    if (!paste) {
+      throw new NotFoundException("Paste not found");
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: paste.authorId,
+      },
+      select: {
+        username: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    const { passwordHash, isBurn, expiresAt, exposure, ...rest } = paste;
+
+    if (exposure === PasteExposure.PRIVATE && paste.authorId !== userId) {
+      throw new NotFoundException("Paste not found");
+    }
+
+    if (expiresAt && expiresAt < new Date()) {
+      await this.burn(id);
+      throw new NotFoundException("Paste not found");
+    }
+
+    const likesCount = await this.prisma.like.count({
+      where: {
+        pasteId: id,
+      },
+    });
+
+    const isLikedByUser = userId
+      ? await this.prisma.like.count({
+          where: {
+            userId,
+            pasteId: id,
+          },
+        })
+      : false;
+
+    if (request) {
+      const cookies = request.cookies;
+
+      if (cookies[`paste_access_${id}`]) {
+        const token = cookies[`paste_access_${id}`] as string;
+        const isTokenValid =
+          await this.jwtService.verifyAsync<PasteUnlockTokenType>(token);
+
+        if (isTokenValid) {
+          return {
+            ...rest,
+            exposure: exposure.toLowerCase(),
+            isBurn,
+            likesCount,
+            isLiked: isLikedByUser ? true : false,
+            author: user.username,
+          };
+        }
+      }
+    }
+
+    if (passwordHash && !password && paste.authorId !== userId) {
+      throw new ForbiddenException("Password is required");
+    }
+
+    if (passwordHash && password) {
+      const isPasswordValid = await argon2.verify(passwordHash, password);
+
+      if (!isPasswordValid) {
+        throw new ForbiddenException("Password is incorrect");
+      }
+    }
+
+    return {
+      ...rest,
+      exposure: exposure.toLowerCase(),
+      isBurn,
+      likesCount,
+      isLiked: isLikedByUser ? true : false,
+      author: user.username,
+    };
   }
 }
