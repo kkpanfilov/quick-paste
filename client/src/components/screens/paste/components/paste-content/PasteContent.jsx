@@ -79,9 +79,6 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
         editForm.reset({
           content: result.content,
           title: result.title,
-          category: result.category,
-          language: result.language,
-          exposure: result.exposure,
         });
 
         setIsEditing(false);
