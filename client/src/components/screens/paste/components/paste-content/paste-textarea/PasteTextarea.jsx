@@ -148,6 +148,7 @@ export const PasteTextarea = ({
             )}
             language={data.language}
             style={anOldHope}
+            showLineNumbers={true}
           >
             {data.content}
           </SyntaxHighlighter>

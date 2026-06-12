@@ -62,7 +62,17 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
 
   const onUpdate = async (body) => {
     try {
-      const filteredBody = removeEmptyFields(body);
+      const filteredBody = removeEmptyFields(
+        Object.keys(editForm.formState.dirtyFields).reduce((acc, key) => {
+          acc[key] = body[key];
+          return acc;
+        }, {}),
+      );
+
+      if (Object.keys(filteredBody).length === 0) {
+        return;
+      }
+
       const result = await updatePaste({ id: pasteId, body: filteredBody });
 
       if (result.id) {
@@ -79,6 +89,9 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
         editForm.reset({
           content: result.content,
           title: result.title,
+          category: result.category,
+          language: result.language,
+          exposure: result.exposure,
         });
 
         setIsEditing(false);

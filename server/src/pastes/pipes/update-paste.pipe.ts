@@ -7,6 +7,8 @@ export class UpdatePastePipe implements PipeTransform {
   transform(dto: UpdatePasteDto): UpdatePasteDto {
     const { exposure, ...pasteDto } = dto;
 
+    if (!exposure) return dto;
+
     const normalizedExposure =
       typeof exposure === "string" ? exposure.toUpperCase() : exposure;
 

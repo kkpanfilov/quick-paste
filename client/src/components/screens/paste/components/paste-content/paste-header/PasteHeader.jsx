@@ -21,9 +21,7 @@ import { getContentSize } from "@/utils/getContentSize.js";
 
 import styles from "./PasteHeader.module.scss";
 
-// TODO: implement zod: 
-// send only changed data
-// check if data changed, if not - disable button
+// TODO: require password if exposure is protected
 export const PasteHeader = ({
   dispatch,
   isAuth,
@@ -95,10 +93,7 @@ export const PasteHeader = ({
                   })}
                 >
                   {categoryList.map(({ label, value }) => (
-                    <option
-                      key={value}
-                      value={value}
-                    >
+                    <option key={value} value={value}>
                       {label}
                     </option>
                   ))}
@@ -123,10 +118,7 @@ export const PasteHeader = ({
                   })}
                 >
                   {languageList.map(({ label, value }) => (
-                    <option
-                      key={value}
-                      value={value}
-                    >
+                    <option key={value} value={value}>
                       {label}
                     </option>
                   ))}
@@ -144,13 +136,27 @@ export const PasteHeader = ({
                   className={styles.pasteSelect}
                   {...editForm.register("exposure", {
                     required: "Exposure is required",
+                    validate: (value, formValues) => {
+                      if (
+                        value === "protected" &&
+                        data.exposure !== "protected" &&
+                        !formValues.password
+                      ) {
+                        dispatch(
+                          addNotification({
+                            type: "error",
+                            title: "Password is required",
+                            message:
+                              "Password is required to protect your paste",
+                          }),
+                        );
+                        return "Password is required";
+                      }
+                    },
                   })}
                 >
                   {exposureList.map(({ label, value }) => (
-                    <option
-                      key={value}
-                      value={value}
-                    >
+                    <option key={value} value={value}>
                       {label}
                     </option>
                   ))}
@@ -234,6 +240,9 @@ export const PasteHeader = ({
                 <Button
                   variant="primary"
                   className={styles.actionButton}
+                  disabled={
+                    Object.keys(editForm.formState.dirtyFields).length === 0
+                  }
                   onClick={editForm.handleSubmit(onUpdate)}
                 >
                   Save
