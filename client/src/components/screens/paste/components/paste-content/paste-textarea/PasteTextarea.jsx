@@ -130,7 +130,6 @@ export const PasteTextarea = ({
           id="paste-content"
           name="content"
           className={styles.pasteTextarea}
-          defaultValue={data.content}
           {...editForm.register("content", {
             required: "Content is required",
             maxLength: {
@@ -149,6 +148,7 @@ export const PasteTextarea = ({
             )}
             language={data.language}
             style={anOldHope}
+            showLineNumbers={true}
           >
             {data.content}
           </SyntaxHighlighter>

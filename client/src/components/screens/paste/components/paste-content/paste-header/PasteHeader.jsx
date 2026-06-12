@@ -21,6 +21,7 @@ import { getContentSize } from "@/utils/getContentSize.js";
 
 import styles from "./PasteHeader.module.scss";
 
+// TODO: require password if exposure is protected
 export const PasteHeader = ({
   dispatch,
   isAuth,
@@ -66,7 +67,6 @@ export const PasteHeader = ({
               name="title"
               type="text"
               className={styles.pasteInput}
-              defaultValue={data.title}
               {...editForm.register("title", {
                 required: "Title is required",
                 maxLength: {
@@ -93,11 +93,7 @@ export const PasteHeader = ({
                   })}
                 >
                   {categoryList.map(({ label, value }) => (
-                    <option
-                      selected={value === data.category}
-                      key={value}
-                      value={value}
-                    >
+                    <option key={value} value={value}>
                       {label}
                     </option>
                   ))}
@@ -122,11 +118,7 @@ export const PasteHeader = ({
                   })}
                 >
                   {languageList.map(({ label, value }) => (
-                    <option
-                      selected={value === data.language}
-                      key={value}
-                      value={value}
-                    >
+                    <option key={value} value={value}>
                       {label}
                     </option>
                   ))}
@@ -144,14 +136,27 @@ export const PasteHeader = ({
                   className={styles.pasteSelect}
                   {...editForm.register("exposure", {
                     required: "Exposure is required",
+                    validate: (value, formValues) => {
+                      if (
+                        value === "protected" &&
+                        data.exposure !== "protected" &&
+                        !formValues.password
+                      ) {
+                        dispatch(
+                          addNotification({
+                            type: "error",
+                            title: "Password is required",
+                            message:
+                              "Password is required to protect your paste",
+                          }),
+                        );
+                        return "Password is required";
+                      }
+                    },
                   })}
                 >
                   {exposureList.map(({ label, value }) => (
-                    <option
-                      selected={value === data.exposure}
-                      key={value}
-                      value={value}
-                    >
+                    <option key={value} value={value}>
                       {label}
                     </option>
                   ))}
@@ -162,7 +167,14 @@ export const PasteHeader = ({
             </div>
             {isEditing && exposure === "protected" && (
               <div className={styles.passwordBlock}>
-                <dt>New password</dt>
+                <dt>
+                  New password{" "}
+                  {editForm.formState.errors.password && (
+                    <ErrorMessage
+                      message={editForm.formState.errors.password.message}
+                    />
+                  )}
+                </dt>
                 <Field
                   tag="input"
                   id="new-password"
@@ -228,6 +240,9 @@ export const PasteHeader = ({
                 <Button
                   variant="primary"
                   className={styles.actionButton}
+                  disabled={
+                    Object.keys(editForm.formState.dirtyFields).length === 0
+                  }
                   onClick={editForm.handleSubmit(onUpdate)}
                 >
                   Save

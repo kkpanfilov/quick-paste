@@ -36,11 +36,11 @@
 }
 
 .passwordBlock {
-  width: 100%
+  width: 100%;
 }
 
 .passwordInput {
-  margin-top: 8px
+  margin-top: 8px;
 }
 
 .title {
@@ -90,6 +90,13 @@
   height: 40px;
   min-width: 96px;
   padding: 0 14px;
+
+  &:disabled {
+    color: $button-disabled-text;
+    background: $button-disabled-bg;
+    border-color: $button-disabled-border;
+    cursor: not-allowed;
+  }
 }
 
 @media (max-width: 768px) {

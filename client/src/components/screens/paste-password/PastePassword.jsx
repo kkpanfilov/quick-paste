@@ -69,7 +69,9 @@ export const PastePassword = ({ pasteId, onCancel }) => {
 
           <label className={styles.field}>
             <span className={styles.label}>Password</span>
-            {errors.title && <ErrorMessage message={errors.title.message} />}
+            {errors.password && (
+              <ErrorMessage message={errors.password.message} />
+            )}
             <Field
               tag="input"
               type="password"

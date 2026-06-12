@@ -114,7 +114,7 @@ export class PastesController {
   async update(
     @Param("id") id: string,
     @User("id") authorId: string,
-    @Body(new TrimPipe(["title", "password"]), new UpdatePastePipe())
+    @Body(new UpdatePastePipe())
     updatePasteDto: UpdatePasteDto,
   ) {
     return await this.pastesService.update(id, authorId, updatePasteDto);

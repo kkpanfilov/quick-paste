@@ -44,8 +44,6 @@ export class CreatePastePipe implements PipeTransform {
 
     newDto.expiresAt = new Date(Date.now() + durationMs);
 
-    console.log(newDto);
-
     return newDto;
   }
 }

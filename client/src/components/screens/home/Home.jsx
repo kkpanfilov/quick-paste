@@ -42,6 +42,8 @@ export const Home = () => {
   const { data, isLoading, error } =
     currentCategory === "workspace" ? ownPasteQuery : publicPasteQuery;
 
+  console.log(data);
+
   if (isLoading) {
     return (
       <main>
@@ -154,7 +156,7 @@ export const Home = () => {
               </header>
               <SyntaxHighlighter
                 className={styles.preview}
-                language={paste.language}
+                language={paste.language.toLowerCase()}
                 style={anOldHope}
               >
                 {paste.content}
