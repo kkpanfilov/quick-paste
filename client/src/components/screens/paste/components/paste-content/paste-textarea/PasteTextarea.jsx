@@ -176,7 +176,12 @@ export const PasteTextarea = ({
               language={languageLoadState.language}
               style={oneDark}
               showLineNumbers={true}
-              wrapLongLines={true}
+              codeTagProps={{
+                style: {
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word",
+                },
+              }}
             >
               {data.content}
             </SyntaxHighlighter>

@@ -193,7 +193,12 @@ export const Home = () => {
                 language={paste.language.toLowerCase()}
                 style={oneDark}
                 showLineNumbers={true}
-                wrapLongLines={true}
+                codeTagProps={{
+                  style: {
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                  },
+                }}
               >
                 {paste.content}
               </SyntaxHighlighter>
