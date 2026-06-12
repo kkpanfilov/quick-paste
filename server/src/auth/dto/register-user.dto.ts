@@ -1,14 +1,33 @@
+import { Transform } from "class-transformer";
 import { IsEmail, IsString, IsStrongPassword, Length } from "class-validator";
 
 export class RegisterUserDto {
-  @Length(4, 20, { message: "Username must be at least 4 characters long" })
   @IsString({ message: "Username must be a string" })
+  @Transform(({ value }): string =>
+    typeof value === "string" ? value.trim() : value,
+  )
+  @Length(4, 20, {
+    message: "Username must be at least 4 characters long and no more than 20",
+  })
   username!: string;
 
-  @IsEmail({}, { message: "Email is not valid" })
   @IsString({ message: "Email must be a string" })
+  @Transform(({ value }): string =>
+    typeof value === "string" ? value.trim() : value,
+  )
+  @IsEmail({}, { message: "Email is not valid" })
+  @Length(6, 50, {
+    message: "Email must be at least 6 characters long and no more than 50",
+  })
   email!: string;
 
+  @IsString({ message: "Password must be a string" })
+  @Transform(({ value }): string =>
+    typeof value === "string" ? value.trim() : value,
+  )
+  @Length(8, 64, {
+    message: "Password must be at least 8 characters long and no more than 64",
+  })
   @IsStrongPassword(
     {
       minLowercase: 1,
@@ -21,7 +40,5 @@ export class RegisterUserDto {
         "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character",
     },
   )
-  @Length(6, 20, { message: "Password must be at least 6 characters long" })
-  @IsString({ message: "Password must be a string" })
   password!: string;
 }

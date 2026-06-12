@@ -94,6 +94,10 @@ export const Signin = () => {
                   value: 8,
                   message: "Password must be at least 8 characters long",
                 },
+                maxLength: {
+                  value: 64,
+                  message: "Password must be at most 64 characters long",
+                },
               })}
             />
             {errors.password && (
@@ -102,7 +106,11 @@ export const Signin = () => {
           </div>
           <div className={styles.actions}>
             <label className={styles.remember}>
-              <input type="checkbox" name="remember" {...register("remember")} />
+              <input
+                type="checkbox"
+                name="remember"
+                {...register("remember")}
+              />
               <span>Remember me</span>
             </label>
             <Link to="/forgot" className={styles.link}>

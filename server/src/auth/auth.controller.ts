@@ -2,11 +2,10 @@ import { Body, Controller, Post, Req, Res } from "@nestjs/common";
 
 import type { Request, Response } from "express";
 
-import { TrimPipe } from "../common/pipes/trim.pipe.js";
 import { AuthService } from "./auth.service.js";
-import { AuthResponseDto } from "./dto/auth-response.dto.js";
 import { LoginUserDto } from "./dto/login-user.dto.js";
 import { RegisterUserDto } from "./dto/register-user.dto.js";
+import { AuthResponse } from "./types/auth-response.type.js";
 import { Message } from "./types/message.type.js";
 
 @Controller("auth")
@@ -15,10 +14,9 @@ export class AuthController {
 
   @Post("register")
   async register(
-    @Body(new TrimPipe(["username", "email", "password"]))
-    registerUserDto: RegisterUserDto,
+    @Body() registerUserDto: RegisterUserDto,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<AuthResponseDto> {
+  ): Promise<AuthResponse> {
     const user = await this.authService.register(registerUserDto);
 
     response.cookie("refreshToken", user.refreshToken, {
@@ -35,10 +33,9 @@ export class AuthController {
 
   @Post("login")
   async login(
-    @Body(new TrimPipe(["email", "password"]))
-    loginUserDto: LoginUserDto,
+    @Body() loginUserDto: LoginUserDto,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<AuthResponseDto> {
+  ): Promise<AuthResponse> {
     const user = await this.authService.login(loginUserDto);
 
     response.cookie("refreshToken", user.refreshToken, {
@@ -68,7 +65,7 @@ export class AuthController {
   }
 
   @Post("refresh")
-  async refresh(@Req() request: Request): Promise<AuthResponseDto> {
+  async refresh(@Req() request: Request): Promise<AuthResponse> {
     return this.authService.refresh(request);
   }
 }

@@ -9,8 +9,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   create(
-    @Body()
-    createUserDto: CreateUserDto,
+    @Body(new TrimPipe(["username", "email"])) createUserDto: CreateUserDto,
   ) {
     return this.usersService.create(createUserDto);
   }

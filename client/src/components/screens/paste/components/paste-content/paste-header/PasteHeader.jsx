@@ -22,6 +22,7 @@ import { getContentSize } from "@/utils/getContentSize.js";
 import styles from "./PasteHeader.module.scss";
 
 // TODO: implement zod: 
+// send only changed data
 // check if data changed, if not - disable button
 export const PasteHeader = ({
   dispatch,

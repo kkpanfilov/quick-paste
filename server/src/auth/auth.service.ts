@@ -5,9 +5,9 @@ import * as argon2 from "argon2";
 import type { Request } from "express";
 
 import { UsersService } from "../users/users.service.js";
-import { AuthResponseDto } from "./dto/auth-response.dto.js";
 import { LoginUserDto } from "./dto/login-user.dto.js";
 import { RegisterUserDto } from "./dto/register-user.dto.js";
+import { AuthResponse } from "./types/auth-response.type.js";
 import { JwtPayload } from "./types/jwt-payload.type.js";
 import { Message } from "./types/message.type.js";
 
@@ -18,7 +18,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(registerUserDto: RegisterUserDto): Promise<AuthResponseDto> {
+  async register(registerUserDto: RegisterUserDto): Promise<AuthResponse> {
     const passwordHash = await argon2.hash(registerUserDto.password);
 
     const user = await this.usersService.create({
@@ -53,7 +53,7 @@ export class AuthService {
     };
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<AuthResponseDto> {
+  async login(loginUserDto: LoginUserDto): Promise<AuthResponse> {
     const UNAUTHORIZED_ERROR_MESSAGE = "Invalid password or email";
 
     const user = await this.usersService.findOneByEmail(loginUserDto.email);
@@ -128,7 +128,7 @@ export class AuthService {
     };
   }
 
-  async refresh(request: Request): Promise<AuthResponseDto> {
+  async refresh(request: Request): Promise<AuthResponse> {
     const refreshToken = this.getRefreshToken(request);
     const payload = await this.getPayload(refreshToken);
 

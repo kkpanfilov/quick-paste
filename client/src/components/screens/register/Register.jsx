@@ -82,8 +82,16 @@ export const Register = () => {
               {...register("email", {
                 required: "Email is required",
                 pattern: {
-                  value: /^\S+@\S+\.\S+$/,
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                   message: "Invalid email",
+                },
+                minLength: {
+                  value: 6,
+                  message: "Email must be at least 6 characters long",
+                },
+                maxLength: {
+                  value: 50,
+                  message: "Email must be at most 50 characters long",
                 },
               })}
             />
@@ -103,6 +111,14 @@ export const Register = () => {
               autoComplete="username"
               {...register("username", {
                 required: "Username is required",
+                minLength: {
+                  value: 4,
+                  message: "Username must be at least 4 characters long",
+                },
+                maxLength: {
+                  value: 20,
+                  message: "Username must be at most 20 characters long",
+                },
               })}
             />
             {errors.username && (
@@ -123,9 +139,19 @@ export const Register = () => {
               autoComplete="new-password"
               {...register("password", {
                 required: "Password is required",
+                pattern: {
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&#]{8,64}$/,
+                  message:
+                    "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character",
+                },
                 minLength: {
                   value: 8,
                   message: "Password must be at least 8 characters long",
+                },
+                maxLength: {
+                  value: 64,
+                  message: "Password must be at most 64 characters long",
                 },
               })}
             />

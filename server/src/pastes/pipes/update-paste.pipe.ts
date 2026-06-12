@@ -3,16 +3,8 @@ import { BadRequestException, PipeTransform } from "@nestjs/common";
 import { PasteExposure } from "../../generated/prisma/enums.js";
 import { UpdatePasteDto } from "../dto/update-paste.dto.js";
 
-export type UpdatePasteServiceDto = Omit<
-  UpdatePasteDto,
-  "exposure" | "password"
-> & {
-  exposure?: PasteExposure;
-  password?: string;
-};
-
 export class UpdatePastePipe implements PipeTransform {
-  transform(dto: UpdatePasteDto): UpdatePasteServiceDto {
+  transform(dto: UpdatePasteDto): UpdatePasteDto {
     const { exposure, ...pasteDto } = dto;
 
     const normalizedExposure =
@@ -26,7 +18,7 @@ export class UpdatePastePipe implements PipeTransform {
       throw new BadRequestException("Exposure must be a valid exposure");
     }
 
-    const newDto: UpdatePasteServiceDto = {
+    const newDto: UpdatePasteDto = {
       ...pasteDto,
       exposure: normalizedExposure as PasteExposure,
     };
