@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useDispatch } from "react-redux";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { anOldHope } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import { Loader } from "@/components/ui/loader/Loader.jsx";
 import { Pagination } from "@/components/ui/pagination/Pagination.jsx";
@@ -11,6 +11,7 @@ import { useGetPublicPaste } from "@/hooks/pastes/useGetPublicPastes.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { languageLoaders } from "@/shared/lib/syntax-highlighter/language-loaders.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
 
 import { ErrorPage } from "../error/ErrorPage.jsx";
@@ -23,6 +24,9 @@ export const Home = () => {
 
   const { isAuth } = useAuth();
   const dispatch = useDispatch();
+
+  const [areLanguagesLoaded, setAreLanguagesLoaded] = useState(false);
+  const registeredLanguagesRef = useRef(new Set());
 
   const [page, setPage] = useState(1);
   const [currentCategory, setCurrentCategory] = useState(
@@ -42,7 +46,35 @@ export const Home = () => {
   const { data, isLoading, error } =
     currentCategory === "workspace" ? ownPasteQuery : publicPasteQuery;
 
-  console.log(data);
+  const { items, meta, languages } = useMemo(
+    () => (data ? formatData(data) : { items: [], meta: null, languages: [] }),
+    [data],
+  );
+
+  useEffect(() => {
+    if (!languages.length) return;
+
+    async function loadLanguages() {
+      for (const language of languages) {
+        if (registeredLanguagesRef.current.has(language)) continue;
+
+        const loader = languageLoaders[language];
+
+        if (!loader) continue;
+
+        registeredLanguagesRef.current.add(language);
+
+        const module = await loader();
+        SyntaxHighlighter.registerLanguage(language, module.default);
+        console.log("Language loaded:", language);
+      }
+
+      console.log("All languages loaded");
+      setAreLanguagesLoaded(true);
+    }
+
+    loadLanguages();
+  }, [languages]);
 
   if (isLoading) {
     return (
@@ -50,6 +82,10 @@ export const Home = () => {
         <Loader isVisible label="Loading pastes..." />
       </main>
     );
+  }
+
+  if (!areLanguagesLoaded) {
+    return <Loader isVisible label="Loading languages..." />;
   }
 
   if (error) {
@@ -60,8 +96,6 @@ export const Home = () => {
       />
     );
   }
-
-  const { items, meta } = formatData(data);
 
   const onPageChange = (page) => {
     setPage(page);
@@ -157,10 +191,13 @@ export const Home = () => {
               <SyntaxHighlighter
                 className={styles.preview}
                 language={paste.language.toLowerCase()}
-                style={anOldHope}
+                style={oneDark}
+                showLineNumbers={true}
+                wrapLongLines={true}
               >
                 {paste.content}
               </SyntaxHighlighter>
+              <div className={styles.codeBlockFade} />
               <footer className={styles.meta}>
                 <div>
                   <span>{paste.createdAt}</span>

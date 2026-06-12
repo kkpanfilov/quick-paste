@@ -9,6 +9,7 @@ import { getCertainLines } from "./getCertainLines.js";
 export function formatData(data) {
   const meta = data.meta;
   const items = data.items;
+  const languages = [];
 
   const formattedItems = items.map((paste) => ({
     ...paste,
@@ -20,8 +21,15 @@ export function formatData(data) {
     size: getContentSize(paste.content),
   }));
 
+  items.forEach((item) => {
+    if (!languages.includes(item.language)) {
+      languages.push(item.language);
+    }
+  });
+
   return {
     items: formattedItems,
     meta,
+    languages,
   };
 }

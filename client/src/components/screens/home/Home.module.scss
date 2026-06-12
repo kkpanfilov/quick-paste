@@ -130,10 +130,11 @@
   transition:
     border-color 160ms ease,
     transform 120ms ease;
+  position: relative;
 
   &:hover {
     border-color: $border-strong;
-    transform: translateY(-1px);
+    // transform: translateY(-1px);
     cursor: pointer;
   }
 }
@@ -179,10 +180,21 @@
   font-family: $font-family-mono;
   font-size: $font-size-sm;
   line-height: 1.4;
-  max-height: 90px;
-  overflow: hidden;
+  max-height: 150px;
+  overflow-x: hidden;
+  overflow-y: hidden;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.codeBlockFade {
+  position: absolute;
+  height: 60px;
+  left: 0;
+  right: 0;
+  bottom: 48px;
+  margin: 0 18px;
+  background: linear-gradient(rgba($code-bg, 0), $code-bg);
 }
 
 .meta {

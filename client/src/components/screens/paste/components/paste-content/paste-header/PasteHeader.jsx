@@ -21,7 +21,6 @@ import { getContentSize } from "@/utils/getContentSize.js";
 
 import styles from "./PasteHeader.module.scss";
 
-// TODO: require password if exposure is protected
 export const PasteHeader = ({
   dispatch,
   isAuth,
