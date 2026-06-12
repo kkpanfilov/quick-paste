@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import clsx from "clsx";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { anOldHope } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
+import { Loader } from "@/components/ui/loader/Loader.jsx";
 import { useLikePaste } from "@/hooks/pastes/useLikePaste.js";
 import { useUnlikePaste } from "@/hooks/pastes/useUnlikePaste.js";
+import { languageLoaders } from "@/shared/lib/syntax-highlighter/language-loaders.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
 import { countLines } from "@/utils/countLines.js";
 
@@ -28,6 +30,10 @@ export const PasteTextarea = ({
   const { mutateAsync: unlikePaste } = useUnlikePaste();
 
   const [likeState, setLikeState] = useState(null);
+  const [languageLoadState, setLanguageLoadState] = useState({
+    isLoaded: false,
+    language: null,
+  });
 
   const currentLikeState = likeState?.pasteId === pasteId ? likeState : null;
   const isLiked = currentLikeState?.isLiked ?? Boolean(data.isLiked);
@@ -94,6 +100,26 @@ export const PasteTextarea = ({
     }
   };
 
+  useEffect(() => {
+    async function loadLanguage(language) {
+      const loader = languageLoaders[language];
+
+      if (!loader) {
+        return null;
+      }
+
+      const module = await loader();
+      SyntaxHighlighter.registerLanguage(language, module.default);
+
+      setLanguageLoadState({
+        isLoaded: true,
+        language,
+      });
+    }
+
+    loadLanguage(data.language);
+  }, [data.language]);
+
   return (
     <section className={styles.content} aria-label="Paste content">
       <div className={styles.toolbar}>
@@ -140,18 +166,24 @@ export const PasteTextarea = ({
         />
       ) : (
         <div className={styles.codeBlockWrapper}>
-          <SyntaxHighlighter
-            id="paste-content-code"
-            className={clsx(
-              styles.codeBlock,
-              isContentCollapsed && styles.codeBlockCollapsed,
-            )}
-            language={data.language}
-            style={anOldHope}
-            showLineNumbers={true}
-          >
-            {data.content}
-          </SyntaxHighlighter>
+          {languageLoadState.isLoaded ? (
+            <SyntaxHighlighter
+              id="paste-content-code"
+              className={clsx(
+                styles.codeBlock,
+                isContentCollapsed && styles.codeBlockCollapsed,
+              )}
+              language={languageLoadState.language}
+              style={oneDark}
+              showLineNumbers={true}
+              wrapLongLines={true}
+            >
+              {data.content}
+            </SyntaxHighlighter>
+          ) : (
+            <Loader isVisible={true} label="Loading code..." />
+          )}
+
           {isContentCollapsed && <div className={styles.codeBlockFade} />}
           {canExpandContent && (
             <button

@@ -7,6 +7,8 @@ import { useAuthBootstrap } from "@/hooks/auth/useAuthBootstrap.js";
 
 const queryClient = new QueryClient();
 
+// TODO: migrate to typescript
+// TODO: implement zod validation
 export function App() {
   const { isAuthChecked } = useAuthBootstrap();
 

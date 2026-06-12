@@ -20,7 +20,6 @@ import {
 
 import styles from "./New.module.scss";
 
-// TODO: implement zod
 export const New = () => {
   const {
     register,
