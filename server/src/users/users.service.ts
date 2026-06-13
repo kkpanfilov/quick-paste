@@ -105,4 +105,19 @@ export class UsersService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+
+  async touchLastActive(userId: string) {
+    const now = new Date();
+    const oneMinuteAgo = new Date(now.getTime() - 60_000);
+
+    await this.prisma.user.updateMany({
+      where: {
+        id: userId,
+        lastActiveAt: { lt: oneMinuteAgo },
+      },
+      data: {
+        lastActiveAt: now,
+      },
+    });
+  }
 }
