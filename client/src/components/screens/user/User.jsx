@@ -1,6 +1,8 @@
+import clsx from "clsx";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
 
+import { Button } from "@/components/ui/button/Button.jsx";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
@@ -35,7 +37,7 @@ export const User = () => {
                 Full-stack engineer building a focused workspace for code
                 snippets, notes, and reusable paste references.
               </p>
-              <div className={styles.profileMeta} aria-label="Profile metadata">
+              <div className={styles.profileTags} aria-label="Profile tags">
                 <span>Junior full-stack developer</span>
                 <span>JavaScript / React / Node.js</span>
                 <span>Europe/Moscow</span>
@@ -45,9 +47,13 @@ export const User = () => {
 
           <div className={styles.profileActions} aria-label="Profile actions">
             {isMe && (
-              <button className={styles.secondaryAction} type="button" disabled>
+              <Button
+                variant="primary"
+                className={clsx(styles.replyButton, styles.primaryAction)}
+                onClick={() => {}}
+              >
                 Edit profile
-              </button>
+              </Button>
             )}
           </div>
         </section>
@@ -57,21 +63,6 @@ export const User = () => {
             <span className={styles.statValue}>128</span>
             <span className={styles.statLabel}>Total pastes</span>
             <span className={styles.statHint}>+12 this month</span>
-          </article>
-          <article className={styles.statCard}>
-            <span className={styles.statValue}>84</span>
-            <span className={styles.statLabel}>Public</span>
-            <span className={styles.statHint}>65% of workspace</span>
-          </article>
-          <article className={styles.statCard}>
-            <span className={styles.statValue}>37</span>
-            <span className={styles.statLabel}>Private</span>
-            <span className={styles.statHint}>Protected notes</span>
-          </article>
-          <article className={styles.statCard}>
-            <span className={styles.statValue}>2.4k</span>
-            <span className={styles.statLabel}>Views</span>
-            <span className={styles.statHint}>Across public pastes</span>
           </article>
           <article className={styles.statCard}>
             <span className={styles.statValue}>312</span>
@@ -87,11 +78,6 @@ export const User = () => {
             <span className={styles.statValue}>11</span>
             <span className={styles.statLabel}>Languages</span>
             <span className={styles.statHint}>Most used: JavaScript</span>
-          </article>
-          <article className={styles.statCard}>
-            <span className={styles.statValue}>4</span>
-            <span className={styles.statLabel}>Collections</span>
-            <span className={styles.statHint}>Grouped references</span>
           </article>
         </section>
 
