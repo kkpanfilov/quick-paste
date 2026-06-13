@@ -1,0 +1,135 @@
+@use "@/styles/tokens" as *;
+
+.screen {
+  margin: 0 auto;
+  padding: 36px 0 56px;
+  font-family: $font-family-sans;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.panel {
+  width: min(820px, 100%);
+  border: 1px solid $auth-panel-border;
+  border-radius: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba($auth-panel-bg, 0.96) 0%,
+    rgba($bg-surface-1, 0.96) 100%
+  );
+  box-shadow: $card-shadow;
+  padding: 28px;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: $text-link;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 8px 0 0;
+  color: $text-primary;
+  font-size: $font-size-2xl;
+  line-height: 1.25;
+}
+
+.subtitle {
+  margin: 10px 0 0;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  line-height: 1.6;
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.group {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+}
+
+.input,
+.select {
+  height: 44px;
+  padding: 0 13px;
+}
+
+.textarea {
+  min-height: 300px;
+  resize: vertical;
+  padding: 12px 13px;
+  font-family: $font-family-mono;
+  line-height: 1.55;
+}
+
+.actions {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.createPasteButton {
+  height: 42px;
+  padding: 0 16px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .screen {
+    min-height: $screen-min-height-mobile;
+  }
+
+  .panel {
+    padding: 22px 18px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .textarea {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 480px) {
+  .screen {
+    padding: 24px 0 34px;
+  }
+
+  .title {
+    font-size: $font-size-xl;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .primaryButton {
+    width: 100%;
+  }
+}

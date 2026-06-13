@@ -1,0 +1,98 @@
+@use "@/styles/tokens" as *;
+
+.screen {
+  min-height: $screen-min-height-desktop;
+  display: grid;
+  place-items: center;
+  padding: 48px 16px;
+  background: $bg-main;
+  font-family: $font-family-sans;
+}
+
+.card {
+  width: min(560px, 100%);
+  padding: 40px 34px;
+  border: 1px solid $auth-panel-border;
+  border-radius: 18px;
+  background: $auth-card-bg;
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.4),
+    $auth-card-highlight;
+  text-align: center;
+}
+
+.code {
+  margin: 0;
+  color: $danger;
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: $font-weight-bold;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.title {
+  margin: 12px 0 0;
+  color: $text-primary;
+  font-size: $font-size-2xl;
+  line-height: 1.25;
+}
+
+.description {
+  margin: 12px auto 0;
+  max-width: 420px;
+  color: $text-secondary;
+  font-size: $font-size-md;
+  line-height: 1.6;
+}
+
+.actions {
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.button {
+  min-width: 148px;
+  height: 44px;
+  padding: 0 16px;
+}
+
+@media (max-width: 768px) {
+  .screen {
+    min-height: $screen-min-height-mobile;
+    padding: 36px 12px;
+  }
+
+  .card {
+    padding: 32px 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .screen {
+    padding: 24px 10px;
+  }
+
+  .card {
+    padding: 26px 16px;
+    border-radius: 14px;
+  }
+
+  .title {
+    font-size: $font-size-xl;
+  }
+
+  .description {
+    font-size: $font-size-sm;
+  }
+
+  .actions {
+    gap: 10px;
+  }
+
+  .button {
+    width: 100%;
+  }
+}

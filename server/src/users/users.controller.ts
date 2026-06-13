@@ -1,0 +1,34 @@
+import { Body, Controller, Delete, Get, Param, Patch } from "@nestjs/common";
+
+import { TrimPipe } from "../common/pipes/trim.pipe.js";
+import { CreateUserDto } from "./dto/create-user.dto.js";
+import { UsersService } from "./users.service.js";
+
+@Controller("users")
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  create(
+    @Body(new TrimPipe(["username", "email"])) createUserDto: CreateUserDto,
+  ) {
+    return this.usersService.create(createUserDto);
+  }
+
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    return this.usersService.findOneById(id);
+  }
+
+  @Patch(":id")
+  update(
+    @Param("id") id: string,
+    @Body(new TrimPipe(["username", "email"])) updateUserDto: CreateUserDto,
+  ) {
+    return this.usersService.update(+id, updateUserDto);
+  }
+
+  @Delete(":id")
+  remove(@Param("id") id: string) {
+    return this.usersService.remove(+id);
+  }
+}

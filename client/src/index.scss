@@ -1,0 +1,9 @@
+@use "@/styles/reset";
+@use "@/styles/tokens" as *;
+
+main {
+  min-height: $screen-min-height-desktop;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  background: $screen-bg-aurora;
+}

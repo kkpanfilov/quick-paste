@@ -1,0 +1,70 @@
+@use "@/styles/variables" as *;
+
+.primary-button,
+.ghost-button,
+.soft-button,
+.red-button {
+  border-radius: $radius;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+
+  &:disabled {
+    color: $button-disabled-text;
+    background: $button-disabled-bg;
+    border-color: $button-disabled-border;
+    cursor: not-allowed;
+  }
+}
+
+.primary-button {
+  color: $button-text;
+  background: $primary;
+  border: 1px solid transparent;
+
+  &:not(:disabled):hover {
+    background: $primary-hover;
+  }
+
+  &:not(:disabled):active {
+    background: $primary-active;
+  }
+}
+
+.ghost-button {
+  color: $button-ghost-text;
+  background: transparent;
+  border: 2px solid $button-ghost-text;
+
+  &:not(:disabled):hover {
+    background: $button-ghost-bg-hover;
+  }
+}
+
+.soft-button {
+  color: $button-soft-text;
+  background: $button-soft-bg;
+  border: 1px solid rgba($accent, 0.28);
+
+  &:not(:disabled):hover {
+    background: $button-soft-bg-hover;
+    border-color: rgba($accent, 0.42);
+  }
+}
+
+.red-button {
+  color: $button-red-text;
+  background: $button-red-bg;
+  border: none;
+
+  &:not(:disabled):hover {
+    background: $button-red-bg-hover;
+    border-color: rgba($accent, 0.42);
+  }
+}

@@ -1,0 +1,51 @@
+@forward "variables";
+@use "variables" as *;
+
+// Shared layout
+$header-height-desktop: 72px !default;
+$header-height-mobile: 64px !default;
+$screen-min-height-desktop: calc(100vh - 72px) !default;
+$screen-min-height-mobile: calc(100vh - 64px) !default;
+$layout-width-desktop: min(1120px, calc(100% - 32px)) !default;
+$layout-width-tablet: min(1120px, calc(100% - 24px)) !default;
+$layout-width-mobile: calc(100% - 20px) !default;
+
+// Shared backgrounds
+$screen-bg-aurora:
+  radial-gradient(
+    1200px 600px at 12% -8%,
+    rgba($accent, 0.14),
+    transparent 62%
+  ),
+  radial-gradient(
+    1000px 520px at 100% 100%,
+    rgba($info, 0.12),
+    transparent 60%
+  ),
+  linear-gradient(180deg, $bg-canvas 0%, $bg-page 100%) !default;
+
+$auth-card-bg: rgba($auth-panel-bg, 0.92) !default;
+$auth-card-highlight: inset 0 1px 0 rgba($white, 0.02) !default;
+
+// Shared interactions
+$focus-ring-outline: 2px solid rgba($border-focus, 0.9) !default;
+$input-focus-shadow: 0 0 0 3px rgba($accent, 0.22) !default;
+$active-press-transform: translateY(1px) !default;
+
+$transition-color: color 160ms ease !default;
+$transition-border: border-color 160ms ease !default;
+$transition-input:
+  border-color 160ms ease,
+  box-shadow 160ms ease !default;
+$transition-button-filled:
+  background-color 160ms ease,
+  transform 120ms ease !default;
+$transition-button-surface:
+  transform 120ms ease,
+  border-color 160ms ease,
+  background-color 160ms ease !default;
+$transition-button-interactive:
+  transform 120ms ease,
+  border-color 160ms ease,
+  background-color 160ms ease,
+  color 160ms ease !default;

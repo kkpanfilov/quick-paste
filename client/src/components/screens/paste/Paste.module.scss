@@ -1,0 +1,44 @@
+@use "@/styles/tokens" as *;
+
+.screen {
+  min-height: $screen-min-height-desktop;
+  padding: 36px 0 56px;
+  font-family: $font-family-sans;
+}
+
+.container {
+  width: $layout-width-desktop;
+  margin: 0 auto;
+  border: 1px solid $card-border;
+  border-radius: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba($card-bg-hover, 0.96) 0%,
+    rgba($card-bg, 0.96) 100%
+  );
+  box-shadow: $card-shadow;
+  overflow: hidden;
+}
+
+
+@media (max-width: 768px) {
+  .screen {
+    min-height: $screen-min-height-mobile;
+    padding: 28px 0 44px;
+  }
+
+  .container {
+    width: $layout-width-tablet;
+  }
+}
+
+@media (max-width: 480px) {
+  .screen {
+    padding: 24px 0 34px;
+  }
+
+  .container {
+    width: $layout-width-mobile;
+    border-radius: 14px;
+  }
+}

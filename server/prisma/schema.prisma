@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  SUPPORT
+  ADMIN
+}
+
+enum PasteExposure {
+  PUBLIC
+  UNLISTED
+  PROTECTED
+  PRIVATE
+  SHARED
+}
+
+model User {
+  id               String    @id @default(cuid())
+  username         String    @unique
+  email            String    @unique
+  passwordHash     String
+  role             UserRole  @default(USER)
+  refreshTokenHash String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  pastes           Paste[]
+  comments         Comment[]
+  likes            Like[]
+
+  @@index([createdAt])
+}
+
+model Paste {
+  id           String        @id @default(uuid())
+  title        String
+  content      String
+  category     String?
+  language     String?
+  expiresAt    DateTime?
+  isBurn       Boolean       @default(false)
+  passwordHash String?
+  exposure     PasteExposure
+  authorId     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  author       User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments     Comment[]
+  likes        Like[]
+
+  @@index([authorId])
+  @@index([expiresAt])
+  @@index([createdAt])
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  content   String?
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  authorId String
+  pasteId  String
+  parentId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  paste  Paste @relation(fields: [pasteId], references: [id], onDelete: Cascade)
+
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Restrict)
+  replies Comment[] @relation("CommentReplies")
+
+  @@index([authorId])
+  @@index([pasteId])
+  @@index([parentId])
+  @@index([pasteId, parentId, createdAt])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  pasteId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paste Paste @relation(fields: [pasteId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, pasteId])
+  @@index([userId])
+  @@index([pasteId])
+}

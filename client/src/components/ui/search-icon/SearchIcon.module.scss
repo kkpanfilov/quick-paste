@@ -1,0 +1,11 @@
+@use "@/styles/variables" as *;
+
+.searchIcon {
+  color: $text-tertiary;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+}
