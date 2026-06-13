@@ -7,6 +7,7 @@ import { UserMiddleware } from "./auth/middlewares/user.middleware.js";
 import { CommentsModule } from "./comments/comments.module.js";
 import { PastesModule } from "./pastes/pastes.module.js";
 import { PrismaService } from "./prisma/prisma.service.js";
+import { LastActiveMiddleware } from "./users/middlewares/last-active.middleware.js";
 import { UsersModule } from "./users/users.module.js";
 
 @Module({
@@ -16,6 +17,6 @@ import { UsersModule } from "./users/users.module.js";
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(UserMiddleware).forRoutes("*");
+    consumer.apply(UserMiddleware, LastActiveMiddleware).forRoutes("*");
   }
 }
