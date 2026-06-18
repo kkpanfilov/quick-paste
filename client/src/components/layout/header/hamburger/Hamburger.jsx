@@ -20,10 +20,10 @@ export const Hamburger = () => {
   const [isShow, setIsShow] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  const { goNew, goSignIn, goMe } = useAppNavigation();
+  const { goNew, goSignIn, goUser } = useAppNavigation();
 
   const { mutateAsync: logoutFn } = useLogout();
-  const { isAuth } = useAuth();
+  const { isAuth, userId } = useAuth();
 
   const onLogout = async () => {
     try {
@@ -108,7 +108,7 @@ export const Hamburger = () => {
                 variant="soft"
                 className={styles.menuLinkSoft}
                 onClick={() => {
-                  goMe();
+                  goUser(userId);
                   setIsShow(false);
                 }}
               >

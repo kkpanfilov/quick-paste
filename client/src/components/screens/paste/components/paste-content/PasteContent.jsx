@@ -8,6 +8,8 @@ import { useDeletePaste } from "@/hooks/pastes/useDeletePaste.js";
 import { useUpdatePaste } from "@/hooks/pastes/useUpdatePaste.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
+import { getDirtyBody } from "@/utils/getDirtyBody.js";
+import { nullIfBlank } from "@/utils/nullIfBlank.js";
 import { removeEmptyFields } from "@/utils/removeEmptyFields.js";
 
 import { PasteHeader } from "./paste-header/PasteHeader.jsx";
@@ -24,6 +26,7 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
     defaultValues: {
       content: data.content,
       title: data.title,
+      description: data.description ?? "",
       category: data.category,
       language: data.language,
       exposure: data.exposure,
@@ -62,12 +65,13 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
 
   const onUpdate = async (body) => {
     try {
-      const filteredBody = removeEmptyFields(
-        Object.keys(editForm.formState.dirtyFields).reduce((acc, key) => {
-          acc[key] = body[key];
-          return acc;
-        }, {}),
-      );
+      const dirtyBody = getDirtyBody(body, editForm.formState.dirtyFields);
+
+      if (Object.prototype.hasOwnProperty.call(dirtyBody, "description")) {
+        dirtyBody.description = nullIfBlank(dirtyBody.description);
+      }
+
+      const filteredBody = removeEmptyFields(dirtyBody);
 
       if (Object.keys(filteredBody).length === 0) {
         return;
@@ -89,6 +93,7 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
         editForm.reset({
           content: result.content,
           title: result.title,
+          description: result.description ?? "",
           category: result.category,
           language: result.language,
           exposure: result.exposure,
@@ -97,6 +102,7 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
         setIsEditing(false);
       }
     } catch (error) {
+      console.log(error);
       dispatch(
         addNotification({
           type: "error",

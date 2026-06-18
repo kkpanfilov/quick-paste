@@ -7,9 +7,7 @@ dist/
 build/
 **/dist/
 **/build/
-
-# generated (prisma)
-server/app/generated/prisma/
+**/generated/prisma/
 
 # Logs
 logs

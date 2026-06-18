@@ -1,0 +1,23 @@
+@use "@/styles/tokens" as *;
+
+.languageListItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid $border-subtle;
+  padding-bottom: 10px;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+
+  &:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  strong {
+    color: $text-primary;
+    font-weight: $font-weight-semibold;
+    white-space: nowrap;
+  }
+}

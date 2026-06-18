@@ -9,12 +9,16 @@ const queryClient = new QueryClient();
 
 // TODO: migrate to typescript
 // TODO: implement zod validation
+// TODO: migrate to zustand
+// TODO: add all endpoints to insomnia
 export function App() {
   const { isAuthChecked } = useAuthBootstrap();
 
+  if (!isAuthChecked)
+    return <Loader isVisible={!isAuthChecked} label="Checking session..." />;
+
   return (
     <QueryClientProvider client={queryClient}>
-      <Loader isVisible={!isAuthChecked} label="Checking session..." />
       <Layout></Layout>
       <NotificationContainer />
     </QueryClientProvider>

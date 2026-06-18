@@ -6,6 +6,7 @@ export class UpdatePasteDto extends PartialType(
   PickType(CreatePasteDto, [
     "title",
     "content",
+    "description",
     "category",
     "language",
     "exposure",

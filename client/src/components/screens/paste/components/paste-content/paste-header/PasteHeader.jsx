@@ -3,18 +3,18 @@ import { formatDistanceToNow } from "date-fns";
 import { useWatch } from "react-hook-form";
 import { Link } from "react-router";
 
-import { categoryMap } from "@/components/screens/home/assets/category.map.js";
-import { exposureMap } from "@/components/screens/home/assets/exposure.map.js";
-import { languageMap } from "@/components/screens/home/assets/language.map.js";
-import {
-  categoryList,
-  exposureList,
-  languageList,
-} from "@/components/screens/home/assets/new-paste.list.js";
 import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { Select } from "@/components/ui/select/Select.jsx";
+import { categoryMap } from "@/shared/lists/category.map.js";
+import { exposureMap } from "@/shared/lists/exposure.map.js";
+import { languageMap } from "@/shared/lists/language.map.js";
+import {
+  categoryList,
+  exposureList,
+  languageList,
+} from "@/shared/lists/new-paste.list.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
 import { countLines } from "@/utils/countLines.js";
 import { getContentSize } from "@/utils/getContentSize.js";
@@ -78,6 +78,34 @@ export const PasteHeader = ({
             <h1 id="paste-title" className={styles.title}>
               {data.title}
             </h1>
+          )}
+          {editForm.formState.errors.description && (
+            <ErrorMessage
+              message={editForm.formState.errors.description.message}
+            />
+          )}
+          {isEditing ? (
+            <div className={styles.descriptionEditor}>
+              <label htmlFor="paste-description">Description</label>
+              <Field
+                tag="textarea"
+                id="paste-description"
+                name="description"
+                className={styles.descriptionInput}
+                placeholder="Add a description to your paste (optional)"
+                rows={3}
+                {...editForm.register("description", {
+                  maxLength: {
+                    value: 1000,
+                    message: "Description is too long",
+                  },
+                })}
+              />
+            </div>
+          ) : (
+            data.description && (
+              <p className={styles.description}>{data.description}</p>
+            )
           )}
           <dl className={styles.meta}>
             <div>
@@ -203,7 +231,7 @@ export const PasteHeader = ({
             <div hidden={isEditing}>
               <dt>Created by</dt>
               <dd>
-                <Link to={`/users/${data.authorId}`}>{author}</Link>
+                <Link to={`/user/${data.authorId}`}>{author}</Link>
               </dd>
             </div>
             <div hidden={isEditing}>

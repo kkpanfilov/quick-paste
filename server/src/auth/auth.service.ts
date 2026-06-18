@@ -56,7 +56,7 @@ export class AuthService {
   async login(loginUserDto: LoginUserDto): Promise<AuthResponse> {
     const UNAUTHORIZED_ERROR_MESSAGE = "Invalid password or email";
 
-    const user = await this.usersService.findOneByEmail(loginUserDto.email);
+    const user = await this.usersService._byEmail(loginUserDto.email);
 
     if (!user) {
       throw new UnauthorizedException(UNAUTHORIZED_ERROR_MESSAGE);
@@ -101,7 +101,7 @@ export class AuthService {
     const refreshToken = this.getRefreshToken(request);
     const payload = await this.getPayload(refreshToken);
 
-    const user = await this.usersService.findOneById(payload.id);
+    const user = await this.usersService._byId(payload.id);
 
     if (!user) {
       throw new UnauthorizedException("User not found");
@@ -132,7 +132,7 @@ export class AuthService {
     const refreshToken = this.getRefreshToken(request);
     const payload = await this.getPayload(refreshToken);
 
-    const user = await this.usersService.findOneById(payload.id);
+    const user = await this.usersService._byId(payload.id);
 
     if (!user) {
       throw new UnauthorizedException("User not found");

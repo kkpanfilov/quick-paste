@@ -314,6 +314,7 @@ export class PastesService {
         id: true,
         title: true,
         content: true,
+        description: true,
         category: true,
         language: true,
         exposure: true,
@@ -374,7 +375,7 @@ export class PastesService {
 
     return {
       likesCount,
-      isLikedByUser,
+      isLiked: isLikedByUser ? true : false,
       exposure: exposure.toLowerCase(),
       ...updatedPaste,
     };
@@ -441,6 +442,7 @@ export class PastesService {
         id: true,
         title: true,
         content: true,
+        description: true,
         category: true,
         language: true,
         exposure: true,

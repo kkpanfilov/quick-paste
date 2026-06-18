@@ -10,13 +10,14 @@ import { useCreatePaste } from "@/hooks/pastes/useCreatePaste.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { nullIfBlank } from "@/utils/nullIfBlank.js";
 
 import {
   categoryList,
   expirationList,
   exposureList,
   languageList,
-} from "../home/assets/new-paste.list.js";
+} from "../../../shared/lists/new-paste.list.js";
 
 import styles from "./New.module.scss";
 
@@ -32,6 +33,7 @@ export const New = () => {
     defaultValues: {
       title: "",
       content: "",
+      description: "",
       language: "plain",
       expiration: "never",
       category: "none",
@@ -81,6 +83,8 @@ export const New = () => {
       body.isBurn = false;
     }
 
+    body.description = nullIfBlank(body.description);
+
     const data = await createPaste(body);
 
     if (data.id) goPaste(data.id);
@@ -115,6 +119,29 @@ export const New = () => {
                 required: "is required",
                 maxLength: {
                   value: 64,
+                  message: "is too long",
+                },
+              })}
+            />
+          </div>
+
+          <div className={styles.group}>
+            <label htmlFor="new-description" className={styles.label}>
+              Description{" "}
+              {errors.description && (
+                <ErrorMessage message={errors.description.message} />
+              )}
+            </label>
+            <Field
+              tag="textarea"
+              id="new-description"
+              name="description"
+              className={styles.textarea}
+              placeholder="Add a description to your paste (optional)"
+              rows={3}
+              {...register("description", {
+                maxLength: {
+                  value: 1000,
                   message: "is too long",
                 },
               })}
@@ -250,6 +277,7 @@ export const New = () => {
               name="content"
               className={styles.textarea}
               placeholder="Paste code or text here..."
+              rows={10}
               {...register("content", {
                 required: "is required",
                 maxLength: {
