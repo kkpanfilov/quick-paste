@@ -36,6 +36,7 @@ export const Register = () => {
 
   useDocumentTitle("Register");
 
+  // TODO: add notifications
   const onSubmit = async (formData) => {
     const body = {
       email: formData.email,

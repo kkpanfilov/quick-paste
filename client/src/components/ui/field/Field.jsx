@@ -1,6 +1,11 @@
 import styles from "./Field.module.scss";
 
-export const Field = ({ className = "", tag = "input", type = "text", ...rest }) => {
+export const Field = ({
+  className = "",
+  tag = "input",
+  type = "text",
+  ...rest
+}) => {
   const defaultClass = styles[tag] || "";
   const classes = [defaultClass, className].filter(Boolean).join(" ");
 

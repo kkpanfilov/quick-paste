@@ -7,11 +7,11 @@ export function useAppNavigation() {
 
   return {
     goHome: () => navigate(paths.home),
-    goMe: () => navigate(paths.me),
-    goSignIn: () => navigate(paths.signin),
-    goRegister: () => navigate(paths.register),
     goNew: () => navigate(paths.new),
     goPaste: (id) => navigate(paths.paste(id)),
+    goUser: (id) => navigate(paths.user(id)),
+    goSignIn: () => navigate(paths.signin),
+    goRegister: () => navigate(paths.register),
     goBack: () => navigate(-1),
     reload: () => navigate(0),
   };

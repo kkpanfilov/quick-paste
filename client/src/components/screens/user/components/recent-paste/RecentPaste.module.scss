@@ -1,0 +1,47 @@
+@use "@/styles/tokens" as *;
+
+.pasteItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid $border-subtle;
+  border-radius: 10px;
+  background: rgba($code-bg, 0.45);
+  padding: 14px;
+  cursor: pointer;
+}
+
+.pasteTitle {
+  margin: 0;
+  color: $text-primary;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  line-height: 1.4;
+}
+
+.pasteMeta {
+  margin: 5px 0 0;
+  color: $text-tertiary;
+  font-size: $font-size-xs;
+  line-height: 1.4;
+}
+
+.pasteDescription {
+  margin: 8px 0 0;
+  max-width: 620px;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  line-height: 1.5;
+}
+
+.badge {
+  flex: 0 0 auto;
+  border: 1px solid $border-default;
+  border-radius: 999px;
+  padding: 5px 9px;
+  color: $text-secondary;
+  font-size: $font-size-xs;
+  line-height: 1;
+  white-space: nowrap;
+}

@@ -17,9 +17,9 @@ export const Actions = () => {
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  const { goNew, goSignIn, goMe } = useAppNavigation();
+  const { goNew, goSignIn, goUser } = useAppNavigation();
 
-  const { isAuth } = useAuth();
+  const { isAuth, userId } = useAuth();
   const { mutateAsync: logoutFn } = useLogout();
 
   const onLogout = async () => {
@@ -74,7 +74,7 @@ export const Actions = () => {
             <Button
               variant="soft"
               className={styles.signInButton}
-              onClick={() => goMe()}
+              onClick={() => goUser(userId)}
               type="button"
             >
               Profile

@@ -3,6 +3,7 @@ import { SearchIcon } from "@/components/ui/search-icon/SearchIcon.jsx";
 
 import styles from "./Search.module.scss";
 
+// TODO: implement search
 export const Search = () => {
   return (
     <form className={styles.search} role="search">

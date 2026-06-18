@@ -1,9 +1,9 @@
 import { formatDistanceToNow } from "date-fns";
 
+import { categoryMap } from "../../../../shared/lists/category.map.js";
+import { languageMap } from "../../../../shared/lists/language.map.js";
 import { countLines } from "../../../../utils/countLines.js";
 import { getContentSize } from "../../../../utils/getContentSize.js";
-import { categoryMap } from "../assets/category.map.js";
-import { languageMap } from "../assets/language.map.js";
 import { getCertainLines } from "./getCertainLines.js";
 
 export function formatData(data) {

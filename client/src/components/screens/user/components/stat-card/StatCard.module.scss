@@ -1,0 +1,30 @@
+@use "@/styles/tokens" as *;
+
+.statCard {
+  border: 1px solid $card-border;
+  border-radius: 12px;
+  background: linear-gradient(
+    180deg,
+    rgba($card-bg-hover, 0.96) 0%,
+    rgba($card-bg, 0.96) 100%
+  );
+  box-shadow: $card-shadow;
+}
+
+.statCard {
+  display: grid;
+  gap: 7px;
+  padding: 18px;
+}
+
+.statValue {
+  color: $text-primary;
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+}
+
+.statLabel {
+  color: $text-tertiary;
+  font-size: $font-size-sm;
+}

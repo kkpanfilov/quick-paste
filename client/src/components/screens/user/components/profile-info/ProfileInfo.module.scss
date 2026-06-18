@@ -1,0 +1,125 @@
+@use "@/styles/tokens" as *;
+
+.profile {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 75px;
+  margin-bottom: 18px;
+  border: 1px solid $auth-panel-border;
+  border-radius: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba($auth-panel-bg, 0.96) 0%,
+    rgba($bg-surface-1, 0.96) 100%
+  );
+  box-shadow: $card-shadow;
+  padding: 28px;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+}
+
+.avatar {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  border: 1px solid rgba($border-focus, 0.42);
+  border-radius: 24px;
+  background: $button-soft-bg;
+  color: $text-primary;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  letter-spacing: 0.04em;
+}
+
+.eyebrow {
+  margin: 0;
+  color: $text-link;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 8px 0 0;
+  color: $text-primary;
+  font-size: $font-size-4xl;
+  line-height: 1.2;
+}
+
+.subtitle {
+  margin: 10px 0 0;
+  max-width: 640px;
+  color: $text-secondary;
+  font-size: $font-size-md;
+  line-height: 1.6;
+}
+
+.profileActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.primaryAction {
+  min-height: 42px;
+  min-width: 120px;
+}
+
+@media (max-width: 900px) {
+  .profile {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .profileActions {
+    width: 100%;
+  }
+
+  .primaryAction {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile {
+    padding: 22px 18px;
+  }
+
+  .title {
+    font-size: $font-size-3xl;
+  }
+}
+
+@media (max-width: 560px) {
+  .identity,
+  .profileActions {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 20px;
+    font-size: $font-size-xl;
+  }
+
+  .title {
+    font-size: $font-size-2xl;
+  }
+
+  .subtitle {
+    font-size: $font-size-sm;
+  }
+}

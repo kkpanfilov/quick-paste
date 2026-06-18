@@ -1,8 +1,8 @@
 export const paths = {
   home: "/",
-  me: "/me",
-  signin: "/signin",
-  register: "/register",
   new: "/new",
   paste: (id) => `/paste/${id}`,
+  user: (id) => `/user/${id}`,
+  signin: "/signin",
+  register: "/register",
 };

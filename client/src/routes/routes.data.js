@@ -3,6 +3,7 @@ import { New } from "@/components/screens/new/New.jsx";
 import { Paste } from "@/components/screens/paste/Paste.jsx";
 import { Register } from "@/components/screens/register/Register.jsx";
 import { Signin } from "@/components/screens/signin/Signin.jsx";
+import { User } from "@/components/screens/user/User.jsx";
 
 import { paths } from "./paths.config.js";
 
@@ -14,16 +15,22 @@ export const routes = [
     component: Home,
   },
   {
+    id: "new",
+    path: paths.new,
+    title: "New",
+    component: New,
+  },
+  {
     id: "paste",
     path: paths.paste(":id"),
     title: "Paste",
     component: Paste,
   },
   {
-    id: "new",
-    path: paths.new,
-    title: "New",
-    component: New,
+    id: "user",
+    path: paths.user(":id"),
+    title: "User",
+    component: User,
   },
   {
     id: "signin",

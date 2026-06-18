@@ -5,15 +5,11 @@ import { NextFunction, Request, Response } from "express";
 
 import { JwtPayload } from "../types/jwt-payload.type.js";
 
-type RequestWithUser = Request & {
-  user?: JwtPayload;
-};
-
 @Injectable()
 export class UserMiddleware implements NestMiddleware {
   constructor(private readonly jwtService: JwtService) {}
 
-  async use(req: RequestWithUser, res: Response, next: NextFunction) {
+  async use(req: Request, res: Response, next: NextFunction) {
     const token = this.extractToken(req);
 
     if (token) {
@@ -24,11 +20,11 @@ export class UserMiddleware implements NestMiddleware {
           req.user = payload;
         }
       } catch {
-        next();
+        return next();
       }
     }
 
-    next();
+    return next();
   }
 
   private extractToken(request: Request): string | undefined {

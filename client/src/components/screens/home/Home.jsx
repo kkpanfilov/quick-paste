@@ -52,9 +52,12 @@ export const Home = () => {
   );
 
   useEffect(() => {
-    if (!languages.length) return;
-
     async function loadLanguages() {
+      if (!languages.length) {
+        setAreLanguagesLoaded(true);
+        return;
+      }
+
       for (const language of languages) {
         if (registeredLanguagesRef.current.has(language)) continue;
 

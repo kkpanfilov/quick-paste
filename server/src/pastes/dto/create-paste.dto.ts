@@ -103,6 +103,17 @@ export class CreatePasteDto {
   })
   content!: string;
 
+  @IsOptional()
+  @IsString({ message: "Description must be a string" })
+  @Transform(({ value }): string =>
+    typeof value === "string" ? value.trim() : value,
+  )
+  @IsNotEmpty({ message: "Description must not be empty" })
+  @MaxLength(1000, {
+    message: "Description must be at most 1000 characters long",
+  })
+  description?: string | null;
+
   @IsString({ message: "Language must be a string" })
   @IsIn(LANGUAGE_VALUES, {
     message: `Language must be one of [${LANGUAGE_VALUES.join(", ")}]`,
@@ -136,5 +147,5 @@ export class CreatePasteDto {
     typeof value === "string" ? value.trim() : value,
   )
   @MaxLength(32, { message: "Password must be at most 32 characters long" })
-  password?: string;
+  password!: string;
 }
