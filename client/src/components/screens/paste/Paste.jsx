@@ -16,6 +16,7 @@ import { PasteContent } from "./components/paste-content/PasteContent.jsx";
 
 import styles from "./Paste.module.scss";
 
+// TODO: implement tags
 export const Paste = () => {
   useDocumentTitle("Paste");
 

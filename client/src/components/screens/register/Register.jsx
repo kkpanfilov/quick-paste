@@ -10,6 +10,7 @@ import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { setAccessToken } from "@/shared/authStore.js";
 import { login } from "@/store/auth/authSlice.js";
+import { addNotification } from "@/store/notification/notificationSlice.js";
 
 import styles from "./Register.module.scss";
 
@@ -36,24 +37,40 @@ export const Register = () => {
 
   useDocumentTitle("Register");
 
-  // TODO: add notifications
   const onSubmit = async (formData) => {
-    const body = {
-      email: formData.email,
-      username: formData.username,
-      password: formData.password,
-    };
+    try {
+      const body = {
+        email: formData.email,
+        username: formData.username,
+        password: formData.password,
+      };
 
-    const data = await registerUser(body);
+      const data = await registerUser(body);
 
-    if (!data) return;
+      if (!data) return;
 
-    if (data.accessToken) {
-      setAccessToken(data.accessToken);
-      goHome();
+      if (data.accessToken) {
+        setAccessToken(data.accessToken);
+        dispatch(login({ userId: data.id }));
+        goHome();
+
+        dispatch(
+          addNotification({
+            type: "success",
+            title: "Successfully registered",
+            message: "You have successfully registered",
+          }),
+        );
+      }
+    } catch (error) {
+      dispatch(
+        addNotification({
+          type: "error",
+          title: "Register error",
+          message: error.message,
+        }),
+      );
     }
-
-    dispatch(login({ userId: data.id }));
   };
 
   return (

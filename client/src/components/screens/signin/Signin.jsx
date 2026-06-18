@@ -10,6 +10,7 @@ import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { setAccessToken } from "@/shared/authStore.js";
 import { login } from "@/store/auth/authSlice.js";
+import { addNotification } from "@/store/notification/notificationSlice.js";
 
 import styles from "./Signin.module.scss";
 
@@ -34,16 +35,32 @@ export const Signin = () => {
 
   useDocumentTitle("Sign in");
 
-  // TODO: add notifications
   const onSubmit = async (body) => {
-    const data = await loginUser(body);
+    try {
+      const data = await loginUser(body);
 
-    if (data.accessToken) {
-      setAccessToken(data.accessToken);
-      goHome();
+      if (data.accessToken) {
+        setAccessToken(data.accessToken);
+        dispatch(login({ userId: data.id }));
+        goHome();
+
+        dispatch(
+          addNotification({
+            type: "success",
+            title: "Successfully signed in",
+            message: "You have successfully signed in",
+          }),
+        );
+      }
+    } catch (error) {
+      dispatch(
+        addNotification({
+          type: "error",
+          title: "Sign in error",
+          message: error.message,
+        }),
+      );
     }
-
-    dispatch(login({ userId: data.id }));
   };
 
   return (
