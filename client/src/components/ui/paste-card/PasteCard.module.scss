@@ -1,0 +1,105 @@
+@use "@/styles/tokens" as *;
+
+.card {
+  border: 1px solid $card-border;
+  border-radius: 12px;
+  background: linear-gradient(
+    180deg,
+    rgba($card-bg-hover, 0.96) 0%,
+    rgba($card-bg, 0.96) 100%
+  );
+  padding: 18px;
+  box-shadow: $card-shadow;
+  transition:
+    border-color 160ms ease,
+    transform 120ms ease;
+  position: relative;
+
+  &:hover {
+    border-color: $border-strong;
+    cursor: pointer;
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cardTitle {
+  margin: 0;
+  color: $text-primary;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  line-height: 1.4;
+}
+
+.cardTags {
+  display: flex;
+  gap: 8px;
+}
+
+.language,
+.category {
+  border: 1px solid $border-default;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: $text-secondary;
+  font-size: $font-size-xs;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.preview {
+  margin: 12px 0 0;
+  border: 1px solid $border-subtle;
+  border-radius: 10px;
+  background: $code-bg !important;
+  padding: 12px;
+  color: $text-primary;
+  font-family: $font-family-mono;
+  font-size: $font-size-sm;
+  line-height: 1.4;
+  max-height: 150px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.codeBlockFade {
+  position: absolute;
+  height: 60px;
+  left: 0;
+  right: 0;
+  bottom: 48px;
+  margin: 0 18px;
+  background: linear-gradient(rgba($code-bg, 0), $code-bg);
+}
+
+.meta {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: $text-tertiary;
+  font-size: $font-size-xs;
+}
+
+.meta div {
+  display: flex;
+  gap: 10px;
+}
+
+.likes {
+  display: flex;
+}
+
+.likeIcon {
+  width: 16px;
+  height: 16px;
+  fill: $text-tertiary;
+}
