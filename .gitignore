@@ -7,7 +7,15 @@ dist/
 build/
 **/dist/
 **/build/
+
+/src/generated/
+
+# Prisma
 **/generated/prisma/
+server/src/generated/
+src/generated/
+generated/
+prisma/generated/
 
 # Logs
 logs

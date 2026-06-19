@@ -26,9 +26,6 @@ enum UserExposure {
   PRIVATE
 }
 
-// TODO: add exposure
-// TODO: implement user profile editing (username, description, email, exposure)
-// TODO: delete user tags
 model User {
   id               String       @id @default(cuid())
   username         String       @unique
