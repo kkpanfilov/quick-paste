@@ -1,10 +1,14 @@
 import { Transform } from "class-transformer";
 import {
+  ArrayMaxSize,
+  ArrayUnique,
+  IsArray,
   IsBoolean,
   IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
+  Length,
   MaxLength,
 } from "class-validator";
 
@@ -113,6 +117,31 @@ export class CreatePasteDto {
     message: "Description must be at most 1000 characters long",
   })
   description?: string | null;
+
+  @IsArray({ message: "Tags must be an array" })
+  @IsString({ each: true })
+  @Transform(({ value }): unknown => {
+    const tags: unknown = value;
+
+    if (!Array.isArray(tags)) {
+      return tags;
+    }
+
+    return tags.map((tag: unknown) => {
+      if (typeof tag === "string") {
+        return tag.trim();
+      } else {
+        return tag;
+      }
+    });
+  })
+  @ArrayMaxSize(5, { message: "Tags must be at most 5 items long" })
+  @ArrayUnique({ message: "Tags must be unique" })
+  @Length(1, 30, {
+    each: true,
+    message: "Tags must be at least 1 character long and no more than 30",
+  })
+  tags!: string[];
 
   @IsString({ message: "Language must be a string" })
   @IsIn(LANGUAGE_VALUES, {

@@ -26,6 +26,7 @@ enum UserExposure {
   PRIVATE
 }
 
+// TODO: delete user tags
 model User {
   id               String       @id @default(cuid())
   username         String       @unique

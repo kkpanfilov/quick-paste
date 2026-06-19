@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useForm, useWatch } from "react-hook-form";
 
@@ -34,6 +34,7 @@ export const New = () => {
       title: "",
       content: "",
       description: "",
+      tags: [],
       language: "plain",
       expiration: "never",
       category: "none",
@@ -88,6 +89,47 @@ export const New = () => {
     const data = await createPaste(body);
 
     if (data.id) goPaste(data.id);
+  };
+
+  const [tag, setTag] = useState("");
+
+  const tags = useWatch({
+    control,
+    name: "tags",
+  });
+
+  const onEnter = (event) => {
+    if (event.key !== "Enter") return;
+
+    event.preventDefault();
+    addTag();
+  };
+
+  const addTag = () => {
+    const value = tag.trim();
+
+    if (!value) return;
+    if (value.length < 1 || value.length > 30) return;
+    if (tags.length >= 5) return;
+    if (tags.includes(value)) return;
+
+    setValue("tags", [...tags, value], {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setTag("");
+  };
+
+  const removeTag = (tag) => {
+    setValue(
+      "tags",
+      tags.filter((t) => t !== tag),
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    );
   };
 
   return (
@@ -146,6 +188,43 @@ export const New = () => {
                 },
               })}
             />
+          </div>
+
+          <div className={styles.group}>
+            <label htmlFor="new-tags" className={styles.label}>
+              Tags
+            </label>
+            <div className={styles.tags}>
+              {tags.map((tag) => (
+                <span key={tag} className={styles.tag}>
+                  {tag}
+                  <span
+                    className={styles.tagClose}
+                    onClick={() => removeTag(tag)}
+                  >
+                    X
+                  </span>
+                </span>
+              ))}
+            </div>
+            <Field
+              id="new-tags"
+              name="tags"
+              type="text"
+              className={styles.input}
+              placeholder="Add tags (optional)"
+              onKeyDown={onEnter}
+              value={tag}
+              onChange={(event) => setTag(event.target.value)}
+            ></Field>
+            <Button
+              variant="primary"
+              className={styles.addTagButton}
+              disabled={tag === ""}
+              onClick={() => addTag(event)}
+            >
+              Add
+            </Button>
           </div>
 
           <div className={styles.grid}>

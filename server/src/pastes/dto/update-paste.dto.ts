@@ -7,6 +7,7 @@ export class UpdatePasteDto extends PartialType(
     "title",
     "content",
     "description",
+    "tags",
     "category",
     "language",
     "exposure",

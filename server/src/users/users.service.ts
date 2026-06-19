@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -318,6 +319,10 @@ export class UsersService {
   }
 
   async update(id: string, userId: string, updateUserDto: UpdateUserDto) {
+    if (Object.keys(updateUserDto).length === 0) {
+      throw new BadRequestException("No data provided");
+    }
+
     const user = await this.prisma.user.findUnique({
       where: {
         id,

@@ -17,10 +17,15 @@ export const PasteCard = ({ paste }) => {
       <header className={styles.cardHeader}>
         <h2 className={styles.cardTitle}>{paste.title}</h2>
         <div className={styles.cardTags}>
-          <span className={styles.category} hidden={!paste.category}>
+          {paste.pasteTags.map((tag) => (
+            <span className={styles.tag} key={tag}>
+              {tag}
+            </span>
+          ))}
+          <span className={styles.tag} hidden={!paste.category}>
             {paste.category}
           </span>
-          <span className={styles.language}>{paste.language}</span>
+          <span className={styles.tag}>{paste.language}</span>
         </div>
       </header>
       <SyntaxHighlighter

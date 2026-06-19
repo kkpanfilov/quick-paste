@@ -109,7 +109,7 @@ export const PasteTextarea = ({
           isLoaded: true,
           language: "plain",
         });
-        return;
+        return null;
       }
 
       const module = await loader();
@@ -150,9 +150,16 @@ export const PasteTextarea = ({
             <ErrorMessage message={editForm.formState.errors.content.message} />
           )}
         </span>
-        <span className={styles.status}>
-          {isAuth && userId === data.authorId ? "Owner" : "Read only"}
-        </span>
+        <div className={styles.tags}>
+          {data.pasteTags.map((tag) => (
+            <span key={tag} className={styles.tag}>
+              {tag}
+            </span>
+          ))}
+          <span className={styles.tag}>
+            {isAuth && userId === data.authorId ? "Owner" : "Read only"}
+          </span>
+        </div>
       </div>
       {isEditing ? (
         <Field
