@@ -121,6 +121,17 @@ export const New = () => {
     setTag("");
   };
 
+  const removeTag = (tag) => {
+    setValue(
+      "tags",
+      tags.filter((t) => t !== tag),
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    );
+  };
+
   return (
     <main className={styles.screen}>
       <section className={styles.panel} aria-labelledby="new-paste-title">
@@ -187,6 +198,12 @@ export const New = () => {
               {tags.map((tag) => (
                 <span key={tag} className={styles.tag}>
                   {tag}
+                  <span
+                    className={styles.tagClose}
+                    onClick={() => removeTag(tag)}
+                  >
+                    X
+                  </span>
                 </span>
               ))}
             </div>

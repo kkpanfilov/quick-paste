@@ -111,7 +111,7 @@
 }
 
 .tag {
-  padding: 4px 8px;
+  padding: 6px 12px;
   border: 1px solid $border-subtle;
   border-radius: 10px;
   background: rgba($bg-surface-2, 0.56);
@@ -120,6 +120,11 @@
   line-height: 1.2;
 }
 
+.tagClose {
+  font-weight: $font-weight-bold;
+  padding: 6px 3px 6px 9px;
+  cursor: pointer;
+}
 @media (max-width: 768px) {
   .screen {
     min-height: $screen-min-height-mobile;

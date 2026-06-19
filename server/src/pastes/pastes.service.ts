@@ -77,6 +77,11 @@ export class PastesService {
               likes: true,
             },
           },
+          pasteTags: {
+            select: {
+              content: true,
+            },
+          },
         },
         where: {
           exposure: PasteExposure.PUBLIC,
@@ -103,6 +108,7 @@ export class PastesService {
         language: paste.language,
         createdAt: paste.createdAt,
         likesCount: paste._count.likes,
+        pasteTags: paste.pasteTags.map((tag) => tag.content),
       })),
       meta: {
         currentPage: page,
@@ -144,6 +150,11 @@ export class PastesService {
               likes: true,
             },
           },
+          pasteTags: {
+            select: {
+              content: true,
+            },
+          },
         },
         where: {
           authorId,
@@ -170,6 +181,7 @@ export class PastesService {
         language: paste.language,
         createdAt: paste.createdAt,
         likesCount: paste._count.likes,
+        pasteTags: paste.pasteTags.map((tag) => tag.content),
       })),
       meta: {
         currentPage: page,
@@ -281,6 +293,10 @@ export class PastesService {
     userId: string,
     updatePasteDto: UpdatePasteDto & { password?: string },
   ) {
+    if (Object.keys(updatePasteDto).length === 0) {
+      throw new BadRequestException("No data provided");
+    }
+
     const paste = await this.prisma.paste.findUnique({
       where: {
         id,
@@ -298,7 +314,7 @@ export class PastesService {
       throw new ForbiddenException("You are not the author of this paste");
     }
 
-    const { password, ...data } = updatePasteDto as UpdatePasteDto & {
+    const { password, tags, ...data } = updatePasteDto as UpdatePasteDto & {
       passwordHash?: string | null;
     };
 
@@ -310,58 +326,72 @@ export class PastesService {
       data.passwordHash = await argon2.hash(password);
     }
 
-    const { exposure, ...updatedPaste } = await this.prisma.paste.update({
-      where: {
-        id,
-      },
-      data,
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        description: true,
-        category: true,
-        language: true,
-        exposure: true,
-        isBurn: true,
-        authorId: true,
-        createdAt: true,
-        expiresAt: true,
-        comments: {
-          select: {
-            id: true,
-            content: true,
-            createdAt: true,
-            author: {
-              select: {
-                id: true,
-                username: true,
-              },
+    const { exposure, pasteTags, ...updatedPaste } =
+      await this.prisma.paste.update({
+        where: {
+          id,
+        },
+        data: {
+          ...data,
+          ...(tags !== undefined && {
+            pasteTags: {
+              deleteMany: {},
+              create: tags.map((content) => ({ content })),
             },
-            replies: {
-              select: {
-                id: true,
-                content: true,
-                createdAt: true,
-                author: {
-                  select: {
-                    id: true,
-                    username: true,
+          }),
+        },
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          description: true,
+          category: true,
+          language: true,
+          exposure: true,
+          isBurn: true,
+          authorId: true,
+          createdAt: true,
+          expiresAt: true,
+          pasteTags: {
+            select: {
+              content: true,
+            },
+          },
+          comments: {
+            select: {
+              id: true,
+              content: true,
+              createdAt: true,
+              author: {
+                select: {
+                  id: true,
+                  username: true,
+                },
+              },
+              replies: {
+                select: {
+                  id: true,
+                  content: true,
+                  createdAt: true,
+                  author: {
+                    select: {
+                      id: true,
+                      username: true,
+                    },
                   },
                 },
               },
             },
-          },
-          where: {
-            parentId: null,
-          },
-          take: 10,
-          orderBy: {
-            createdAt: "desc",
+            where: {
+              parentId: null,
+            },
+            take: 10,
+            orderBy: {
+              createdAt: "desc",
+            },
           },
         },
-      },
-    });
+      });
 
     const likesCount = await this.prisma.like.count({
       where: {
@@ -380,6 +410,7 @@ export class PastesService {
 
     return {
       likesCount,
+      pasteTags: pasteTags.map((tag) => tag.content),
       isLiked: isLikedByUser ? true : false,
       exposure: exposure.toLowerCase(),
       ...updatedPaste,
@@ -510,6 +541,11 @@ export class PastesService {
         authorId: true,
         createdAt: true,
         expiresAt: true,
+        pasteTags: {
+          select: {
+            content: true,
+          },
+        },
         comments: {
           select: {
             id: true,
@@ -563,7 +599,8 @@ export class PastesService {
       throw new NotFoundException("User not found");
     }
 
-    const { passwordHash, isBurn, expiresAt, exposure, ...rest } = paste;
+    const { passwordHash, isBurn, expiresAt, exposure, pasteTags, ...rest } =
+      paste;
 
     if (exposure === PasteExposure.PRIVATE && paste.authorId !== userId) {
       throw new NotFoundException("Paste not found");
@@ -603,6 +640,7 @@ export class PastesService {
             exposure: exposure.toLowerCase(),
             isBurn,
             likesCount,
+            pasteTags: pasteTags.map((tag) => tag.content),
             isLiked: isLikedByUser ? true : false,
             author: user.username,
           };
@@ -627,6 +665,7 @@ export class PastesService {
       exposure: exposure.toLowerCase(),
       isBurn,
       likesCount,
+      pasteTags: pasteTags.map((tag) => tag.content),
       isLiked: isLikedByUser ? true : false,
       author: user.username,
     };

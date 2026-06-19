@@ -88,7 +88,13 @@
   min-width: 1ch;
 }
 
-.status {
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
   border: 1px solid $border-default;
   border-radius: 999px;
   padding: 4px 8px;
