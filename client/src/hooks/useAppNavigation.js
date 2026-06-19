@@ -10,6 +10,7 @@ export function useAppNavigation() {
     goNew: () => navigate(paths.new),
     goPaste: (id) => navigate(paths.paste(id)),
     goUser: (id) => navigate(paths.user(id)),
+    goSearch: (query) => navigate(paths.search(query)),
     goSignIn: () => navigate(paths.signin),
     goRegister: () => navigate(paths.register),
     goBack: () => navigate(-1),

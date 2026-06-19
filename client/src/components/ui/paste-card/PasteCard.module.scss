@@ -1,6 +1,7 @@
 @use "@/styles/tokens" as *;
 
 .card {
+  min-width: 0;
   border: 1px solid $card-border;
   border-radius: 12px;
   background: linear-gradient(
@@ -29,15 +30,21 @@
 }
 
 .cardTitle {
+  min-width: 0;
+  flex: 1;
   margin: 0;
   color: $text-primary;
   font-size: $font-size-md;
   font-weight: $font-weight-semibold;
   line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .cardTags {
   display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 8px;
 }
 
@@ -102,4 +109,14 @@
   width: 16px;
   height: 16px;
   fill: $text-tertiary;
+}
+
+@media (max-width: 480px) {
+  .cardHeader {
+    flex-direction: column;
+  }
+
+  .cardTags {
+    justify-content: flex-start;
+  }
 }

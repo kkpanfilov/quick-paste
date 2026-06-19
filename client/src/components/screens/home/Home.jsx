@@ -11,11 +11,12 @@ import { useGetPublicPaste } from "@/hooks/pastes/useGetPublicPastes.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { registeredLanguages } from "@/shared/languagesStore.js";
 import { languageLoaders } from "@/shared/lib/syntax-highlighter/language-loaders.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
 
+import { formatPastesData } from "../../../utils/formatPastesData.js";
 import { ErrorPage } from "../error/ErrorPage.jsx";
-import { formatData } from "./utils/formatData.js";
 
 import styles from "./Home.module.scss";
 
@@ -26,7 +27,7 @@ export const Home = () => {
   const dispatch = useDispatch();
 
   const [areLanguagesLoaded, setAreLanguagesLoaded] = useState(false);
-  const registeredLanguagesRef = useRef(new Set());
+  const registeredLanguagesRef = useRef(registeredLanguages);
 
   const [page, setPage] = useState(1);
   const [currentCategory, setCurrentCategory] = useState(
@@ -47,7 +48,8 @@ export const Home = () => {
     currentCategory === "workspace" ? ownPasteQuery : publicPasteQuery;
 
   const { items, meta, languages } = useMemo(
-    () => (data ? formatData(data) : { items: [], meta: null, languages: [] }),
+    () =>
+      data ? formatPastesData(data) : { items: [], meta: null, languages: [] },
     [data],
   );
 

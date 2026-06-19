@@ -1,12 +1,14 @@
 import { formatDistanceToNow } from "date-fns";
 
-import { categoryMap } from "../../../../shared/lists/category.map.js";
-import { languageMap } from "../../../../shared/lists/language.map.js";
-import { countLines } from "../../../../utils/countLines.js";
-import { getContentSize } from "../../../../utils/getContentSize.js";
-import { getCertainLines } from "./getCertainLines.js";
+import { getCertainLines } from "../components/screens/home/utils/getCertainLines.js";
+import { categoryMap } from "../shared/lists/category.map.js";
+import { languageMap } from "../shared/lists/language.map.js";
+import { countLines } from "./countLines.js";
+import { getContentSize } from "./getContentSize.js";
 
-export function formatData(data) {
+export function formatPastesData(data) {
+  if (!data.items.length) return { items: [], meta: null, languages: [] };
+
   const meta = data.meta;
   const items = data.items;
   const languages = [];
