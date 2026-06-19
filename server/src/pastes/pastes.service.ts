@@ -414,6 +414,60 @@ export class PastesService {
     });
   }
 
+  async search(query: string, page: number = 1) {
+    const [pastes, total] = await this.prisma.$transaction([
+      this.prisma.paste.findMany({
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          category: true,
+          language: true,
+          createdAt: true,
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
+        },
+        where: {
+          title: {
+            contains: query,
+          },
+          exposure: PasteExposure.PUBLIC,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 10,
+        skip: (page - 1) * 10,
+      }),
+      this.prisma.paste.count({
+        where: {
+          exposure: PasteExposure.PUBLIC,
+        },
+      }),
+    ]);
+
+    return {
+      items: pastes.map((paste) => ({
+        id: paste.id,
+        title: paste.title,
+        content: paste.content,
+        category: paste.category,
+        language: paste.language,
+        createdAt: paste.createdAt,
+        likesCount: paste._count.likes,
+      })),
+      meta: {
+        currentPage: page,
+        totalPages: Math.ceil(total / 10),
+        hasNextPage: page < Math.ceil(total / 10),
+        totalMatches: total,
+      },
+    };
+  }
+
   private async burn(id: string) {
     const paste = await this.prisma.paste.findUnique({
       where: {

@@ -50,7 +50,6 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
 
   const onUpdate = async (body) => {
     try {
-      console.log("update");
       const dirtyBody = getDirtyBody(body, dirtyFields);
 
       if (Object.prototype.hasOwnProperty.call(dirtyBody, "description")) {
@@ -58,8 +57,6 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
       }
 
       const filteredBody = removeEmptyFields(dirtyBody);
-
-      console.log(filteredBody);
 
       if (Object.keys(filteredBody).length === 0) {
         return;

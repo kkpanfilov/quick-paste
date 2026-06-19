@@ -6,6 +6,7 @@ import { Signin } from "@/components/screens/signin/Signin.jsx";
 import { User } from "@/components/screens/user/User.jsx";
 
 import { paths } from "./paths.config.js";
+import { SearchPage } from "@/components/screens/search/SearchPage.jsx";
 
 export const routes = [
   {
@@ -31,6 +32,12 @@ export const routes = [
     path: paths.user(":id"),
     title: "User",
     component: User,
+  },
+  {
+    id: "search",
+    path: paths.search(":query"),
+    title: "search",
+    component: SearchPage,
   },
   {
     id: "signin",

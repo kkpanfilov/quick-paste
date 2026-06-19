@@ -1,0 +1,270 @@
+@use "@/styles/tokens" as *;
+
+.screen {
+  padding: 36px 0 56px;
+  font-family: $font-family-sans;
+}
+
+.container {
+  width: $layout-width-desktop;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: $text-link;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 8px 0 0;
+  color: $text-primary;
+  font-size: $font-size-4xl;
+  line-height: 1.2;
+}
+
+.subtitle {
+  max-width: 640px;
+  margin: 10px 0 0;
+  color: $text-secondary;
+  font-size: $font-size-md;
+  line-height: 1.6;
+}
+
+.summary {
+  min-width: 128px;
+  border: 1px solid $border-default;
+  border-radius: $radius;
+  background: rgba($bg-surface-2, 0.78);
+  padding: 14px 16px;
+  text-align: right;
+}
+
+.summaryValue {
+  display: block;
+  color: $text-primary;
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+}
+
+.summaryLabel {
+  display: block;
+  margin-top: 6px;
+  color: $text-tertiary;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  text-transform: uppercase;
+}
+
+.results {
+  display: grid;
+  gap: 14px;
+}
+
+.card {
+  border: 1px solid $card-border;
+  border-radius: $radius;
+  background: linear-gradient(
+    180deg,
+    rgba($card-bg-hover, 0.96) 0%,
+    rgba($card-bg, 0.96) 100%
+  );
+  padding: 18px;
+  box-shadow: $card-shadow;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cardTitle {
+  margin: 0;
+  color: $text-primary;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  line-height: 1.35;
+}
+
+.cardDescription {
+  max-width: 720px;
+  margin: 8px 0 0;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  line-height: 1.55;
+}
+
+.language {
+  flex: 0 0 auto;
+  border: 1px solid $border-default;
+  border-radius: 999px;
+  padding: 5px 9px;
+  color: $text-secondary;
+  font-size: $font-size-xs;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.preview {
+  margin: 14px 0 0;
+  border: 1px solid $border-subtle;
+  border-radius: $radius;
+  background: $code-bg;
+  padding: 12px;
+  color: $text-primary;
+  font-family: $font-family-mono;
+  font-size: $font-size-sm;
+  line-height: 1.45;
+  overflow-x: auto;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 12px;
+  color: $text-tertiary;
+  font-size: $font-size-xs;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.pageLink,
+.pageDots {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 38px;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  line-height: 1;
+}
+
+.pageLink {
+  border: 1px solid $border-default;
+  border-radius: $radius;
+  background: rgba($bg-surface-2, 0.88);
+  padding: 0 12px;
+  text-decoration: none;
+  transition: $transition-button-interactive;
+
+  &:hover {
+    border-color: $border-strong;
+    background: rgba($bg-surface-3, 0.9);
+    color: $text-primary;
+  }
+
+  &:active {
+    transform: $active-press-transform;
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-outline;
+    outline-offset: 2px;
+  }
+}
+
+.pageLinkActive {
+  border-color: rgba($accent, 0.72);
+  background: $button-soft-bg;
+  color: $button-soft-text;
+}
+
+.pageLinkDisabled {
+  border-color: $border-subtle;
+  background: rgba($bg-surface-1, 0.72);
+  color: $text-tertiary;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.pageDots {
+  color: $text-tertiary;
+}
+
+@media (max-width: 768px) {
+  .screen {
+    min-height: $screen-min-height-mobile;
+    padding: 28px 0 44px;
+  }
+
+  .container {
+    width: $layout-width-tablet;
+  }
+
+  .header {
+    display: grid;
+    gap: 16px;
+  }
+
+  .title {
+    font-size: $font-size-3xl;
+  }
+
+  .summary {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .screen {
+    padding: 24px 0 34px;
+  }
+
+  .container {
+    width: $layout-width-mobile;
+  }
+
+  .title {
+    font-size: $font-size-2xl;
+  }
+
+  .subtitle {
+    font-size: $font-size-sm;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .cardHeader {
+    display: grid;
+    gap: 10px;
+  }
+
+  .pagination {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .pageLink,
+  .pageDots {
+    min-width: 34px;
+    height: 34px;
+    font-size: $font-size-xs;
+  }
+}
