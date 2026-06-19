@@ -7,9 +7,8 @@ import { useAuthBootstrap } from "@/hooks/auth/useAuthBootstrap.js";
 
 const queryClient = new QueryClient();
 
+// TODO: subdivide into smaller components
 // TODO: migrate to typescript
-// TODO: implement zod validation
-// TODO: migrate to zustand
 // TODO: add all endpoints to insomnia
 export function App() {
   const { isAuthChecked } = useAuthBootstrap();

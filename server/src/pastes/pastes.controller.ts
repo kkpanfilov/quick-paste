@@ -125,4 +125,9 @@ export class PastesController {
   async remove(@Param("id") id: string, @User("id") authorId: string) {
     return await this.pastesService.remove(id, authorId);
   }
+
+  @Get("search/:query")
+  async search(@Param("query") query: string, @Query("page") page: number) {
+    return await this.pastesService.search(query, page);
+  }
 }

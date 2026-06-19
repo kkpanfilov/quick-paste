@@ -102,7 +102,6 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
         setIsEditing(false);
       }
     } catch (error) {
-      console.log(error);
       dispatch(
         addNotification({
           type: "error",

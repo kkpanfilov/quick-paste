@@ -4,20 +4,19 @@ import { useDispatch } from "react-redux";
 
 import { Button } from "@/components/ui/button/Button.jsx";
 import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
-import { Field } from "@/components/ui/field/Field.jsx";
-import { SearchIcon } from "@/components/ui/search-icon/SearchIcon.jsx";
 import { useLogout } from "@/hooks/auth/useLogout.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { logout } from "@/store/auth/authSlice.js";
 import { addNotification } from "@/store/notification/notificationSlice.js";
 
+import { Search } from "../search/Search.jsx";
+
 import styles from "./Hamburger.module.scss";
 
-export const Hamburger = () => {
+export const Hamburger = ({ isHamburgerOpen, setIsHamburgerOpen }) => {
   const dispatch = useDispatch();
 
-  const [isShow, setIsShow] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const { goNew, goSignIn, goUser } = useAppNavigation();
@@ -69,7 +68,7 @@ export const Hamburger = () => {
           className={styles.menuButton}
           type="button"
           aria-label="Open menu"
-          onClick={() => setIsShow(!isShow)}
+          onClick={() => setIsHamburgerOpen(!isHamburgerOpen)}
         >
           <span></span>
           <span></span>
@@ -78,26 +77,16 @@ export const Hamburger = () => {
 
         <div
           className={styles.menuList}
-          data-state={isShow ? "open" : "closed"}
-          isShow={isShow}
+          data-state={isHamburgerOpen ? "open" : "closed"}
+          isShow={isHamburgerOpen}
         >
-          <form className={styles.search} role="search">
-            <SearchIcon />
-            <Field
-              className={styles.searchField}
-              type="search"
-              name="query"
-              placeholder="Search pastes"
-              autoComplete="off"
-            />
-          </form>
-
+          <Search type="mobile" setIsHamburgerOpen={setIsHamburgerOpen} />{" "}
           <Button
             variant="primary"
             className={styles.menuLinkPrimary}
             onClick={() => {
               goNew();
-              setIsShow(false);
+              setIsHamburgerOpen(false);
             }}
           >
             New paste
@@ -109,7 +98,7 @@ export const Hamburger = () => {
                 className={styles.menuLinkSoft}
                 onClick={() => {
                   goUser(userId);
-                  setIsShow(false);
+                  setIsHamburgerOpen(false);
                 }}
               >
                 Profile
@@ -129,7 +118,7 @@ export const Hamburger = () => {
               className={styles.menuLinkGhost}
               onClick={() => {
                 goSignIn();
-                setIsShow(false);
+                setIsHamburgerOpen(false);
               }}
             >
               Sign in

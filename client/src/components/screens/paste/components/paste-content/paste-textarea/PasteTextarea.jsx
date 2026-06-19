@@ -105,7 +105,11 @@ export const PasteTextarea = ({
       const loader = languageLoaders[language];
 
       if (!loader) {
-        return null;
+        setLanguageLoadState({
+          isLoaded: true,
+          language: "plain",
+        });
+        return;
       }
 
       const module = await loader();
