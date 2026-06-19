@@ -30,7 +30,7 @@ export class PastesService {
     },
     authorId: string,
   ) {
-    const { password, ...rest } = createPasteDto;
+    const { password, tags, ...rest } = createPasteDto;
 
     const data = { ...rest, authorId } as CreatePasteDto & {
       authorId: string;
@@ -48,7 +48,12 @@ export class PastesService {
     }
 
     const paste = await this.prisma.paste.create({
-      data,
+      data: {
+        ...data,
+        pasteTags: {
+          create: tags.map((content) => ({ content })),
+        },
+      },
       select: {
         id: true,
       },
