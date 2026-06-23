@@ -63,7 +63,6 @@ export function useNewPasteForm() {
     const body = {
       ...values,
       isBurn: values.expiration === "burn",
-      expiration: values.expiration === "burn" ? null : values.expiration,
       description: nullIfBlank(values.description),
     };
 

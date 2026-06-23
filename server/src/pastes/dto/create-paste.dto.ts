@@ -64,11 +64,10 @@ const EXPIRATION_VALUES = [
   "1h",
   "1d",
   "3d",
-  "1w",
-  "2w",
-  "1m",
-  "3m",
-  "6m",
+  "7d",
+  "14d",
+  "30d",
+  "180d",
   "1y",
 ] as const;
 

@@ -48,10 +48,10 @@ export const expirationList = [
   { label: "1 Hour", value: "1h" },
   { label: "1 Day", value: "1d" },
   { label: "3 Days", value: "3d" },
-  { label: "1 Week", value: "1w" },
-  { label: "2 Weeks", value: "2w" },
-  { label: "1 Month", value: "1m" },
-  { label: "6 Months", value: "6m" },
+  { label: "1 Week", value: "7d" },
+  { label: "2 Weeks", value: "14d" },
+  { label: "1 Month", value: "30d" },
+  { label: "6 Months", value: "180d" },
   { label: "1 Year", value: "1y" },
 ];
 
