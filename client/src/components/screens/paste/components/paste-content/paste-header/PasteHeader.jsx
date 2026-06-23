@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import clsx from "clsx";
 import { formatDistanceToNow } from "date-fns";
 import { useWatch } from "react-hook-form";
@@ -9,6 +7,8 @@ import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { Select } from "@/components/ui/select/Select.jsx";
+import { TagEditor } from "@/components/ui/tag-editor/TagEditor.jsx";
+import { useNotifications } from "@/hooks/useNotifications.js";
 import { categoryMap } from "@/shared/lists/category.map.js";
 import { exposureMap } from "@/shared/lists/exposure.map.js";
 import { languageMap } from "@/shared/lists/language.map.js";
@@ -17,14 +17,12 @@ import {
   exposureList,
   languageList,
 } from "@/shared/lists/new-paste.list.js";
-import { addNotification } from "@/store/notification/notificationSlice.js";
 import { countLines } from "@/utils/countLines.js";
 import { getContentSize } from "@/utils/getContentSize.js";
 
 import styles from "./PasteHeader.module.scss";
 
 export const PasteHeader = ({
-  dispatch,
   isAuth,
   userId,
   data,
@@ -36,15 +34,21 @@ export const PasteHeader = ({
 }) => {
   const author = data.author;
 
+  const { notifySuccess, notifyError } = useNotifications();
+
   const onCopy = () => {
-    navigator.clipboard.writeText(data.content);
-    dispatch(
-      addNotification({
-        type: "success",
+    try {
+      navigator.clipboard.writeText(data.content);
+      notifySuccess({
         title: "Paste copied",
         message: "Paste has been copied to clipboard",
-      }),
-    );
+      });
+    } catch (error) {
+      notifyError({
+        title: "Paste not copied",
+        message: error.message,
+      });
+    }
   };
 
   const exposure = useWatch({
@@ -52,48 +56,6 @@ export const PasteHeader = ({
     name: "exposure",
     defaultValue: data.exposure,
   });
-
-  const [tag, setTag] = useState("");
-
-  const tags = useWatch({
-    control: editForm.control,
-    name: "tags",
-    defaultValue: data.pasteTags,
-  });
-
-  const onEnter = (event) => {
-    if (event.key !== "Enter") return;
-
-    event.preventDefault();
-    addTag();
-  };
-
-  const addTag = () => {
-    const value = tag.trim();
-
-    if (!value) return;
-    if (value.length < 1 || value.length > 30) return;
-    if (tags.length >= 5) return;
-    if (tags.includes(value)) return;
-
-    editForm.setValue("tags", [...tags, value], {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-
-    setTag("");
-  };
-
-  const removeTag = (tag) => {
-    editForm.setValue(
-      "tags",
-      tags.filter((t) => t !== tag),
-      {
-        shouldValidate: true,
-        shouldDirty: true,
-      },
-    );
-  };
 
   return (
     <>
@@ -156,8 +118,8 @@ export const PasteHeader = ({
               <dt>Category</dt>
               {isEditing ? (
                 <Select
-                  id="new-language"
-                  name="language"
+                  id="new-category"
+                  name="category"
                   className={styles.pasteSelect}
                   {...editForm.register("category", {
                     required: "Category is required",
@@ -213,14 +175,10 @@ export const PasteHeader = ({
                         data.exposure !== "protected" &&
                         !formValues.password
                       ) {
-                        dispatch(
-                          addNotification({
-                            type: "error",
-                            title: "Password is required",
-                            message:
-                              "Password is required to protect your paste",
-                          }),
-                        );
+                        notifyError({
+                          title: "Password is required",
+                          message: "Password is required to protect your paste",
+                        });
                         return "Password is required";
                       }
                     },
@@ -287,40 +245,12 @@ export const PasteHeader = ({
             </div>
           </dl>
           {isEditing && (
-            <div className={styles.tagsEditor}>
-              <label htmlFor="paste-tags">Tags</label>
-              <div className={styles.tags}>
-                {tags.map((tag) => (
-                  <span key={tag} className={styles.tag}>
-                    {tag}
-                    <span
-                      className={styles.tagClose}
-                      onClick={() => removeTag(tag)}
-                    >
-                      X
-                    </span>
-                  </span>
-                ))}
-              </div>
-              <Field
-                tag="input"
-                id="paste-tags"
-                name="tags"
-                className={styles.tagsInput}
-                placeholder="Add a tags to your paste (optional)"
-                onKeyDown={onEnter}
-                value={tag}
-                onChange={(event) => setTag(event.target.value)}
-              />
-              <Button
-                variant="primary"
-                className={styles.addTagButton}
-                disabled={tag === ""}
-                onClick={() => addTag(event)}
-              >
-                Add
-              </Button>
-            </div>
+            <TagEditor
+              form={editForm}
+              id="paste-tags"
+              name="tags"
+              placeholder="Add tags to your paste (optional)"
+            />
           )}
         </div>
 

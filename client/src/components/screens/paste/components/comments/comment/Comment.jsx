@@ -6,12 +6,11 @@ import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { useCreateReply } from "@/hooks/comments/useCreateReply.js";
-import { addNotification } from "@/store/notification/notificationSlice.js";
+import { useNotifications } from "@/hooks/useNotifications.js";
 
 import styles from "./Comment.module.scss";
 
 export const Comment = ({
-  dispatch,
   isAuth,
   pasteId,
   comment,
@@ -31,6 +30,8 @@ export const Comment = ({
   const isReplying =
     replyState.isReplying && replyState.commentId === commentId;
 
+  const { notifySuccess, notifyError } = useNotifications();
+
   const { mutateAsync: createReply } = useCreateReply();
   const queryClient = useQueryClient();
 
@@ -39,13 +40,10 @@ export const Comment = ({
       const result = await createReply({ id: commentId, pasteId, data });
 
       if (result.id) {
-        dispatch(
-          addNotification({
-            type: "success",
-            title: "Comment added",
-            message: "Comment has been added successfully",
-          }),
-        );
+        notifySuccess({
+          title: "Comment added",
+          message: "Comment has been added successfully",
+        });
 
         queryClient.setQueryData(["paste", pasteId], (oldData) => {
           const { comments, ...rest } = oldData;
@@ -69,13 +67,10 @@ export const Comment = ({
         reset();
       }
     } catch (error) {
-      dispatch(
-        addNotification({
-          type: "error",
-          title: "Paste not unlocked",
-          message: error.message,
-        }),
-      );
+      notifyError({
+        title: "Comment not added",
+        message: error.message,
+      });
     }
   };
 

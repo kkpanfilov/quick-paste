@@ -22,8 +22,7 @@
   text-transform: uppercase;
 }
 
-.pasteInput,
-.tagsInput {
+.pasteInput {
   height: 44px;
   width: 100%;
   padding: 0 13px;
@@ -62,8 +61,7 @@
   overflow-wrap: anywhere;
 }
 
-.descriptionEditor,
-.tagsEditor {
+.descriptionEditor {
   margin-top: 12px;
   display: grid;
   gap: 8px;
@@ -73,35 +71,6 @@
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
   }
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.tag {
-  padding: 6px 12px;
-  border: 1px solid $border-subtle;
-  border-radius: 10px;
-  background: rgba($bg-surface-2, 0.56);
-  color: $text-primary;
-  font-size: $font-size-xs;
-  line-height: 1.2;
-}
-
-.tagClose {
-  font-weight: $font-weight-bold;
-  padding: 6px 3px 6px 9px;
-  cursor: pointer;
-}
-
-.addTagButton {
-  display: none;
-  height: 38px;
-  padding: 0 16px;
-  width: 100%;
 }
 
 .descriptionInput {
@@ -178,10 +147,6 @@
 
   .actionButton {
     width: 100%;
-  }
-
-  .addTagButton {
-    display: block;
   }
 }
 

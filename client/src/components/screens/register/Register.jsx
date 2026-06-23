@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router";
 
 import { Button } from "@/components/ui/button/Button.jsx";
@@ -7,9 +6,9 @@ import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { useRegister } from "@/hooks/auth/useRegister.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { setAccessToken } from "@/shared/authStore.js";
-import { login } from "@/store/auth/authSlice.js";
 
 import styles from "./Register.module.scss";
 
@@ -30,9 +29,10 @@ export const Register = () => {
   });
 
   const { goHome } = useAppNavigation();
-  const dispatch = useDispatch();
 
   const { mutateAsync: registerUser, isPending } = useRegister();
+
+  const { login } = useAuth();
 
   useDocumentTitle("Register");
 
@@ -52,7 +52,7 @@ export const Register = () => {
       goHome();
     }
 
-    dispatch(login({ userId: data.id }));
+    login({ userId: data.id });
   };
 
   return (

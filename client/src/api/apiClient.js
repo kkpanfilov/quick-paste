@@ -4,8 +4,7 @@ import { getAccessToken, setAccessToken } from "@/shared/authStore.js";
 
 import { refreshAccessToken } from "./auth/refreshAccessToken.js";
 
-const BASE_URL = "http://localhost:4200";
-const PREFIX = "/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
 export async function apiClient(method, endpoint, data = {}, options = {}) {
   try {
@@ -17,8 +16,8 @@ export async function apiClient(method, endpoint, data = {}, options = {}) {
       headers: {
         "Content-Type": "application/json",
       },
-      baseURL: BASE_URL,
-      url: `${PREFIX}/${endpoint}`,
+      baseURL: API_BASE_URL,
+      url: endpoint,
       data: data,
       ...options,
     };

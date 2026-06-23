@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 
 import { Button } from "@/components/ui/button/Button.jsx";
 import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
@@ -11,10 +10,10 @@ import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { Select } from "@/components/ui/select/Select.jsx";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+import { useAuth } from "@/hooks/useAuth.js";
+import { useNotifications } from "@/hooks/useNotifications.js";
 import { useDeleteUser } from "@/hooks/users/useDeleteUser.js";
 import { useUpdateUser } from "@/hooks/users/useUpdateUser.js";
-import { logout } from "@/store/auth/authSlice.js";
-import { addNotification } from "@/store/notification/notificationSlice.js";
 import { getDirtyBody } from "@/utils/getDirtyBody.js";
 import { nullIfBlank } from "@/utils/nullIfBlank.js";
 import { removeEmptyFields } from "@/utils/removeEmptyFields.js";
@@ -43,7 +42,8 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
 
   const queryClient = useQueryClient();
 
-  const dispatch = useDispatch();
+  const { logout } = useAuth();
+  const { notifySuccess, notifyError } = useNotifications();
 
   const { mutateAsync: updateUser } = useUpdateUser();
   const { mutateAsync: deleteUser } = useDeleteUser();
@@ -68,13 +68,10 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
       });
 
       if (result.id) {
-        dispatch(
-          addNotification({
-            type: "success",
-            title: "User updated",
-            message: "User has been updated successfully",
-          }),
-        );
+        notifySuccess({
+          title: "User updated",
+          message: "User has been updated successfully",
+        });
 
         queryClient.setQueryData(["user", paramUserId], (oldData) => ({
           ...oldData,
@@ -91,13 +88,10 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
         setIsEditing(false);
       }
     } catch (error) {
-      dispatch(
-        addNotification({
-          type: "error",
-          title: "User not updated",
-          message: error.message,
-        }),
-      );
+      notifyError({
+        title: "User not updated",
+        message: error.message,
+      });
     }
   };
 
@@ -106,25 +100,19 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
       const result = await deleteUser(userId);
 
       if (result.success) {
-        dispatch(
-          addNotification({
-            type: "success",
-            title: "Your profile deleted",
-            message: "Your profile has been deleted successfully",
-          }),
-        );
+        notifySuccess({
+          title: "Your profile deleted",
+          message: "Your profile has been deleted successfully",
+        });
 
         goHome();
-        dispatch(logout());
+        logout();
       }
     } catch (error) {
-      dispatch(
-        addNotification({
-          type: "error",
-          title: "Your profile not deleted",
-          message: error.message,
-        }),
-      );
+      notifyError({
+        title: "Your profile not deleted",
+        message: error.message,
+      });
     }
 
     setIsConfirmOpen(false);
@@ -145,7 +133,7 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
           }}
         />
       )}
-      <section className={styles.profile}>
+      <form className={styles.profile}>
         <div className={styles.identity}>
           <div className={styles.avatar} aria-hidden="true">
             {data.username[0].toUpperCase()}
@@ -257,7 +245,7 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
             </>
           )}
         </div>
-      </section>
+      </form>
     </>
   );
 };

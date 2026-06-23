@@ -1,0 +1,102 @@
+@use "@/styles/tokens" as *;
+
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.group {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+}
+
+.input,
+.select {
+  height: 44px;
+  padding: 0 13px;
+}
+
+.textarea {
+  resize: vertical;
+  padding: 12px 13px;
+  font-family: $font-family-mono;
+  line-height: 1.55;
+}
+
+.actions {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.addTagButton {
+  display: none;
+  height: 38px;
+  padding: 0 16px;
+  width: 100%;
+}
+
+.createPasteButton {
+  height: 42px;
+  padding: 0 16px;
+  width: 100%;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 6px 12px;
+  border: 1px solid $border-subtle;
+  border-radius: 10px;
+  background: rgba($bg-surface-2, 0.56);
+  color: $text-primary;
+  font-size: $font-size-xs;
+  line-height: 1.2;
+}
+
+.tagClose {
+  font-weight: $font-weight-bold;
+  padding: 6px 3px 6px 9px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .textarea {
+    min-height: 240px;
+  }
+
+  .addTagButton {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .actions {
+    flex-direction: column;
+  }
+
+  .primaryButton {
+    width: 100%;
+  }
+}

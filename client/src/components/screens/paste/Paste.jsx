@@ -1,4 +1,3 @@
-import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
 
 import { PastePassword } from "@/components/screens/paste-password/PastePassword.jsx";
@@ -22,7 +21,6 @@ export const Paste = () => {
   const { goHome } = useAppNavigation();
 
   const { isAuth, userId } = useAuth();
-  const dispatch = useDispatch();
 
   const params = useParams();
   const pasteId = params.id;
@@ -62,19 +60,13 @@ export const Paste = () => {
       <main className={styles.screen}>
         <article className={styles.container} aria-labelledby="paste-title">
           <PasteContent
-            dispatch={dispatch}
             isAuth={isAuth}
             userId={userId}
             pasteId={pasteId}
             data={data}
           />
-          <CommentForm dispatch={dispatch} isAuth={isAuth} pasteId={pasteId} />
-          <Comments
-            dispatch={dispatch}
-            isAuth={isAuth}
-            pasteId={pasteId}
-            data={data}
-          />
+          <CommentForm isAuth={isAuth} pasteId={pasteId} data={data} />
+          <Comments isAuth={isAuth} pasteId={pasteId} data={data} />
         </article>
       </main>
     </>

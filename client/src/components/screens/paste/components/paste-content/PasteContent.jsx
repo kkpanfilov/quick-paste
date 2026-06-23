@@ -7,7 +7,7 @@ import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
 import { useDeletePaste } from "@/hooks/pastes/useDeletePaste.js";
 import { useUpdatePaste } from "@/hooks/pastes/useUpdatePaste.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
-import { addNotification } from "@/store/notification/notificationSlice.js";
+import { useNotifications } from "@/hooks/useNotifications.js";
 import { getDirtyBody } from "@/utils/getDirtyBody.js";
 import { nullIfBlank } from "@/utils/nullIfBlank.js";
 import { removeEmptyFields } from "@/utils/removeEmptyFields.js";
@@ -15,14 +15,13 @@ import { removeEmptyFields } from "@/utils/removeEmptyFields.js";
 import { PasteHeader } from "./paste-header/PasteHeader.jsx";
 import { PasteTextarea } from "./paste-textarea/PasteTextarea.jsx";
 
-export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
+export const PasteContent = ({ isAuth, userId, pasteId, data }) => {
   const author = data.author;
 
   const queryClient = useQueryClient();
 
   const editForm = useForm({
     mode: "onSubmit",
-    shouldUnregister: true,
     defaultValues: {
       content: data.content,
       title: data.title,
@@ -35,30 +34,25 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
   });
 
   const { reload } = useAppNavigation();
+  const { notifySuccess, notifyError } = useNotifications();
 
   const onDelete = async (id) => {
     try {
       const result = await deletePaste(id);
 
       if (result.id) {
-        dispatch(
-          addNotification({
-            type: "success",
-            title: "Paste deleted",
-            message: "Paste has been deleted successfully",
-          }),
-        );
+        notifySuccess({
+          title: "Paste deleted",
+          message: "Paste has been deleted successfully",
+        });
       }
 
       reload();
     } catch (error) {
-      dispatch(
-        addNotification({
-          type: "error",
-          title: "Paste not deleted",
-          message: error.message,
-        }),
-      );
+      notifyError({
+        title: "Paste not deleted",
+        message: error.message,
+      });
     }
 
     setIsConfirmOpen(false);
@@ -81,13 +75,10 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
       const result = await updatePaste({ id: pasteId, body: filteredBody });
 
       if (result.id) {
-        dispatch(
-          addNotification({
-            type: "success",
-            title: "Paste updated",
-            message: "Paste has been updated successfully",
-          }),
-        );
+        notifySuccess({
+          title: "Paste updated",
+          message: "Paste has been updated successfully",
+        });
 
         queryClient.setQueryData(["paste", pasteId], { ...result, author });
 
@@ -104,13 +95,10 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
         setIsEditing(false);
       }
     } catch (error) {
-      dispatch(
-        addNotification({
-          type: "error",
-          title: "Paste not updated",
-          message: error.message,
-        }),
-      );
+      notifyError({
+        title: "Paste not updated",
+        message: error.message,
+      });
     }
   };
 
@@ -132,7 +120,6 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
         />
       )}
       <PasteHeader
-        dispatch={dispatch}
         isAuth={isAuth}
         userId={userId}
         data={data}
@@ -144,7 +131,6 @@ export const PasteContent = ({ dispatch, isAuth, userId, pasteId, data }) => {
       />
       <PasteTextarea
         key={pasteId}
-        dispatch={dispatch}
         isAuth={isAuth}
         userId={userId}
         pasteId={pasteId}

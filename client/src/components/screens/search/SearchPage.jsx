@@ -1,15 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { useParams } from "react-router";
-import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 
 import { Loader } from "@/components/ui/loader/Loader.jsx";
 import { Pagination } from "@/components/ui/pagination/Pagination.jsx";
 import { PasteCard } from "@/components/ui/paste-card/PasteCard.jsx";
 import { useSearchPastes } from "@/hooks/pastes/useSearchPastes.js";
+import { useLoadLanguages } from "@/hooks/syntax-highlighter/useLoadLanguages.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { registeredLanguages } from "@/shared/languagesStore.js";
-import { languageLoaders } from "@/shared/lib/syntax-highlighter/language-loaders.js";
 import { formatPastesData } from "@/utils/formatPastesData.js";
 
 import { ErrorPage } from "../error/ErrorPage.jsx";
@@ -23,7 +22,7 @@ export const SearchPage = () => {
   useDocumentTitle(`Search ${query}`);
 
   const [page, setPage] = useState(1);
-  const [areLanguagesLoaded, setAreLanguagesLoaded] = useState(false);
+  const [isHighlightReady, setIsHighlightReady] = useState(false);
   const registeredLanguagesRef = useRef(registeredLanguages);
 
   const { data, isLoading, error } = useSearchPastes(query, page);
@@ -38,31 +37,11 @@ export const SearchPage = () => {
     setPage(page);
   };
 
-  useEffect(() => {
-    async function loadLanguages() {
-      if (!languages.length) {
-        setAreLanguagesLoaded(true);
-        return;
-      }
-
-      for (const language of languages) {
-        if (registeredLanguagesRef.current.has(language)) continue;
-
-        const loader = languageLoaders[language];
-
-        if (!loader) continue;
-
-        registeredLanguagesRef.current.add(language);
-
-        const module = await loader();
-        SyntaxHighlighter.registerLanguage(language, module.default);
-      }
-
-      setAreLanguagesLoaded(true);
-    }
-
-    loadLanguages();
-  }, [languages]);
+  useLoadLanguages({
+    languages,
+    registeredLanguagesRef,
+    setIsHighlightReady,
+  });
 
   if (isLoading) {
     return (
@@ -72,8 +51,17 @@ export const SearchPage = () => {
     );
   }
 
-  if (!areLanguagesLoaded) {
+  if (!isHighlightReady) {
     return <Loader isVisible label="Loading languages..." />;
+  }
+
+  if (error) {
+    return (
+      <ErrorPage
+        title="Failed to searh paste"
+        description="The paste search is temporarily unavailable"
+      />
+    );
   }
 
   if (!items.length) {
@@ -82,15 +70,6 @@ export const SearchPage = () => {
         code="404"
         title="No results found"
         description="We could not find any pastes matching your search query"
-      />
-    );
-  }
-
-  if (error) {
-    return (
-      <ErrorPage
-        title="Failed to searh paste"
-        description="The paste search is temporarily unavailable"
       />
     );
   }

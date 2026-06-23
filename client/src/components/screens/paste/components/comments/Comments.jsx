@@ -4,7 +4,7 @@ import { Comment } from "./comment/Comment.jsx";
 
 import styles from "./Comments.module.scss";
 
-export const Comments = ({ dispatch, isAuth, pasteId, data }) => {
+export const Comments = ({ isAuth, pasteId, data }) => {
   const [replyState, setReplyState] = useState({
     isReplying: false,
     commentId: null,
@@ -17,7 +17,6 @@ export const Comments = ({ dispatch, isAuth, pasteId, data }) => {
         {data.comments.map((comment) => (
           <Comment
             key={comment.id}
-            dispatch={dispatch}
             isAuth={isAuth}
             pasteId={pasteId}
             comment={comment}

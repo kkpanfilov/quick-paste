@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { useCreateComment } from "@/hooks/comments/useCreateComment.js";
-import { addNotification } from "@/store/notification/notificationSlice.js";
+import { useNotifications } from "@/hooks/useNotifications.js";
 
 import styles from "./CommentForm.module.scss";
 
-export const CommentForm = ({ isAuth, dispatch, pasteId }) => {
+export const CommentForm = ({ isAuth, pasteId, data }) => {
   const {
     register,
     handleSubmit,
@@ -20,6 +20,8 @@ export const CommentForm = ({ isAuth, dispatch, pasteId }) => {
     mode: "onSubmit",
   });
 
+  const { notifySuccess, notifyError } = useNotifications();
+
   const { mutateAsync: commentPaste } = useCreateComment();
   const queryClient = useQueryClient();
 
@@ -28,13 +30,10 @@ export const CommentForm = ({ isAuth, dispatch, pasteId }) => {
       const result = await commentPaste({ id: pasteId, body });
 
       if (result.id) {
-        dispatch(
-          addNotification({
-            type: "success",
-            title: "Comment added",
-            message: "Comment has been added successfully",
-          }),
-        );
+        notifySuccess({
+          title: "Comment added",
+          message: "Comment has been added successfully",
+        });
 
         queryClient.setQueryData(["paste", pasteId], (oldData) => {
           return {
@@ -46,13 +45,10 @@ export const CommentForm = ({ isAuth, dispatch, pasteId }) => {
         reset();
       }
     } catch (error) {
-      dispatch(
-        addNotification({
-          type: "error",
-          title: "Comment not added",
-          message: error.message,
-        }),
-      );
+      notifyError({
+        title: "Comment not added",
+        message: error.message,
+      });
     }
   };
 
@@ -67,7 +63,9 @@ export const CommentForm = ({ isAuth, dispatch, pasteId }) => {
           {errors.content && <ErrorMessage message={errors.content.message} />}
         </div>
 
-        <span className={styles.commentsCount}>2</span>
+        <span className={styles.commentsCount}>
+          {data.comments?.length || 0}
+        </span>
       </div>
 
       {isAuth ? (
