@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router";
 
 import { Button } from "@/components/ui/button/Button.jsx";
@@ -7,9 +6,9 @@ import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { useLogin } from "@/hooks/auth/useLogin.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { setAccessToken } from "@/shared/authStore.js";
-import { login } from "@/store/auth/authSlice.js";
 
 import styles from "./Signin.module.scss";
 
@@ -28,7 +27,7 @@ export const Signin = () => {
   });
 
   const { goHome } = useAppNavigation();
-  const dispatch = useDispatch();
+  const { login } = useAuth();
 
   const { mutateAsync: loginUser, isPending } = useLogin();
 
@@ -42,7 +41,7 @@ export const Signin = () => {
       goHome();
     }
 
-    dispatch(login({ userId: data.id }));
+    login({ userId: data.id });
   };
 
   return (
@@ -113,9 +112,6 @@ export const Signin = () => {
               />
               <span>Remember me</span>
             </label>
-            <Link to="/forgot" className={styles.link}>
-              Forgot password?
-            </Link>
           </div>
           <Button
             type="submit"

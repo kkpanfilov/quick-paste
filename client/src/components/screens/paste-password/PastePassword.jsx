@@ -1,12 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 
 import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { useUnlockPaste } from "@/hooks/pastes/useUnlockPaste.js";
-import { addNotification } from "@/store/notification/notificationSlice.js";
+import { useNotifications } from "@/hooks/useNotifications.js";
 
 import styles from "./PastePassword.module.scss";
 
@@ -20,7 +19,7 @@ export const PastePassword = ({ pasteId, onCancel }) => {
   });
 
   const queryClient = useQueryClient();
-  const dispatch = useDispatch();
+  const { notifySuccess, notifyError } = useNotifications();
 
   const { mutateAsync: unlockPaste } = useUnlockPaste();
 
@@ -29,24 +28,18 @@ export const PastePassword = ({ pasteId, onCancel }) => {
       const result = await unlockPaste({ id: pasteId, password });
 
       if (result.id) {
-        dispatch(
-          addNotification({
-            type: "success",
-            title: "Paste unlocked",
-            message: "Paste has been unlocked successfully",
-          }),
-        );
+        notifySuccess({
+          title: "Paste unlocked",
+          message: "Paste has been unlocked successfully",
+        });
 
         queryClient.setQueryData(["paste", pasteId], result);
       }
     } catch (error) {
-      dispatch(
-        addNotification({
-          type: "error",
-          title: "Paste not unlocked",
-          message: error.message,
-        }),
-      );
+      notifyError({
+        title: "Paste not unlocked",
+        message: error.message,
+      });
     }
   };
 

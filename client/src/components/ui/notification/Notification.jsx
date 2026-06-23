@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 
-import { useDispatch } from "react-redux";
-
-import { removeNotification } from "@/store/notification/notificationSlice.js";
+import { useNotifications } from "@/hooks/useNotifications.js";
 
 import styles from "./Notification.module.scss";
 
@@ -14,7 +12,7 @@ export const Notification = ({
   timeout = 4000,
   className = "",
 }) => {
-  const dispatch = useDispatch();
+  const { removeNotification } = useNotifications();
 
   const classes = [styles.notification, styles[type], className]
     .filter(Boolean)
@@ -22,14 +20,14 @@ export const Notification = ({
 
   useEffect(() => {
     const timerId = setTimeout(() => {
-      dispatch(removeNotification(id));
+      removeNotification(id);
     }, timeout);
 
     return () => clearTimeout(timerId);
-  }, [dispatch, id, timeout]);
+  }, [removeNotification, id, timeout]);
 
   const onClose = () => {
-    dispatch(removeNotification(id));
+    removeNotification(id);
   };
 
   return (

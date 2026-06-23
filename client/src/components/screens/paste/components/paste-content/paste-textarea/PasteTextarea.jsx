@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import clsx from "clsx";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -9,8 +9,8 @@ import { Field } from "@/components/ui/field/Field.jsx";
 import { Loader } from "@/components/ui/loader/Loader.jsx";
 import { useLikePaste } from "@/hooks/pastes/useLikePaste.js";
 import { useUnlikePaste } from "@/hooks/pastes/useUnlikePaste.js";
-import { languageLoaders } from "@/shared/lib/syntax-highlighter/language-loaders.js";
-import { addNotification } from "@/store/notification/notificationSlice.js";
+import { useLoadLanguage } from "@/hooks/syntax-highlighter/useLoadLanguage.js";
+import { useNotifications } from "@/hooks/useNotifications.js";
 import { countLines } from "@/utils/countLines.js";
 
 import styles from "./PasteTextarea.module.scss";
@@ -18,7 +18,6 @@ import styles from "./PasteTextarea.module.scss";
 const VISIBLE_LINES_COUNT = 12;
 
 export const PasteTextarea = ({
-  dispatch,
   isAuth,
   userId,
   pasteId,
@@ -30,7 +29,7 @@ export const PasteTextarea = ({
   const { mutateAsync: unlikePaste } = useUnlikePaste();
 
   const [likeState, setLikeState] = useState(null);
-  const [languageLoadState, setLanguageLoadState] = useState({
+  const [highlightState, setHighlightState] = useState({
     isLoaded: false,
     language: null,
   });
@@ -45,15 +44,14 @@ export const PasteTextarea = ({
   const canExpandContent = linesCount > VISIBLE_LINES_COUNT;
   const isContentCollapsed = canExpandContent && !isExpanded;
 
+  const { notifyError } = useNotifications();
+
   const onLike = async (id) => {
     if (!isAuth) {
-      dispatch(
-        addNotification({
-          type: "error",
-          title: "Paste not liked",
-          message: "You must be logged in to like a paste",
-        }),
-      );
+      notifyError({
+        title: "Paste not liked",
+        message: "You must be logged in to like a paste",
+      });
       return;
     }
 
@@ -68,13 +66,10 @@ export const PasteTextarea = ({
         });
       }
     } catch (error) {
-      dispatch(
-        addNotification({
-          type: "error",
-          title: "Paste not liked",
-          message: error.message,
-        }),
-      );
+      notifyError({
+        title: "Paste not liked",
+        message: error.message,
+      });
     }
   };
 
@@ -90,39 +85,17 @@ export const PasteTextarea = ({
         });
       }
     } catch (error) {
-      dispatch(
-        addNotification({
-          type: "error",
-          title: "Paste not unliked",
-          message: error.message,
-        }),
-      );
+      notifyError({
+        title: "Paste not unliked",
+        message: error.message,
+      });
     }
   };
 
-  useEffect(() => {
-    async function loadLanguage(language) {
-      const loader = languageLoaders[language];
-
-      if (!loader) {
-        setLanguageLoadState({
-          isLoaded: true,
-          language: "plain",
-        });
-        return null;
-      }
-
-      const module = await loader();
-      SyntaxHighlighter.registerLanguage(language, module.default);
-
-      setLanguageLoadState({
-        isLoaded: true,
-        language,
-      });
-    }
-
-    loadLanguage(data.language);
-  }, [data.language]);
+  useLoadLanguage({
+    language: data.language,
+    setHighlightState,
+  });
 
   return (
     <section className={styles.content} aria-label="Paste content">
@@ -177,14 +150,14 @@ export const PasteTextarea = ({
         />
       ) : (
         <div className={styles.codeBlockWrapper}>
-          {languageLoadState.isLoaded ? (
+          {highlightState.isLoaded ? (
             <SyntaxHighlighter
               id="paste-content-code"
               className={clsx(
                 styles.codeBlock,
                 isContentCollapsed && styles.codeBlockCollapsed,
               )}
-              language={languageLoadState.language}
+              language={highlightState.language}
               style={oneDark}
               showLineNumbers={true}
               codeTagProps={{
