@@ -6,8 +6,6 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 
-import { Request } from "express";
-
 import {
   PasteExposure,
   User,
