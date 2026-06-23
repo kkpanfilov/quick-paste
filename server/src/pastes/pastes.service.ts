@@ -460,6 +460,11 @@ export class PastesService {
               likes: true,
             },
           },
+          pasteTags: {
+            select: {
+              content: true,
+            },
+          },
         },
         where: {
           title: {
@@ -489,6 +494,7 @@ export class PastesService {
         language: paste.language,
         createdAt: paste.createdAt,
         likesCount: paste._count.likes,
+        pasteTags: paste.pasteTags.map((tag) => tag.content),
       })),
       meta: {
         currentPage: page,
