@@ -668,6 +668,7 @@ export class PastesService {
 
     return {
       ...rest,
+      expiresAt,
       exposure: exposure.toLowerCase(),
       isBurn,
       likesCount,
