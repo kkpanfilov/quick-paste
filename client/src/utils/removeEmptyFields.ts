@@ -1,4 +1,4 @@
-export function removeEmptyFields(obj) {
+export function removeEmptyFields(obj: object) {
   return Object.fromEntries(
     Object.entries(obj).filter(([, value]) => value !== ""),
   );

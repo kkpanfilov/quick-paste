@@ -22,10 +22,10 @@ export const PasteCard = ({ paste }) => {
               {tag}
             </span>
           ))}
-          <span className={styles.tag} hidden={!paste.category}>
-            {paste.category}
+          <span className={styles.tag} hidden={!paste.categoryLabel}>
+            {paste.categoryLabel}
           </span>
-          <span className={styles.tag}>{paste.language}</span>
+          <span className={styles.tag}>{paste.languageLabel}</span>
         </div>
       </header>
       <SyntaxHighlighter

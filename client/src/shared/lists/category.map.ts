@@ -8,3 +8,6 @@ export const categoryMap = {
   math: "Math",
   history: "History",
 } as const;
+
+export type Category = keyof typeof categoryMap;
+export type CategoryLabel = (typeof categoryMap)[Category];

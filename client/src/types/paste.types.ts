@@ -1,71 +1,9 @@
+import type { Category, CategoryLabel } from "@/shared/lists/category.map.ts";
+import type { Expiration } from "@/shared/lists/expiration.map.ts";
+import type { Exposure } from "@/shared/lists/exposure.map.ts";
+import type { Language, LanguageLabel } from "@/shared/lists/language.map.ts";
+
 import type { ISODateString } from "./common.types.ts";
-
-type Exposure = "public" | "unlisted" | "private" | "protected" | "shared";
-
-type Category =
-  | "none"
-  | "programming"
-  | "gaming"
-  | "art"
-  | "music"
-  | "science"
-  | "math"
-  | "history";
-
-type Expiration =
-  | "never"
-  | "burn"
-  | "10m"
-  | "1h"
-  | "1d"
-  | "3d"
-  | "7d"
-  | "14d"
-  | "30d"
-  | "180d"
-  | "1y";
-
-type Language =
-  | "plain"
-  | "markdown"
-  | "javascript"
-  | "typescript"
-  | "jsx"
-  | "tsx"
-  | "markup"
-  | "css"
-  | "scss"
-  | "sass"
-  | "less"
-  | "json"
-  | "yaml"
-  | "toml"
-  | "ini"
-  | "bash"
-  | "shell-session"
-  | "powershell"
-  | "batch"
-  | "python"
-  | "java"
-  | "c"
-  | "cpp"
-  | "csharp"
-  | "go"
-  | "rust"
-  | "php"
-  | "ruby"
-  | "kotlin"
-  | "swift"
-  | "dart"
-  | "sql"
-  | "graphql"
-  | "docker"
-  | "nginx"
-  | "git"
-  | "diff"
-  | "regex"
-  | "lua"
-  | "r";
 
 export type Author = {
   id: string;
@@ -107,6 +45,25 @@ export type Paste = {
   expiresAt: ISODateString | null;
 };
 
+export type FeedPasteItem = Pick<
+  Paste,
+  | "id"
+  | "title"
+  | "content"
+  | "category"
+  | "language"
+  | "createdAt"
+  | "likesCount"
+  | "pasteTags"
+>;
+
+export type FormattedFeedPasteItem = FeedPasteItem & {
+  categoryLabel: CategoryLabel;
+  languageLabel: LanguageLabel;
+  lines: number;
+  size: string;
+};
+
 export type CreatePasteDto = {
   title: string;
   description: string | null;
@@ -123,4 +80,9 @@ export type CreatePasteDto = {
   tags: string[];
 };
 
-export type UpdatePasteDto = Omit<CreatePasteDto, "expiration" | "isBurn">;
+export type UpdatePasteDto = Omit<
+  CreatePasteDto,
+  "expiration" | "isBurn" | "password"
+> & {
+  password?: string;
+};

@@ -40,3 +40,6 @@ export const languageMap = {
   lua: "Lua",
   r: "R",
 } as const;
+
+export type Language = keyof typeof languageMap;
+export type LanguageLabel = (typeof languageMap)[Language];
