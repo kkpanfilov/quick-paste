@@ -4,4 +4,4 @@ export const exposureMap = {
   private: "Private",
   protected: "Protected",
   shared: "Shared",
-};
+} as const;

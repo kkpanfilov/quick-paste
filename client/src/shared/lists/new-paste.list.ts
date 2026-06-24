@@ -39,7 +39,7 @@ export const languageList = [
   { label: "Regex", value: "regex" },
   { label: "Lua", value: "lua" },
   { label: "R", value: "r" },
-];
+] as const;
 
 export const expirationList = [
   { label: "Never", value: "never" },
@@ -53,7 +53,7 @@ export const expirationList = [
   { label: "1 Month", value: "30d" },
   { label: "6 Months", value: "180d" },
   { label: "1 Year", value: "1y" },
-];
+] as const;
 
 export const categoryList = [
   { label: "None", value: "none" },
@@ -64,7 +64,7 @@ export const categoryList = [
   { label: "Science", value: "science" },
   { label: "Math", value: "math" },
   { label: "History", value: "history" },
-];
+] as const;
 
 export const exposureList = [
   { label: "Public", value: "public" },
@@ -72,4 +72,4 @@ export const exposureList = [
   { label: "Private", value: "private" },
   { label: "Protected", value: "protected" },
   { label: "Shared", value: "shared" },
-];
+] as const;

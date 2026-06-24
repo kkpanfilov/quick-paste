@@ -39,4 +39,4 @@ export const languageMap = {
   regex: "Regex",
   lua: "Lua",
   r: "R",
-};
+} as const;

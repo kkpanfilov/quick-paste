@@ -7,4 +7,4 @@ export const categoryMap = {
   science: "Science",
   math: "Math",
   history: "History",
-};
+} as const;
