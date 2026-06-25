@@ -7,8 +7,9 @@ import { useAuthBootstrap } from "@/hooks/auth/useAuthBootstrap.js";
 
 const queryClient = new QueryClient();
 
-// TODO: subdivide into smaller components
 // TODO: migrate to typescript
+// TODO: remove .js and .ts
+// TODO: extract api functions in src/hooks into separate folder (like /src/api/pastes.api.js)
 // TODO: add all endpoints to insomnia
 export function App() {
   const { isAuthChecked } = useAuthBootstrap();
