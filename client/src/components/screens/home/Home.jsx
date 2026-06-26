@@ -3,7 +3,7 @@ import { useMemo, useRef, useState } from "react";
 import { Loader } from "@/components/ui/loader/Loader.jsx";
 import { Pagination } from "@/components/ui/pagination/Pagination.jsx";
 import { PasteCard } from "@/components/ui/paste-card/PasteCard.jsx";
-import { useGetOwnPaste } from "@/hooks/pastes/useGetOwnPastes.js";
+import { useGetOwnPastes } from "@/hooks/pastes/useGetOwnPastes.js";
 import { useGetPublicPaste } from "@/hooks/pastes/useGetPublicPastes.js";
 import { useLoadLanguages } from "@/hooks/syntax-highlighter/useLoadLanguages.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
@@ -34,16 +34,16 @@ export const Home = () => {
 
   const { goNew } = useAppNavigation();
 
-  const ownPasteQuery = useGetOwnPaste(page, {
+  const ownPastesQuery = useGetOwnPastes(page, {
     enabled: currentCategory === "workspace",
   });
 
-  const publicPasteQuery = useGetPublicPaste(page, {
+  const publicPastesQuery = useGetPublicPaste(page, {
     enabled: currentCategory === "feed",
   });
 
   const { data, isLoading, error } =
-    currentCategory === "workspace" ? ownPasteQuery : publicPasteQuery;
+    currentCategory === "workspace" ? ownPastesQuery : publicPastesQuery;
 
   const { items, meta, languages } = useMemo(
     () =>
