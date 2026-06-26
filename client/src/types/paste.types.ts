@@ -3,22 +3,8 @@ import type { Expiration } from "@/shared/lists/expiration.map.ts";
 import type { Exposure } from "@/shared/lists/exposure.map.ts";
 import type { Language, LanguageLabel } from "@/shared/lists/language.map.ts";
 
+import type { CommentItem } from "./comment.types.ts";
 import type { ISODateString } from "./common.types.ts";
-
-export type Author = {
-  id: string;
-  username: string;
-};
-
-export type ReplyItem = Omit<CommentItem, "replies">;
-
-export type CommentItem = {
-  id: string;
-  content: string;
-  author: Author;
-  replies: ReplyItem[];
-  createdAt: ISODateString;
-};
 
 export type Paste = {
   id: string;
@@ -32,7 +18,6 @@ export type Paste = {
   language: Language;
 
   likesCount: number;
-  isBurn: boolean;
   isLiked: boolean;
 
   comments: CommentItem[];
@@ -42,7 +27,6 @@ export type Paste = {
   authorId: string;
 
   createdAt: ISODateString;
-  expiresAt: ISODateString | null;
 };
 
 export type FeedPasteItem = Pick<
