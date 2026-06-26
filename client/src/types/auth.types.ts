@@ -1,3 +1,5 @@
+import type { Message } from "@/types/common.types.ts";
+
 export type RegisterDto = {
   username: string;
   email: string;
@@ -7,6 +9,7 @@ export type RegisterDto = {
 export type LoginDto = {
   username: string;
   password: string;
+  remember: boolean;
 };
 
 export type RegisterResponse = {
@@ -24,8 +27,4 @@ export type RefreshResponse = {
   id: string;
 };
 
-export type LogoutResponse = {
-  message: string;
-  success: boolean;
-  error?: string | undefined;
-};
+export type LogoutResponse = Message;

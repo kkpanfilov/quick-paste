@@ -26,3 +26,18 @@ export type User = {
   createdAt: ISODateString;
   lastActiveAt: ISODateString;
 };
+
+export type UpdatedUser = {
+  id: string;
+  username: string;
+  email?: string;
+  exposure?: Exposure;
+  description: string | null;
+};
+
+export type UpdateUserDto = {
+  username?: string;
+  description?: string;
+  email?: string;
+  exposure?: Exposure;
+};
