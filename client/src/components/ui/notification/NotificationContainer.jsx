@@ -1,11 +1,11 @@
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/store/hooks.js";
 
 import { Notification } from "./Notification.jsx";
 
 import styles from "./Notification.module.scss";
 
 export const NotificationContainer = () => {
-  const notifications = useSelector((state) => state.notification.items);
+  const notifications = useAppSelector((state) => state.notification.items);
 
   return (
     <div className={styles.container}>

@@ -1,15 +1,19 @@
-import { useDispatch } from "react-redux";
-
+import { useAppDispatch } from "@/store/hooks.ts";
 import {
   addNotification,
   removeNotification,
 } from "@/store/notification/notificationSlice.js";
 
+type Notification = {
+  title: string;
+  message: string;
+};
+
 export function useNotifications() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return {
-    notifySuccess: ({ title, message }) => {
+    notifySuccess: ({ title, message }: Notification) => {
       dispatch(
         addNotification({
           type: "success",
@@ -18,7 +22,7 @@ export function useNotifications() {
         }),
       );
     },
-    notifyError: ({ title, message }) => {
+    notifyError: ({ title, message }: Notification) => {
       dispatch(
         addNotification({
           type: "error",
@@ -27,7 +31,7 @@ export function useNotifications() {
         }),
       );
     },
-    notifyInfo: ({ title, message }) => {
+    notifyInfo: ({ title, message }: Notification) => {
       dispatch(
         addNotification({
           type: "info",
@@ -36,7 +40,7 @@ export function useNotifications() {
         }),
       );
     },
-    notifyWarning: ({ title, message }) => {
+    notifyWarning: ({ title, message }: Notification) => {
       dispatch(
         addNotification({
           type: "warning",
@@ -45,7 +49,7 @@ export function useNotifications() {
         }),
       );
     },
-    removeNotification: (id) => {
+    removeNotification: (id: string) => {
       dispatch(removeNotification(id));
     },
   };

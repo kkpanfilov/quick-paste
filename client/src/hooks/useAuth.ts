@@ -1,19 +1,20 @@
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual } from "react-redux";
 
 import { login, logout } from "@/store/auth/authSlice.js";
+import { useAppDispatch, useAppSelector } from "@/store/hooks.ts";
 
 export function useAuth() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return {
-    ...useSelector(
+    ...useAppSelector(
       (state) => ({
         isAuth: state.auth.isAuth,
         userId: state.auth.userId,
       }),
       shallowEqual,
     ),
-    login: ({ userId }) => dispatch(login({ userId })),
+    login: ({ userId }: { userId: string }) => dispatch(login({ userId })),
     logout: () => dispatch(logout()),
   };
 }
