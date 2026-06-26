@@ -27,7 +27,7 @@ export const CommentForm = ({ isAuth, pasteId, data }) => {
 
   const onComment = async (body) => {
     try {
-      const result = await commentPaste({ id: pasteId, body });
+      const result = await commentPaste({ pasteId, body });
 
       if (result.id) {
         notifySuccess({
