@@ -199,12 +199,11 @@ export class PastesService {
   ) {
     const paste = await this.getAccessiblePaste(id, userId, request, password);
 
-    const { exposure, isBurn, ...rest } = paste;
+    const { exposure, ...rest } = paste;
 
     return {
       ...rest,
       exposure: exposure.toLowerCase(),
-      isBurn,
       likesCount: paste.likesCount,
       isLiked: paste.isLiked ? true : false,
       author: paste.author,
@@ -278,19 +277,15 @@ export class PastesService {
   async update(
     id: string,
     userId: string,
+    request: Request | null,
     updatePasteDto: UpdatePasteDto & { password?: string },
   ) {
     if (Object.keys(updatePasteDto).length === 0) {
       throw new BadRequestException("No data provided");
     }
 
-    const paste = await this.prisma.paste.findUnique({
-      where: {
-        id,
-      },
-      select: {
-        authorId: true,
-      },
+    const paste = await this.getAccessiblePaste(id, userId, request, null, {
+      burnAfterRead: false,
     });
 
     if (!paste) {
@@ -335,10 +330,8 @@ export class PastesService {
           category: true,
           language: true,
           exposure: true,
-          isBurn: true,
           authorId: true,
           createdAt: true,
-          expiresAt: true,
           pasteTags: {
             select: {
               content: true,
@@ -396,11 +389,12 @@ export class PastesService {
       : false;
 
     return {
+      ...updatedPaste,
       likesCount,
       pasteTags: pasteTags.map((tag) => tag.content),
       isLiked: isLikedByUser ? true : false,
+      author: paste.author,
       exposure: exposure.toLowerCase(),
-      ...updatedPaste,
     };
   }
 
@@ -639,7 +633,6 @@ export class PastesService {
           return {
             ...rest,
             exposure: exposure.toLowerCase(),
-            isBurn,
             likesCount,
             pasteTags: pasteTags.map((tag) => tag.content),
             isLiked: isLikedByUser ? true : false,
@@ -664,7 +657,6 @@ export class PastesService {
     return {
       ...rest,
       exposure: exposure.toLowerCase(),
-      isBurn,
       likesCount,
       pasteTags: pasteTags.map((tag) => tag.content),
       isLiked: isLikedByUser ? true : false,
