@@ -7,11 +7,36 @@ import { refreshAccessToken } from "./auth/refreshAccessToken.ts";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
-type ApiErrorMessage = {
+export type ApiError = {
   message: string;
   error: string;
   statusCode: number;
 };
+
+export function isApiError(error: unknown): error is ApiError {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    "error" in error &&
+    "statusCode" in error &&
+    typeof error.message === "string" &&
+    typeof error.error === "string" &&
+    typeof error.statusCode === "number"
+  );
+}
+
+function createApiError(
+  message: string,
+  error: string,
+  statusCode: number,
+): ApiError {
+  return {
+    message,
+    error,
+    statusCode,
+  };
+}
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
@@ -46,12 +71,17 @@ export async function apiClient<TResponse, TBody = unknown>(
 
     return response.data;
   } catch (error: unknown) {
-    if (axios.isAxiosError<ApiErrorMessage>(error)) {
+    if (axios.isAxiosError<ApiError>(error)) {
       if (error.response) {
         const errorData = error.response.data;
 
-        if (!errorData) throw { message: "Response data is empty" };
-        if (!errorData.message) throw { message: "Response message is empty" };
+        if (!isApiError(errorData)) {
+          throw createApiError(
+            "Invalid API error response",
+            "Invalid API Error",
+            error.response.status,
+          );
+        }
 
         const errorDataMessage = errorData.message;
 
@@ -65,7 +95,13 @@ export async function apiClient<TResponse, TBody = unknown>(
 
           const newToken = await refreshAccessToken();
 
-          if (!newToken) throw { message: "Failed to refresh token" };
+          if (!newToken) {
+            throw createApiError(
+              "Failed to refresh token",
+              "Authentication Error",
+              401,
+            );
+          }
 
           setAccessToken(newToken.accessToken);
 
@@ -84,17 +120,21 @@ export async function apiClient<TResponse, TBody = unknown>(
         throw error.response.data;
       } else if (error.request) {
         console.log("No response from server");
-        throw { message: "No response from server" };
+        throw createApiError("No response from server", "Network Error", 0);
       } else {
         console.log("Request setup error:", error.message);
-        throw { message: error.message || "Request failed" };
+        throw createApiError(
+          error.message || "Request failed",
+          "Request Error",
+          0,
+        );
       }
     } else if (error instanceof Error) {
       console.log("Error:", error.message);
-      throw { message: error.message };
+      throw createApiError(error.message, "Client Error", 0);
     } else {
       console.log("Unknown error:", error);
-      throw { message: "Unknown error" };
+      throw createApiError("Unknown error", "Unknown Error", 0);
     }
   }
 }

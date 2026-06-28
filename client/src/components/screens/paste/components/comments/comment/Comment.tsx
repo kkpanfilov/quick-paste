@@ -1,14 +1,37 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
-import { useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 
+import { isApiError } from "@/api/apiClient.ts";
 import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { useCreateReply } from "@/hooks/comments/useCreateReply.js";
 import { useNotifications } from "@/hooks/useNotifications.js";
+import type { CommentItem } from "@/types/comment.types.ts";
+import type { Paste } from "@/types/paste.types.ts";
+import type { CreateReplyDto } from "@/types/reply.types.ts";
 
 import styles from "./Comment.module.scss";
+
+type FormData = Omit<CreateReplyDto, "pasteId">;
+
+type ReplyState = {
+  isReplying: boolean;
+  commentId: string | null;
+};
+
+type ReplyFormProps = {
+  isAuth: boolean;
+  pasteId: string;
+  comment: CommentItem;
+  replyState: ReplyState;
+  setReplyState: (state: ReplyState) => void;
+};
+
+const DEFAULT_VALUES = {
+  content: "",
+};
 
 export const Comment = ({
   isAuth,
@@ -16,14 +39,15 @@ export const Comment = ({
   comment,
   replyState,
   setReplyState,
-}) => {
+}: ReplyFormProps) => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     mode: "onSubmit",
+    defaultValues: DEFAULT_VALUES,
   });
 
   const commentId = comment.id;
@@ -35,9 +59,13 @@ export const Comment = ({
   const { mutateAsync: createReply } = useCreateReply();
   const queryClient = useQueryClient();
 
-  const onReply = async (data) => {
+  const onReply: SubmitHandler<FormData> = async (body) => {
     try {
-      const result = await createReply({ id: commentId, pasteId, data });
+      const result = await createReply({
+        id: commentId,
+        pasteId,
+        data: { ...body, pasteId },
+      });
 
       if (result.id) {
         notifySuccess({
@@ -45,7 +73,9 @@ export const Comment = ({
           message: "Comment has been added successfully",
         });
 
-        queryClient.setQueryData(["paste", pasteId], (oldData) => {
+        queryClient.setQueryData<Paste>(["paste", pasteId], (oldData) => {
+          if (!oldData) return oldData;
+
           const { comments, ...rest } = oldData;
 
           return {
@@ -68,8 +98,8 @@ export const Comment = ({
       }
     } catch (error) {
       notifyError({
-        title: "Comment not added",
-        message: error.message,
+        title: "Reply not added",
+        message: isApiError(error) ? error.message : "Unknown error",
       });
     }
   };

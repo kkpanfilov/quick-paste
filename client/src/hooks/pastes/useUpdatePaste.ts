@@ -5,7 +5,7 @@ import type { Paste, UpdatePasteDto } from "@/types/paste.types.ts";
 
 type UpdatePasteOptions = {
   id: string;
-  body: UpdatePasteDto;
+  body: Partial<UpdatePasteDto>;
 };
 
 export function useUpdatePaste() {

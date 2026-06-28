@@ -1,6 +1,7 @@
-import { useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router";
 
+import { isApiError } from "@/api/apiClient.ts";
 import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
@@ -8,16 +9,20 @@ import { useLogin } from "@/hooks/auth/useLogin.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { useNotifications } from "@/hooks/useNotifications.ts";
 import { setAccessToken } from "@/shared/authStore.js";
+import type { LoginDto } from "@/types/auth.types.ts";
 
 import styles from "./Signin.module.scss";
+
+type FormData = LoginDto;
 
 export const Signin = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     mode: "onSubmit",
     defaultValues: {
       email: "",
@@ -26,6 +31,8 @@ export const Signin = () => {
     },
   });
 
+  const { notifySuccess, notifyError } = useNotifications();
+
   const { goHome } = useAppNavigation();
   const { login } = useAuth();
 
@@ -33,15 +40,26 @@ export const Signin = () => {
 
   useDocumentTitle("Sign in");
 
-  const onSubmit = async (body) => {
-    const data = await loginUser(body);
+  const onSubmit: SubmitHandler<FormData> = async (body) => {
+    try {
+      const data = await loginUser(body);
 
-    if (data.accessToken) {
-      setAccessToken(data.accessToken);
-      goHome();
+      if (data.accessToken) {
+        notifySuccess({
+          title: "Sign in successful",
+          message: "You have been signed in successfully",
+        });
+        setAccessToken(data.accessToken);
+        goHome();
+      }
+
+      login({ userId: data.id });
+    } catch (error: unknown) {
+      notifyError({
+        title: "Sign in error",
+        message: isApiError(error) ? error.message : "Unknown error",
+      });
     }
-
-    login({ userId: data.id });
   };
 
   return (
@@ -61,7 +79,6 @@ export const Signin = () => {
             </label>
             <Field
               id="signin-email"
-              name="email"
               type="email"
               className={styles.signInField}
               placeholder="name@example.com"
@@ -82,7 +99,6 @@ export const Signin = () => {
             </label>
             <Field
               id="signin-password"
-              name="password"
               type="password"
               className={styles.signInField}
               placeholder="Enter password"
@@ -105,11 +121,7 @@ export const Signin = () => {
           </div>
           <div className={styles.actions}>
             <label className={styles.remember}>
-              <input
-                type="checkbox"
-                name="remember"
-                {...register("remember")}
-              />
+              <input type="checkbox" {...register("remember")} />
               <span>Remember me</span>
             </label>
           </div>

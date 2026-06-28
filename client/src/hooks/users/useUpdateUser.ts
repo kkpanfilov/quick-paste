@@ -5,7 +5,7 @@ import type { UpdateUserDto, UpdatedUser } from "@/types/user.types.ts";
 
 type UpdateUserOptions = {
   id: string;
-  body: UpdateUserDto;
+  body: Partial<UpdateUserDto>;
 };
 
 export function useUpdateUser() {

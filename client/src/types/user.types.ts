@@ -37,7 +37,7 @@ export type UpdatedUser = {
 
 export type UpdateUserDto = {
   username?: string;
-  description?: string;
+  description?: string | null;
   email?: string;
   exposure?: Exposure;
 };

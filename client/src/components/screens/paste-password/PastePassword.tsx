@@ -1,21 +1,37 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 
+import { isApiError } from "@/api/apiClient.ts";
 import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { useUnlockPaste } from "@/hooks/pastes/useUnlockPaste.js";
 import { useNotifications } from "@/hooks/useNotifications.js";
+import type { Paste } from "@/types/paste.types.ts";
 
 import styles from "./PastePassword.module.scss";
 
-export const PastePassword = ({ pasteId, onCancel }) => {
+type Props = {
+  pasteId: string;
+  onCancel: () => void;
+};
+
+type FormData = {
+  password: string;
+};
+
+const DEFAULT_VALUES: FormData = {
+  password: "",
+};
+
+export const PastePassword = ({ pasteId, onCancel }: Props) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     mode: "onSubmit",
+    defaultValues: DEFAULT_VALUES,
   });
 
   const queryClient = useQueryClient();
@@ -23,7 +39,7 @@ export const PastePassword = ({ pasteId, onCancel }) => {
 
   const { mutateAsync: unlockPaste } = useUnlockPaste();
 
-  const onSubmit = async ({ password }) => {
+  const onSubmit: SubmitHandler<FormData> = async ({ password }) => {
     try {
       const result = await unlockPaste({ id: pasteId, password });
 
@@ -33,12 +49,12 @@ export const PastePassword = ({ pasteId, onCancel }) => {
           message: "Paste has been unlocked successfully",
         });
 
-        queryClient.setQueryData(["paste", pasteId], result);
+        queryClient.setQueryData<Paste>(["paste", pasteId], result);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       notifyError({
         title: "Paste not unlocked",
-        message: error.message,
+        message: isApiError(error) ? error.message : "Unknown error",
       });
     }
   };
@@ -68,7 +84,6 @@ export const PastePassword = ({ pasteId, onCancel }) => {
             <Field
               tag="input"
               type="password"
-              name="password"
               className={styles.input}
               placeholder="Enter password"
               autoComplete="current-password"

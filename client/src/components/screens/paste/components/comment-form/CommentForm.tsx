@@ -1,23 +1,39 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router";
 
+import { isApiError } from "@/api/apiClient.js";
 import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { useCreateComment } from "@/hooks/comments/useCreateComment.js";
 import { useNotifications } from "@/hooks/useNotifications.js";
+import type { CreateCommentDto } from "@/types/comment.types.ts";
+import type { Paste } from "@/types/paste.types.ts";
 
 import styles from "./CommentForm.module.scss";
 
-export const CommentForm = ({ isAuth, pasteId, data }) => {
+const DEFAULT_VALUES: CreateCommentDto = {
+  content: "",
+};
+
+type FormData = CreateCommentDto;
+
+type CommentFormProps = {
+  isAuth: boolean;
+  pasteId: string;
+  data: Paste;
+};
+
+export const CommentForm = ({ isAuth, pasteId, data }: CommentFormProps) => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     mode: "onSubmit",
+    defaultValues: DEFAULT_VALUES,
   });
 
   const { notifySuccess, notifyError } = useNotifications();
@@ -25,7 +41,7 @@ export const CommentForm = ({ isAuth, pasteId, data }) => {
   const { mutateAsync: commentPaste } = useCreateComment();
   const queryClient = useQueryClient();
 
-  const onComment = async (body) => {
+  const onComment: SubmitHandler<FormData> = async (body) => {
     try {
       const result = await commentPaste({ pasteId, body });
 
@@ -35,7 +51,9 @@ export const CommentForm = ({ isAuth, pasteId, data }) => {
           message: "Comment has been added successfully",
         });
 
-        queryClient.setQueryData(["paste", pasteId], (oldData) => {
+        queryClient.setQueryData<Paste>(["paste", pasteId], (oldData) => {
+          if (!oldData) return oldData;
+
           return {
             ...oldData,
             comments: [result, ...oldData.comments],
@@ -44,10 +62,10 @@ export const CommentForm = ({ isAuth, pasteId, data }) => {
 
         reset();
       }
-    } catch (error) {
+    } catch (error: unknown) {
       notifyError({
         title: "Comment not added",
-        message: error.message,
+        message: isApiError(error) ? error.message : "Unknown error",
       });
     }
   };
@@ -64,7 +82,7 @@ export const CommentForm = ({ isAuth, pasteId, data }) => {
         </div>
 
         <span className={styles.commentsCount}>
-          {data.comments?.length || 0}
+          {data.comments.length || 0}
         </span>
       </div>
 

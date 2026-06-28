@@ -7,7 +7,7 @@ export type RegisterDto = {
 };
 
 export type LoginDto = {
-  username: string;
+  email: string;
   password: string;
   remember: boolean;
 };

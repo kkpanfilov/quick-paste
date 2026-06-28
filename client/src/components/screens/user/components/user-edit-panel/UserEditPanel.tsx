@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
-import { useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 
+import { isApiError } from "@/api/apiClient.ts";
 import { Button } from "@/components/ui/button/Button.jsx";
 import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
@@ -14,27 +15,49 @@ import { useAuth } from "@/hooks/useAuth.js";
 import { useNotifications } from "@/hooks/useNotifications.js";
 import { useDeleteUser } from "@/hooks/users/useDeleteUser.js";
 import { useUpdateUser } from "@/hooks/users/useUpdateUser.js";
+import type { UpdateUserDto, User } from "@/types/user.types.ts";
 import { getDirtyBody } from "@/utils/getDirtyBody.js";
 import { nullIfBlank } from "@/utils/nullIfBlank.js";
 import { removeEmptyFields } from "@/utils/removeEmptyFields.js";
 
 import styles from "./UserEditPanel.module.scss";
 
-export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
+type Props = {
+  data: User;
+  isMe: boolean;
+  paramUserId: string;
+  setIsEditing: (value: boolean) => void;
+};
+
+type FormData = {
+  username: string;
+  description: string | null;
+  email: string;
+  exposure: NonNullable<UpdateUserDto["exposure"]>;
+};
+
+const DEFAULT_VALUES: FormData = {
+  username: "",
+  description: "",
+  email: "",
+  exposure: "public",
+};
+
+export const UserEditPanel = ({
+  data,
+  isMe,
+  paramUserId,
+  setIsEditing,
+}: Props) => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, dirtyFields },
-  } = useForm({
+  } = useForm<FormData>({
     mode: "onSubmit",
     shouldUnregister: true,
-    defaultValues: {
-      username: data?.username ?? "",
-      description: data?.description ?? "",
-      email: data?.email ?? "",
-      exposure: data?.exposure ?? "",
-    },
+    defaultValues: DEFAULT_VALUES,
   });
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -48,11 +71,14 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
   const { mutateAsync: updateUser } = useUpdateUser();
   const { mutateAsync: deleteUser } = useDeleteUser();
 
-  const onUpdate = async (body) => {
+  const onUpdate: SubmitHandler<FormData> = async (body) => {
     try {
       const dirtyBody = getDirtyBody(body, dirtyFields);
 
-      if (Object.prototype.hasOwnProperty.call(dirtyBody, "description")) {
+      if (
+        Object.prototype.hasOwnProperty.call(dirtyBody, "description") &&
+        typeof dirtyBody.description === "string"
+      ) {
         dirtyBody.description = nullIfBlank(dirtyBody.description);
       }
 
@@ -73,29 +99,33 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
           message: "User has been updated successfully",
         });
 
-        queryClient.setQueryData(["user", paramUserId], (oldData) => ({
-          ...oldData,
-          ...result,
-        }));
+        queryClient.setQueryData<User>(["user", paramUserId], (oldData) => {
+          if (!oldData) return oldData;
+
+          return {
+            ...oldData,
+            ...result,
+          };
+        });
 
         reset({
           username: result?.username ?? "",
           description: result?.description ?? "",
           email: result?.email ?? "",
-          exposure: result?.exposure ?? "",
+          exposure: result?.exposure ?? "public",
         });
 
         setIsEditing(false);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       notifyError({
         title: "User not updated",
-        message: error.message,
+        message: isApiError(error) ? error.message : "Unknown error",
       });
     }
   };
 
-  const onDelete = async (userId) => {
+  const onDelete = async (userId: string) => {
     try {
       const result = await deleteUser(userId);
 
@@ -108,15 +138,24 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
         goHome();
         logout();
       }
-    } catch (error) {
+    } catch (error: unknown) {
       notifyError({
         title: "Your profile not deleted",
-        message: error.message,
+        message: isApiError(error) ? error.message : "Unknown error",
       });
     }
 
     setIsConfirmOpen(false);
   };
+
+  useEffect(() => {
+    reset({
+      username: data?.username ?? "",
+      description: data?.description ?? "",
+      email: data?.email ?? "",
+      exposure: data?.exposure ?? "public",
+    });
+  }, [data, reset]);
 
   return (
     <>
@@ -147,7 +186,6 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
               <Field
                 tag="input"
                 id="new-username"
-                name="username"
                 className={clsx(styles.input, styles.usernameField)}
                 placeholder="New username"
                 {...register("username", {
@@ -167,7 +205,6 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
               <Field
                 tag="textarea"
                 id="new-description"
-                name="description"
                 className={clsx(styles.textarea)}
                 placeholder="New description"
                 rows="4"
@@ -182,7 +219,6 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
               <Field
                 tag="input"
                 id="new-email"
-                name="email"
                 className={clsx(styles.input)}
                 placeholder="New email"
                 {...register("email", {
@@ -202,7 +238,6 @@ export const UserEditPanel = ({ data, isMe, paramUserId, setIsEditing }) => {
               />
               <Select
                 id="new-exposure"
-                name="exposure"
                 className={styles.select}
                 {...register("exposure")}
               >

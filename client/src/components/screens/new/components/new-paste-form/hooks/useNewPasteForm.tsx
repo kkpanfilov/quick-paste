@@ -1,13 +1,18 @@
 import { useEffect } from "react";
 
-import { useForm, useWatch } from "react-hook-form";
+import { type SubmitHandler, useForm, useWatch } from "react-hook-form";
 
+import { isApiError } from "@/api/apiClient.ts";
 import { useCreatePaste } from "@/hooks/pastes/useCreatePaste.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+import { useNotifications } from "@/hooks/useNotifications.ts";
 import { exposureList } from "@/shared/lists/new-paste.list.js";
+import type { CreatePasteDto } from "@/types/paste.types.ts";
 import { nullIfBlank } from "@/utils/nullIfBlank.js";
 
-const DEFAULT_VALUES = {
+type FormData = Omit<CreatePasteDto, "isBurn">;
+
+const DEFAULT_VALUES: FormData = {
   title: "",
   content: "",
   description: "",
@@ -20,7 +25,7 @@ const DEFAULT_VALUES = {
 };
 
 export function useNewPasteForm() {
-  const newPasteForm = useForm({
+  const newPasteForm = useForm<FormData>({
     mode: "onSubmit",
     defaultValues: DEFAULT_VALUES,
   });
@@ -32,6 +37,8 @@ export function useNewPasteForm() {
     setValue,
     formState: { errors },
   } = newPasteForm;
+
+  const { notifySuccess, notifyError } = useNotifications();
 
   const { goPaste } = useAppNavigation();
 
@@ -59,16 +66,31 @@ export function useNewPasteForm() {
     }
   }, [hasPassword, exposure, setValue]);
 
-  const onSubmit = async (values) => {
-    const body = {
-      ...values,
-      isBurn: values.expiration === "burn",
-      description: nullIfBlank(values.description),
-    };
+  const onSubmit: SubmitHandler<FormData> = async (values) => {
+    try {
+      const body: CreatePasteDto = {
+        ...values,
+        isBurn: values.expiration === "burn",
+        description: values.description
+          ? nullIfBlank(values.description)
+          : null,
+      };
 
-    const data = await createPaste(body);
+      const data = await createPaste(body);
 
-    if (data.id) goPaste(data.id);
+      if (data.id) {
+        notifySuccess({
+          title: "Paste added",
+          message: "Paste has been added successfully",
+        });
+        goPaste(data.id);
+      }
+    } catch (error: unknown) {
+      notifyError({
+        title: "Comment not added",
+        message: isApiError(error) ? error.message : "Unknown error",
+      });
+    }
   };
 
   return {

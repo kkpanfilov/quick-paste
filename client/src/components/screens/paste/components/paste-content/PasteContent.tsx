@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 
+import { isApiError } from "@/api/apiClient.js";
 import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
 import { useDeletePaste } from "@/hooks/pastes/useDeletePaste.js";
 import { useUpdatePaste } from "@/hooks/pastes/useUpdatePaste.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useNotifications } from "@/hooks/useNotifications.js";
+import type { Paste, UpdatePasteDto } from "@/types/paste.types.js";
 import { getDirtyBody } from "@/utils/getDirtyBody.js";
 import { nullIfBlank } from "@/utils/nullIfBlank.js";
 import { removeEmptyFields } from "@/utils/removeEmptyFields.js";
@@ -15,28 +17,44 @@ import { removeEmptyFields } from "@/utils/removeEmptyFields.js";
 import { PasteHeader } from "./paste-header/PasteHeader.jsx";
 import { PasteTextarea } from "./paste-textarea/PasteTextarea.jsx";
 
-export const PasteContent = ({ isAuth, userId, pasteId, data }) => {
+type FormData = UpdatePasteDto;
+
+type PasteContentProps = {
+  isAuth: boolean;
+  userId: string;
+  pasteId: string;
+  data: Paste;
+};
+
+const DEFAULT_VALUES: FormData = {
+  content: "",
+  title: "",
+  description: "",
+  tags: [],
+  category: "none",
+  language: "plain",
+  exposure: "public",
+};
+
+export const PasteContent = ({
+  isAuth,
+  userId,
+  pasteId,
+  data,
+}: PasteContentProps) => {
   const author = data.author;
 
   const queryClient = useQueryClient();
 
-  const editForm = useForm({
+  const editForm = useForm<FormData>({
     mode: "onSubmit",
-    defaultValues: {
-      content: data.content,
-      title: data.title,
-      description: data.description ?? "",
-      tags: data.pasteTags,
-      category: data.category,
-      language: data.language,
-      exposure: data.exposure,
-    },
+    defaultValues: DEFAULT_VALUES,
   });
 
   const { reload } = useAppNavigation();
   const { notifySuccess, notifyError } = useNotifications();
 
-  const onDelete = async (id) => {
+  const onDelete = async (id: string) => {
     try {
       const result = await deletePaste(id);
 
@@ -48,21 +66,24 @@ export const PasteContent = ({ isAuth, userId, pasteId, data }) => {
       }
 
       reload();
-    } catch (error) {
+    } catch (error: unknown) {
       notifyError({
         title: "Paste not deleted",
-        message: error.message,
+        message: isApiError(error) ? error.message : "Unknown error",
       });
     }
 
     setIsConfirmOpen(false);
   };
 
-  const onUpdate = async (body) => {
+  const onUpdate: SubmitHandler<FormData> = async (body) => {
     try {
       const dirtyBody = getDirtyBody(body, editForm.formState.dirtyFields);
 
-      if (Object.prototype.hasOwnProperty.call(dirtyBody, "description")) {
+      if (
+        Object.prototype.hasOwnProperty.call(dirtyBody, "description") &&
+        dirtyBody.description
+      ) {
         dirtyBody.description = nullIfBlank(dirtyBody.description);
       }
 
@@ -80,7 +101,10 @@ export const PasteContent = ({ isAuth, userId, pasteId, data }) => {
           message: "Paste has been updated successfully",
         });
 
-        queryClient.setQueryData(["paste", pasteId], { ...result, author });
+        queryClient.setQueryData<Paste>(["paste", pasteId], {
+          ...result,
+          author,
+        });
 
         editForm.reset({
           content: result.content,
@@ -94,10 +118,10 @@ export const PasteContent = ({ isAuth, userId, pasteId, data }) => {
 
         setIsEditing(false);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       notifyError({
         title: "Paste not updated",
-        message: error.message,
+        message: isApiError(error) ? error.message : "Unknown error",
       });
     }
   };
@@ -107,6 +131,18 @@ export const PasteContent = ({ isAuth, userId, pasteId, data }) => {
 
   const { mutateAsync: deletePaste } = useDeletePaste();
   const { mutateAsync: updatePaste } = useUpdatePaste();
+
+  useEffect(() => {
+    editForm.reset({
+      content: data.content,
+      title: data.title,
+      description: data.description ?? "",
+      tags: data.pasteTags,
+      category: data.category,
+      language: data.language,
+      exposure: data.exposure,
+    });
+  }, [data, editForm]);
 
   return (
     <>

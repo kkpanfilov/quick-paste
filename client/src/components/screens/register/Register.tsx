@@ -1,6 +1,7 @@
-import { useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router";
 
+import { isApiError } from "@/api/apiClient.ts";
 import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
@@ -8,9 +9,15 @@ import { useRegister } from "@/hooks/auth/useRegister.js";
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { useNotifications } from "@/hooks/useNotifications.ts";
 import { setAccessToken } from "@/shared/authStore.js";
+import type { RegisterDto } from "@/types/auth.types.ts";
 
 import styles from "./Register.module.scss";
+
+type FormData = RegisterDto & {
+  confirmPassword: string;
+};
 
 export const Register = () => {
   const {
@@ -18,7 +25,7 @@ export const Register = () => {
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     mode: "onSubmit",
     defaultValues: {
       email: "",
@@ -28,6 +35,8 @@ export const Register = () => {
     },
   });
 
+  const { notifySuccess, notifyError } = useNotifications();
+
   const { goHome } = useAppNavigation();
 
   const { mutateAsync: registerUser, isPending } = useRegister();
@@ -36,23 +45,34 @@ export const Register = () => {
 
   useDocumentTitle("Register");
 
-  const onSubmit = async (formData) => {
-    const body = {
-      email: formData.email,
-      username: formData.username,
-      password: formData.password,
-    };
+  const onSubmit: SubmitHandler<FormData> = async (formData) => {
+    try {
+      const body: RegisterDto = {
+        email: formData.email,
+        username: formData.username,
+        password: formData.password,
+      };
 
-    const data = await registerUser(body);
+      const data = await registerUser(body);
 
-    if (!data) return;
+      if (!data) return;
 
-    if (data.accessToken) {
-      setAccessToken(data.accessToken);
-      goHome();
+      if (data.accessToken) {
+        notifySuccess({
+          title: "Registration successful",
+          message: "You have been registered successfully",
+        });
+        setAccessToken(data.accessToken);
+        goHome();
+      }
+
+      login({ userId: data.id });
+    } catch (error: unknown) {
+      notifyError({
+        title: "Registration error",
+        message: isApiError(error) ? error.message : "Unknown error",
+      });
     }
-
-    login({ userId: data.id });
   };
 
   return (
@@ -74,7 +94,6 @@ export const Register = () => {
             </label>
             <Field
               id="register-email"
-              name="email"
               type="email"
               className={styles.registerField}
               placeholder="name@example.com"
@@ -104,7 +123,6 @@ export const Register = () => {
             </label>
             <Field
               id="register-username"
-              name="username"
               type="text"
               className={styles.registerField}
               placeholder="your-username"
@@ -132,7 +150,6 @@ export const Register = () => {
             </label>
             <Field
               id="register-password"
-              name="password"
               type="password"
               className={styles.registerField}
               placeholder="Create password"
@@ -166,7 +183,6 @@ export const Register = () => {
             </label>
             <Field
               id="register-confirm-password"
-              name="confirmPassword"
               type="password"
               className={styles.registerField}
               placeholder="Repeat password"
