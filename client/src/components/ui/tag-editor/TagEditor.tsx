@@ -1,11 +1,24 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-import { useWatch } from "react-hook-form";
+import { type UseFormReturn, useWatch } from "react-hook-form";
 
-import { Button } from "../button/Button.jsx";
-import { Field } from "../field/Field.jsx";
+import { Button } from "../button/Button.js";
+import { Field } from "../field/Field.js";
 
 import styles from "./TagEditor.module.scss";
+
+type FormWithTags = {
+  tags: string[];
+};
+
+type Props = {
+  form: Pick<UseFormReturn<FormWithTags>, "control" | "setValue">;
+  id: string;
+  name: string;
+  placeholder: string;
+  maxTags?: number;
+  maxTagLength?: number;
+};
 
 export const TagEditor = ({
   form,
@@ -14,15 +27,16 @@ export const TagEditor = ({
   placeholder,
   maxTags = 5,
   maxTagLength = 30,
-}) => {
+}: Props) => {
   const [tag, setTag] = useState("");
 
   const tags = useWatch({
     control: form.control,
     name: "tags",
+    defaultValue: [],
   });
 
-  const onEnter = (event) => {
+  const onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
 
     event.preventDefault();
@@ -45,7 +59,7 @@ export const TagEditor = ({
     setTag("");
   };
 
-  const removeTag = (tag) => {
+  const removeTag = (tag: string) => {
     form.setValue(
       "tags",
       tags.filter((t) => t !== tag),
@@ -84,7 +98,7 @@ export const TagEditor = ({
       <Button
         variant="primary"
         className={styles.addTagButton}
-        disabled={tag === ""}
+        disabled={tag.trim() === ""}
         onClick={() => addTag()}
       >
         Add

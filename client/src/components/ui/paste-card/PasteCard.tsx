@@ -2,10 +2,15 @@ import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+import type { FormattedFeedPasteItem } from "@/types/paste.types.ts";
 
 import styles from "./PasteCard.module.scss";
 
-export const PasteCard = ({ paste }) => {
+type Props = {
+  paste: FormattedFeedPasteItem;
+};
+
+export const PasteCard = ({ paste }: Props) => {
   const { goPaste } = useAppNavigation();
 
   return (

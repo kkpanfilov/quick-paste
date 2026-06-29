@@ -4,6 +4,15 @@ import { useNotifications } from "@/hooks/useNotifications.js";
 
 import styles from "./Notification.module.scss";
 
+type Props = {
+  id: string;
+  type?: "success" | "error" | "info" | "warning";
+  title: string;
+  message: string;
+  timeout?: number;
+  className?: string;
+};
+
 export const Notification = ({
   id,
   type = "info",
@@ -11,7 +20,7 @@ export const Notification = ({
   message,
   timeout = 4000,
   className = "",
-}) => {
+}: Props) => {
   const { removeNotification } = useNotifications();
 
   const classes = [styles.notification, styles[type], className]
@@ -33,7 +42,7 @@ export const Notification = ({
   return (
     <div className={classes} role="status" aria-live="polite">
       <div className={styles.content}>
-        {title && <p className={styles.title}>{title}</p>}
+        <p className={styles.title}>{title}</p>
         <p className={styles.message}>{message}</p>
       </div>
 

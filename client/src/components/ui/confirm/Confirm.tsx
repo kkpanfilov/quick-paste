@@ -1,6 +1,14 @@
-import { Button } from "@/components/ui/button/Button.jsx";
+import { Button } from "@/components/ui/button/Button.tsx";
 
 import styles from "./Confirm.module.scss";
+
+type Props = {
+  title?: string;
+  description?: string;
+  action?: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+};
 
 export const Confirm = ({
   title = "Are you sure?",
@@ -8,7 +16,7 @@ export const Confirm = ({
   action = "Confirm",
   onCancel,
   onConfirm,
-}) => {
+}: Props) => {
   return (
     <div className={styles.overlay}>
       <section

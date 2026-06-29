@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/store/hooks.js";
 
-import { Notification } from "./Notification.jsx";
+import { Notification } from "./Notification.js";
 
 import styles from "./Notification.module.scss";
 

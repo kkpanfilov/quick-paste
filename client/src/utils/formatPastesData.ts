@@ -19,6 +19,7 @@ export type Data = {
     hasNextPage: boolean;
   };
 };
+
 export type FormattedData = {
   items: FormattedFeedPasteItem[];
   meta: {

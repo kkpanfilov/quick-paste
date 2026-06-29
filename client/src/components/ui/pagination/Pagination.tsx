@@ -2,13 +2,20 @@ import { useEffect, useState } from "react";
 
 import styles from "./Pagination.module.scss";
 
+type Props = {
+  currentPage: number;
+  totalPages: number;
+  pageLimit: number;
+  onPageChange: (page: number) => void;
+};
+
 export const Pagination = ({
   currentPage,
   totalPages,
   pageLimit,
   onPageChange,
-}) => {
-  const [activePage, setActivePage] = useState(currentPage);
+}: Props) => {
+  const [activePage, setActivePage] = useState<number>(currentPage);
 
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
   const visiblePageLimit = Math.min(pageLimit, totalPages);

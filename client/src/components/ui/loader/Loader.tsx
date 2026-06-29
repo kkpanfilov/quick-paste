@@ -1,6 +1,11 @@
 import styles from "./Loader.module.scss";
 
-export function Loader({ isVisible = true, label = "Loading..." }) {
+type Props = {
+  isVisible?: boolean;
+  label?: string;
+};
+
+export function Loader({ isVisible = true, label = "Loading..." }: Props) {
   const classes = [
     styles.overlay,
     isVisible ? styles.visible : styles.hidden,
