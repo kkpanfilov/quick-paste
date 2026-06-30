@@ -1,12 +1,23 @@
+import type { JSX } from "react";
+
 import { Home } from "@/components/screens/home/Home.jsx";
 import { New } from "@/components/screens/new/New.jsx";
 import { Paste } from "@/components/screens/paste/Paste.jsx";
 import { Register } from "@/components/screens/register/Register.jsx";
+import { SearchPage } from "@/components/screens/search/SearchPage.jsx";
 import { Signin } from "@/components/screens/signin/Signin.jsx";
 import { User } from "@/components/screens/user/User.jsx";
 
 import { paths } from "./paths.config.js";
-import { SearchPage } from "@/components/screens/search/SearchPage.jsx";
+
+type RouteId = keyof typeof paths;
+
+export type Route = {
+  id: RouteId;
+  path: string;
+  title: string;
+  component: () => JSX.Element;
+};
 
 export const routes = [
   {
@@ -51,4 +62,4 @@ export const routes = [
     title: "Register",
     component: Register,
   },
-];
+] as const satisfies readonly Route[];
