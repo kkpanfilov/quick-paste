@@ -5,7 +5,11 @@ import { clearAccessToken, setAccessToken } from "@/shared/authStore.js";
 
 import { useAuth } from "../useAuth.js";
 
-export function useAuthBootstrap() {
+type UseAuthBootstrapResult = {
+  isAuthChecked: boolean;
+};
+
+export function useAuthBootstrap(): UseAuthBootstrapResult {
   const { isAuth, login, logout } = useAuth();
 
   const [isAuthChecked, setIsAuthChecked] = useState(false);
@@ -20,8 +24,10 @@ export function useAuthBootstrap() {
 
         const result = await refreshAccessToken();
 
-        setAccessToken(result.accessToken);
-        login({ userId: result.id });
+        if (result?.accessToken) {
+          setAccessToken(result.accessToken);
+          login({ userId: result.id });
+        }
       } catch {
         clearAccessToken();
         logout();
