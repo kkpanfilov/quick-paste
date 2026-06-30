@@ -3,12 +3,19 @@ import { useEffect } from "react";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 
 import { languageLoaders } from "@/shared/lib/syntax-highlighter/language-loaders.js";
+import type { Language } from "@/shared/lists/language.map.ts";
+
+type Props = {
+  languages: Language[];
+  registeredLanguagesRef: React.RefObject<Set<string>>;
+  setIsHighlightReady: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 export function useLoadLanguages({
   languages,
   registeredLanguagesRef,
   setIsHighlightReady,
-}) {
+}: Props) {
   useEffect(() => {
     let isActive = true;
 
@@ -24,6 +31,7 @@ export function useLoadLanguages({
       try {
         for (const language of languages) {
           if (registeredLanguagesRef.current.has(language)) continue;
+          if (language === "plain") continue;
 
           const loader = languageLoaders[language];
 
