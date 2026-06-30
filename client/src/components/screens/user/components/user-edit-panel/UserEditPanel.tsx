@@ -207,7 +207,7 @@ export const UserEditPanel = ({
                 id="new-description"
                 className={clsx(styles.textarea)}
                 placeholder="New description"
-                rows="4"
+                rows={4}
                 {...register("description", {
                   maxLength: {
                     value: 1000,
