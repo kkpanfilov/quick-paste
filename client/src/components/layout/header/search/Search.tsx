@@ -7,8 +7,14 @@ import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 
 import styles from "./Search.module.scss";
 
-// TODO: implement search
-export const Search = ({ type, setIsHamburgerOpen }) => {
+type SearchType = "pc" | "mobile";
+
+type Props = {
+  type: SearchType;
+  setIsHamburgerOpen?: (value: boolean) => void;
+};
+
+export const Search = ({ type, setIsHamburgerOpen }: Props) => {
   const [query, setQuery] = useState("");
 
   const trimmedQuery = query.trim();
@@ -22,7 +28,7 @@ export const Search = ({ type, setIsHamburgerOpen }) => {
     setQuery("");
   };
 
-  const handleInputKeyDown = (event) => {
+  const handleInputKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
       event.preventDefault();
       goToSearchPage();
@@ -48,7 +54,7 @@ export const Search = ({ type, setIsHamburgerOpen }) => {
           className={styles.searchButton}
           onClick={() => {
             goToSearchPage();
-            setIsHamburgerOpen(false);
+            if (setIsHamburgerOpen) setIsHamburgerOpen(false);
           }}
         >
           Search

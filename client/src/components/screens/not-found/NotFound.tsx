@@ -4,7 +4,15 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./NotFound.module.scss";
 
-export const NotFound = ({ title, description }) => {
+export type Props = {
+  title?: string;
+  description?: string;
+};
+
+export const NotFound = ({
+  title = "Page not found",
+  description = "The page you are looking for does not exist",
+}: Props) => {
   useDocumentTitle("Not Found!");
 
   const { goHome } = useAppNavigation();
@@ -14,13 +22,9 @@ export const NotFound = ({ title, description }) => {
       <section className={styles.card} aria-labelledby="not-found-title">
         <p className={styles.code}>404</p>
         <h1 id="not-found-title" className={styles.title}>
-          {title ? title : "Page not found"}
+          {title}
         </h1>
-        <p className={styles.description}>
-          {description
-            ? description
-            : "The page you are looking for does not exist"}
-        </p>
+        <p className={styles.description}>{description}</p>
 
         <div className={styles.actions}>
           <Button

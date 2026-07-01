@@ -7,7 +7,7 @@ import type {
 
 import { getCertainLines } from "../components/screens/home/utils/getCertainLines.js";
 import { categoryMap } from "../shared/lists/category.map.js";
-import { languageMap } from "../shared/lists/language.map.js";
+import { type Language, languageMap } from "../shared/lists/language.map.js";
 import { countLines } from "./countLines.js";
 import { getContentSize } from "./getContentSize.js";
 
@@ -26,8 +26,9 @@ export type FormattedData = {
     currentPage: number;
     totalPages: number;
     hasNextPage: boolean;
+    totalMatches?: number;
   } | null;
-  languages: string[];
+  languages: Language[];
 };
 
 export function formatPastesData(data: Data): FormattedData {
@@ -35,7 +36,7 @@ export function formatPastesData(data: Data): FormattedData {
 
   const meta = data.meta;
   const items = data.items;
-  const languages: string[] = [];
+  const languages: Language[] = [];
 
   const formattedItems = items.map((paste) => ({
     ...paste,

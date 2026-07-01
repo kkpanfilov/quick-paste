@@ -2,7 +2,11 @@ import { Link } from "react-router";
 
 import styles from "./Logo.module.scss";
 
-export const Logo = ({ onClick }) => {
+export type Props = {
+  onClick: () => void;
+};
+
+export const Logo = ({ onClick }: Props) => {
   return (
     <Link
       className={styles.brand}

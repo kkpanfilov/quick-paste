@@ -1,15 +1,19 @@
+import type { Statistic } from "@/components/screens/user/assets/statisticsLabels.ts";
+import type { Language } from "@/shared/lists/language.map.ts";
+import type { RecentPasteItem } from "@/types/paste.types.ts";
+
 import type { ISODateString } from "./common.types.ts";
 
 type Exposure = "public" | "private";
 
 type StatisticsItem = {
-  label: string;
+  label: Statistic;
   value: number;
 };
 
 type MostUsedLanguagesItem = {
-  label: string;
-  value: number;
+  language: Language;
+  count: number;
 };
 
 export type User = {
@@ -19,9 +23,9 @@ export type User = {
   exposure?: Exposure;
   description: string | null;
 
-  pastes: string[];
-  mostUsedLanguages: MostUsedLanguagesItem;
-  statistics: StatisticsItem;
+  pastes: RecentPasteItem[];
+  mostUsedLanguages: MostUsedLanguagesItem[];
+  statistics: StatisticsItem[];
 
   createdAt: ISODateString;
   lastActiveAt: ISODateString;

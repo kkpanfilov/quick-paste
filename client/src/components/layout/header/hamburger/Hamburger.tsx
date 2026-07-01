@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { isApiError } from "@/api/apiClient.js";
 import { Button } from "@/components/ui/button/Button.jsx";
 import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
 import { useLogout } from "@/hooks/auth/useLogout.js";
@@ -7,11 +8,16 @@ import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useNotifications } from "@/hooks/useNotifications.js";
 
-import { Search } from "../search/Search.jsx";
+import { Search } from "../search/Search.js";
 
 import styles from "./Hamburger.module.scss";
 
-export const Hamburger = ({ isHamburgerOpen, setIsHamburgerOpen }) => {
+type Props = {
+  isHamburgerOpen: boolean;
+  setIsHamburgerOpen: (value: boolean) => void;
+};
+
+export const Hamburger = ({ isHamburgerOpen, setIsHamburgerOpen }: Props) => {
   const { notifySuccess, notifyError } = useNotifications();
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -32,10 +38,10 @@ export const Hamburger = ({ isHamburgerOpen, setIsHamburgerOpen }) => {
           message: "You have successfully logged out",
         });
       }
-    } catch (error) {
+    } catch (error: unknown) {
       notifyError({
         title: "Logout error",
-        message: error.message,
+        message: isApiError(error) ? error.message : "Unknown error",
       });
     }
 
@@ -69,7 +75,6 @@ export const Hamburger = ({ isHamburgerOpen, setIsHamburgerOpen }) => {
         <div
           className={styles.menuList}
           data-state={isHamburgerOpen ? "open" : "closed"}
-          isShow={isHamburgerOpen}
         >
           <Search type="mobile" setIsHamburgerOpen={setIsHamburgerOpen} />{" "}
           <Button
@@ -88,7 +93,7 @@ export const Hamburger = ({ isHamburgerOpen, setIsHamburgerOpen }) => {
                 variant="soft"
                 className={styles.menuLinkSoft}
                 onClick={() => {
-                  goUser(userId);
+                  if (userId) goUser(userId);
                   setIsHamburgerOpen(false);
                 }}
               >

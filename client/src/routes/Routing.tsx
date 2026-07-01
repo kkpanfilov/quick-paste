@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router";
 
-import { NotFound } from "@/components/screens/not-found/NotFound.jsx";
+import { NotFound } from "@/components/screens/not-found/NotFound.tsx";
 
 import { routes } from "./routes.data.js";
 

@@ -1,8 +1,13 @@
 import clsx from "clsx";
 import { formatDistanceToNow } from "date-fns";
-import { useWatch } from "react-hook-form";
+import {
+  type SubmitHandler,
+  type UseFormReturn,
+  useWatch,
+} from "react-hook-form";
 import { Link } from "react-router";
 
+import { isApiError } from "@/api/apiClient.ts";
 import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
@@ -17,10 +22,22 @@ import {
   exposureList,
   languageList,
 } from "@/shared/lists/new-paste.list.js";
+import type { Paste, UpdatePasteDto } from "@/types/paste.types.ts";
 import { countLines } from "@/utils/countLines.js";
 import { getContentSize } from "@/utils/getContentSize.js";
 
 import styles from "./PasteHeader.module.scss";
+
+type Props = {
+  isAuth: boolean;
+  userId: string | null;
+  data: Paste;
+  isEditing: boolean;
+  setIsEditing: (value: boolean) => void;
+  setIsConfirmOpen: (value: boolean) => void;
+  onUpdate: SubmitHandler<UpdatePasteDto>;
+  editForm: UseFormReturn<UpdatePasteDto>;
+};
 
 export const PasteHeader = ({
   isAuth,
@@ -31,7 +48,7 @@ export const PasteHeader = ({
   setIsConfirmOpen,
   onUpdate,
   editForm,
-}) => {
+}: Props) => {
   const author = data.author;
 
   const { notifySuccess, notifyError } = useNotifications();
@@ -43,10 +60,10 @@ export const PasteHeader = ({
         title: "Paste copied",
         message: "Paste has been copied to clipboard",
       });
-    } catch (error) {
+    } catch (error: unknown) {
       notifyError({
         title: "Paste not copied",
-        message: error.message,
+        message: isApiError(error) ? error.message : "Unknown error",
       });
     }
   };
@@ -56,6 +73,19 @@ export const PasteHeader = ({
     name: "exposure",
     defaultValue: data.exposure,
   });
+
+  const tags = useWatch({
+    control: editForm.control,
+    name: "tags",
+    defaultValue: [],
+  });
+
+  const onTagsChange = (tags: string[]) => {
+    editForm.setValue("tags", tags, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
 
   return (
     <>
@@ -69,7 +99,6 @@ export const PasteHeader = ({
             <Field
               tag="input"
               id="new-title"
-              name="title"
               type="text"
               className={styles.pasteInput}
               {...editForm.register("title", {
@@ -96,7 +125,6 @@ export const PasteHeader = ({
               <Field
                 tag="textarea"
                 id="paste-description"
-                name="description"
                 className={styles.descriptionInput}
                 placeholder="Add a description to your paste (optional)"
                 rows={3}
@@ -119,7 +147,6 @@ export const PasteHeader = ({
               {isEditing ? (
                 <Select
                   id="new-category"
-                  name="category"
                   className={styles.pasteSelect}
                   {...editForm.register("category", {
                     required: "Category is required",
@@ -144,7 +171,6 @@ export const PasteHeader = ({
               {isEditing ? (
                 <Select
                   id="new-language"
-                  name="language"
                   className={styles.pasteSelect}
                   {...editForm.register("language", {
                     required: "Language is required",
@@ -165,7 +191,6 @@ export const PasteHeader = ({
               {isEditing ? (
                 <Select
                   id="new-exposure"
-                  name="exposure"
                   className={styles.pasteSelect}
                   {...editForm.register("exposure", {
                     required: "Exposure is required",
@@ -207,7 +232,6 @@ export const PasteHeader = ({
                 <Field
                   tag="input"
                   id="new-password"
-                  name="password"
                   type="text"
                   className={clsx(styles.pasteInput, styles.passwordInput)}
                   placeholder="New password (optional)"
@@ -246,7 +270,8 @@ export const PasteHeader = ({
           </dl>
           {isEditing && (
             <TagEditor
-              form={editForm}
+              tags={tags}
+              onChange={onTagsChange}
               id="paste-tags"
               name="tags"
               placeholder="Add tags to your paste (optional)"

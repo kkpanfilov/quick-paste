@@ -21,7 +21,7 @@ type FormData = UpdatePasteDto;
 
 type PasteContentProps = {
   isAuth: boolean;
-  userId: string;
+  userId: string | null;
   pasteId: string;
   data: Paste;
 };

@@ -1,21 +1,42 @@
 import { useState } from "react";
 
 import clsx from "clsx";
+import type { UseFormReturn } from "react-hook-form";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
+import { isApiError } from "@/api/apiClient.ts";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
 import { Loader } from "@/components/ui/loader/Loader.jsx";
 import { useLikePaste } from "@/hooks/pastes/useLikePaste.js";
 import { useUnlikePaste } from "@/hooks/pastes/useUnlikePaste.js";
-import { useLoadLanguage } from "@/hooks/syntax-highlighter/useLoadLanguage.js";
+import {
+  type HighlightState,
+  useLoadLanguage,
+} from "@/hooks/syntax-highlighter/useLoadLanguage.js";
 import { useNotifications } from "@/hooks/useNotifications.js";
+import type { Paste, UpdatePasteDto } from "@/types/paste.types.ts";
 import { countLines } from "@/utils/countLines.js";
 
 import styles from "./PasteTextarea.module.scss";
 
 const VISIBLE_LINES_COUNT = 12;
+
+type LikeState = {
+  pasteId: string;
+  isLiked: boolean;
+  likesCount: number;
+};
+
+type Props = {
+  isAuth: boolean;
+  userId: string | null;
+  pasteId: string;
+  data: Paste;
+  isEditing: boolean;
+  editForm: UseFormReturn<UpdatePasteDto>;
+};
 
 export const PasteTextarea = ({
   isAuth,
@@ -24,12 +45,16 @@ export const PasteTextarea = ({
   data,
   isEditing,
   editForm,
-}) => {
+}: Props) => {
   const { mutateAsync: likePaste } = useLikePaste();
   const { mutateAsync: unlikePaste } = useUnlikePaste();
 
-  const [likeState, setLikeState] = useState(null);
-  const [highlightState, setHighlightState] = useState({
+  const [likeState, setLikeState] = useState<LikeState>({
+    pasteId,
+    isLiked: false,
+    likesCount: 0,
+  });
+  const [highlightState, setHighlightState] = useState<HighlightState>({
     isLoaded: false,
     language: null,
   });
@@ -46,7 +71,7 @@ export const PasteTextarea = ({
 
   const { notifyError } = useNotifications();
 
-  const onLike = async (id) => {
+  const onLike = async (id: string) => {
     if (!isAuth) {
       notifyError({
         title: "Paste not liked",
@@ -65,15 +90,15 @@ export const PasteTextarea = ({
           likesCount: result.likesCount,
         });
       }
-    } catch (error) {
+    } catch (error: unknown) {
       notifyError({
         title: "Paste not liked",
-        message: error.message,
+        message: isApiError(error) ? error.message : "Unknown error",
       });
     }
   };
 
-  const onUnlike = async (id) => {
+  const onUnlike = async (id: string) => {
     try {
       const result = await unlikePaste(id);
 
@@ -87,7 +112,7 @@ export const PasteTextarea = ({
     } catch (error) {
       notifyError({
         title: "Paste not unliked",
-        message: error.message,
+        message: isApiError(error) ? error.message : "Unknown error",
       });
     }
   };
@@ -138,7 +163,6 @@ export const PasteTextarea = ({
         <Field
           tag="textarea"
           id="paste-content"
-          name="content"
           className={styles.pasteTextarea}
           {...editForm.register("content", {
             required: "Content is required",
@@ -157,7 +181,9 @@ export const PasteTextarea = ({
                 styles.codeBlock,
                 isContentCollapsed && styles.codeBlockCollapsed,
               )}
-              language={highlightState.language}
+              language={
+                highlightState.language ? highlightState.language : "plain"
+              }
               style={oneDark}
               showLineNumbers={true}
               codeTagProps={{

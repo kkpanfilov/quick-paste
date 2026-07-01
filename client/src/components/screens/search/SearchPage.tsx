@@ -11,14 +11,30 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { registeredLanguages } from "@/shared/languagesStore.js";
 import { formatPastesData } from "@/utils/formatPastesData.js";
 
-import { ErrorPage } from "../error/ErrorPage.jsx";
+import { ErrorPage } from "../error/ErrorPage.js";
 
 import styles from "./SearchPage.module.scss";
 
-export const SearchPage = () => {
-  const params = useParams();
-  const query = params.query;
+type Props = {
+  query: string;
+};
 
+export const SearchPage = () => {
+  const { query } = useParams<"query">();
+
+  if (!query || !query.trim().length) {
+    return (
+      <ErrorPage
+        title="Failed to searh paste"
+        description="The paste search is temporarily unavailable"
+      />
+    );
+  }
+
+  return <SearchPageView query={query} />;
+};
+
+export const SearchPageView = ({ query }: Props) => {
   useDocumentTitle(`Search ${query}`);
 
   const [page, setPage] = useState(1);
@@ -33,7 +49,7 @@ export const SearchPage = () => {
     [data],
   );
 
-  const onPageChange = (page) => {
+  const onPageChange = (page: number) => {
     setPage(page);
   };
 
@@ -84,13 +100,15 @@ export const SearchPage = () => {
               {`Results for "${query}"`}
             </h1>
             <p className={styles.subtitle}>
-              {meta.totalMatches} public pastes found. Showing the most relevant
-              snippets first.
+              {meta && meta.totalMatches} public pastes found. Showing the most
+              relevant snippets first.
             </p>
           </div>
 
           <div className={styles.summary} aria-label="Search summary">
-            <span className={styles.summaryValue}>{meta.totalMatches}</span>
+            <span className={styles.summaryValue}>
+              {meta && meta.totalMatches}
+            </span>
             <span className={styles.summaryLabel}>matches</span>
           </div>
         </header>
@@ -100,7 +118,7 @@ export const SearchPage = () => {
             <PasteCard key={paste.id} paste={paste} />
           ))}
         </section>
-        {!!items.length && (
+        {meta && items.length > 0 && (
           <Pagination {...meta} pageLimit={4} onPageChange={onPageChange} />
         )}
       </section>

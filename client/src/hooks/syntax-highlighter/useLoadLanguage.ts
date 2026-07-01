@@ -5,14 +5,14 @@ import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import { languageLoaders } from "@/shared/lib/syntax-highlighter/language-loaders.js";
 import type { Language } from "@/shared/lists/language.map.ts";
 
+export type HighlightState = {
+  isLoaded: boolean;
+  language: null | Language;
+};
+
 type Props = {
   language: Language;
-  setHighlightState: React.Dispatch<
-    React.SetStateAction<{
-      isLoaded: boolean;
-      language: null | Language;
-    }>
-  >;
+  setHighlightState: React.Dispatch<React.SetStateAction<HighlightState>>;
 };
 
 export function useLoadLanguage({ language, setHighlightState }: Props) {

@@ -1,4 +1,12 @@
-export function getCertainLines(text, options = {}) {
+type Options = {
+  start: number;
+  end: number;
+};
+
+export function getCertainLines(
+  text: string,
+  options: Options = { start: 1, end: 4 },
+) {
   if (typeof text !== "string") {
     return "";
   }
@@ -16,7 +24,7 @@ export function getCertainLines(text, options = {}) {
   return lines.slice(firstLine - 1, lastLine).join("\n");
 }
 
-function getLineNumber(value, fallback) {
+function getLineNumber(value: number, fallback: number) {
   if (value == null) {
     return fallback;
   }

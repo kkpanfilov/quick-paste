@@ -1,8 +1,15 @@
 import { Button } from "@/components/ui/button/Button.jsx";
+import type { User } from "@/types/user.types.ts";
 
 import styles from "./ProfileInfo.module.scss";
 
-export const ProfileInfo = ({ data, isMe, setIsEditing }) => {
+type Props = {
+  data: User;
+  isMe: boolean;
+  setIsEditing: (isEditing: boolean) => void;
+};
+
+export const ProfileInfo = ({ data, isMe, setIsEditing }: Props) => {
   return (
     <section className={styles.profile}>
       <div className={styles.identity}>

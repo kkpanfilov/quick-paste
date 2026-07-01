@@ -27,6 +27,7 @@ export type Paste = {
   authorId: string;
 
   createdAt: ISODateString;
+  updatedAt: ISODateString;
 };
 
 export type FeedPasteItem = Pick<
@@ -39,6 +40,11 @@ export type FeedPasteItem = Pick<
   | "createdAt"
   | "likesCount"
   | "pasteTags"
+>;
+
+export type RecentPasteItem = Pick<
+  Paste,
+  "id" | "title" | "description" | "language" | "exposure" | "updatedAt"
 >;
 
 export type FormattedFeedPasteItem = FeedPasteItem & {

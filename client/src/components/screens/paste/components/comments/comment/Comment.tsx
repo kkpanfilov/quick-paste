@@ -16,7 +16,7 @@ import styles from "./Comment.module.scss";
 
 type FormData = Omit<CreateReplyDto, "pasteId">;
 
-type ReplyState = {
+export type ReplyState = {
   isReplying: boolean;
   commentId: string | null;
 };
@@ -26,7 +26,7 @@ type ReplyFormProps = {
   pasteId: string;
   comment: CommentItem;
   replyState: ReplyState;
-  setReplyState: (state: ReplyState) => void;
+  setReplyState: React.Dispatch<React.SetStateAction<ReplyState>>;
 };
 
 const DEFAULT_VALUES = {

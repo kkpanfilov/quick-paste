@@ -4,10 +4,18 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
 import styles from "./ErrorPage.module.scss";
 
+export type ErrorPageProps = {
+  code?: string;
+  title?: string;
+  description?: string;
+  documentTitle?: string;
+  actionLabel?: string;
+};
+
 export const ErrorPage = ({
   code = "500",
-  title,
-  description,
+  title = "Something went wrong",
+  description = "We could not complete the request. Please try again later",
   documentTitle = "Error!",
   actionLabel = "Back to home",
 }) => {
@@ -20,13 +28,9 @@ export const ErrorPage = ({
       <section className={styles.card} aria-labelledby="error-title">
         <p className={styles.code}>{code}</p>
         <h1 id="error-title" className={styles.title}>
-          {title ? title : "Something went wrong"}
+          {title}
         </h1>
-        <p className={styles.description}>
-          {description
-            ? description
-            : "We could not complete the request. Please try again later"}
-        </p>
+        <p className={styles.description}>{description}</p>
 
         <div className={styles.actions}>
           <Button

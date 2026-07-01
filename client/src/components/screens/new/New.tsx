@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
-import { useAuth } from "@/hooks/useAuth.js";
-import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle.ts";
 
-import { NewPasteForm } from "./components/new-paste-form/NewPasteForm.jsx";
+import { NewPasteForm } from "./components/new-paste-form/NewPasteForm.tsx";
 
 import styles from "./New.module.scss";
 

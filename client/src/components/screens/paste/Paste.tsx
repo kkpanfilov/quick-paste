@@ -7,25 +7,50 @@ import { useAppNavigation } from "@/hooks/useAppNavigation.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 
-import { ErrorPage } from "../error/ErrorPage.jsx";
-import { NotFound } from "../not-found/NotFound.jsx";
-import { CommentForm } from "./components/comment-form/CommentForm.jsx";
-import { Comments } from "./components/comments/Comments.jsx";
-import { PasteContent } from "./components/paste-content/PasteContent.jsx";
+import { ErrorPage } from "../error/ErrorPage.js";
+import { NotFound } from "../not-found/NotFound.js";
+import { CommentForm } from "./components/comment-form/CommentForm.js";
+import { Comments } from "./components/comments/Comments.tsx";
+import { PasteContent } from "./components/paste-content/PasteContent.js";
 
 import styles from "./Paste.module.scss";
 
+type Props = {
+  pasteId: string;
+};
+
 export const Paste = () => {
+  const { id: pasteId } = useParams<"id">();
+
+  if (!pasteId || !pasteId.trim().length) {
+    return (
+      <ErrorPage
+        title="Failed to load paste"
+        description="The paste is temporarily unavailable"
+      />
+    );
+  }
+
+  return <PasteView pasteId={pasteId} />;
+};
+
+const PasteView = ({ pasteId }: Props) => {
   useDocumentTitle("Paste");
 
   const { goHome } = useAppNavigation();
 
   const { isAuth, userId } = useAuth();
 
-  const params = useParams();
-  const pasteId = params.id;
-
   const { data, isLoading, error } = useGetPaste(pasteId);
+
+  if (!data) {
+    return (
+      <ErrorPage
+        title="Failed to load paste"
+        description="The paste is temporarily unavailable"
+      />
+    );
+  }
 
   if (isLoading) {
     return (

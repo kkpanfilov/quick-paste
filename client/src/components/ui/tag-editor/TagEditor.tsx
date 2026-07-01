@@ -1,18 +1,13 @@
 import React, { useState } from "react";
 
-import { type UseFormReturn, useWatch } from "react-hook-form";
-
 import { Button } from "../button/Button.js";
 import { Field } from "../field/Field.js";
 
 import styles from "./TagEditor.module.scss";
 
-type FormWithTags = {
-  tags: string[];
-};
-
 type Props = {
-  form: Pick<UseFormReturn<FormWithTags>, "control" | "setValue">;
+  tags: string[];
+  onChange: (tags: string[]) => void;
   id: string;
   name: string;
   placeholder: string;
@@ -21,7 +16,8 @@ type Props = {
 };
 
 export const TagEditor = ({
-  form,
+  tags,
+  onChange,
   id,
   name,
   placeholder,
@@ -29,12 +25,6 @@ export const TagEditor = ({
   maxTagLength = 30,
 }: Props) => {
   const [tag, setTag] = useState("");
-
-  const tags = useWatch({
-    control: form.control,
-    name: "tags",
-    defaultValue: [],
-  });
 
   const onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
@@ -51,23 +41,12 @@ export const TagEditor = ({
     if (tags.length >= maxTags) return;
     if (tags.includes(value)) return;
 
-    form.setValue("tags", [...tags, value], {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-
+    onChange([...tags, value]);
     setTag("");
   };
 
   const removeTag = (tag: string) => {
-    form.setValue(
-      "tags",
-      tags.filter((t) => t !== tag),
-      {
-        shouldValidate: true,
-        shouldDirty: true,
-      },
-    );
+    onChange(tags.filter((t) => t !== tag));
   };
 
   return (

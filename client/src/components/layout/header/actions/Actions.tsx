@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { isApiError } from "@/api/apiClient.ts";
 import { Button } from "@/components/ui/button/Button.jsx";
 import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
 import { useLogout } from "@/hooks/auth/useLogout.js";
@@ -30,8 +31,11 @@ export const Actions = () => {
           message: "You have successfully logged out",
         });
       }
-    } catch (error) {
-      notifyError({ title: "Logout error", message: error.message });
+    } catch (error: unknown) {
+      notifyError({
+        title: "Logout error",
+        message: isApiError(error) ? error.message : "Unknown error",
+      });
     }
 
     setIsConfirmOpen(false);
@@ -57,7 +61,7 @@ export const Actions = () => {
         >
           New paste
         </Button>
-        {isAuth ? (
+        {isAuth && userId ? (
           <>
             <Button
               variant="soft"

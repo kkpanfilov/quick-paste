@@ -9,21 +9,37 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
 import { useGetUser } from "@/hooks/users/useGetUser.js";
 import { exposureMap } from "@/shared/lists/exposure.map.js";
 
-import { ErrorPage } from "../error/ErrorPage.jsx";
-import { NotFound } from "../not-found/NotFound.jsx";
-import { LanguageItem } from "./components/language-item/LanguageItem.jsx";
-import { ProfileInfo } from "./components/profile-info/ProfileInfo.jsx";
+import { ErrorPage } from "../error/ErrorPage.js";
+import { NotFound } from "../not-found/NotFound.js";
+import { LanguageItem } from "./components/language-item/LanguageItem.js";
+import { ProfileInfo } from "./components/profile-info/ProfileInfo.js";
 import { RecentPaste } from "./components/recent-paste/RecentPaste.jsx";
-import { StatCard } from "./components/stat-card/StatCard.jsx";
-import { UserEditPanel } from "./components/user-edit-panel/UserEditPanel.jsx";
+import { StatCard } from "./components/stat-card/StatCard.js";
+import { UserEditPanel } from "./components/user-edit-panel/UserEditPanel.js";
 
 import styles from "./User.module.scss";
 
-export const User = () => {
-  useDocumentTitle("User profile");
+type Props = {
+  paramUserId: string;
+};
 
-  const params = useParams();
-  const paramUserId = params.id;
+export const User = () => {
+  const { id: paramUserId } = useParams<"id">();
+
+  if (!paramUserId || !paramUserId.trim().length) {
+    return (
+      <ErrorPage
+        title="Failed to load user"
+        description="The user is temporarily unavailable"
+      />
+    );
+  }
+
+  return <UserView paramUserId={paramUserId} />;
+};
+
+const UserView = ({ paramUserId }: Props) => {
+  useDocumentTitle("User profile");
 
   const { isAuth, userId } = useAuth();
   const isMe = isAuth && userId === paramUserId;
@@ -31,6 +47,15 @@ export const User = () => {
   const { data, isLoading, error } = useGetUser(paramUserId);
 
   const [isEditing, setIsEditing] = useState(false);
+
+  if (!data) {
+    return (
+      <ErrorPage
+        title="Failed to load user"
+        description="The user is temporarily unavailable"
+      />
+    );
+  }
 
   if (isLoading) {
     return (
@@ -129,7 +154,9 @@ export const User = () => {
                     </div>
                     <div className={styles.detailRow}>
                       <dt>Default exposure</dt>
-                      <dd>{exposureMap[data.exposure]}</dd>
+                      <dd>
+                        {data.exposure ? exposureMap[data.exposure] : "Private"}
+                      </dd>
                     </div>
                   </>
                 )}

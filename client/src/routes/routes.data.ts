@@ -1,12 +1,12 @@
 import type { JSX } from "react";
 
-import { Home } from "@/components/screens/home/Home.jsx";
-import { New } from "@/components/screens/new/New.jsx";
-import { Paste } from "@/components/screens/paste/Paste.jsx";
-import { Register } from "@/components/screens/register/Register.jsx";
-import { SearchPage } from "@/components/screens/search/SearchPage.jsx";
-import { Signin } from "@/components/screens/signin/Signin.jsx";
-import { User } from "@/components/screens/user/User.jsx";
+import { Home } from "@/components/screens/home/Home.tsx";
+import { New } from "@/components/screens/new/New.tsx";
+import { Paste } from "@/components/screens/paste/Paste.tsx";
+import { Register } from "@/components/screens/register/Register.tsx";
+import { SearchPage } from "@/components/screens/search/SearchPage.tsx";
+import { Signin } from "@/components/screens/signin/Signin.tsx";
+import { User } from "@/components/screens/user/User.tsx";
 
 import { paths } from "./paths.config.js";
 

@@ -1,3 +1,5 @@
+import { useWatch } from "react-hook-form";
+
 import { Button } from "@/components/ui/button/Button.jsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
 import { Field } from "@/components/ui/field/Field.jsx";
@@ -9,7 +11,7 @@ import {
   languageList,
 } from "@/shared/lists/new-paste.list.js";
 
-import { useNewPasteForm } from "./hooks/useNewPasteForm.jsx";
+import { useNewPasteForm } from "./hooks/useNewPasteForm.js";
 
 import styles from "./NewPasteForm.module.scss";
 
@@ -30,6 +32,19 @@ export const NewPasteForm = () => {
     setValue,
   };
 
+  const tags = useWatch({
+    control: newPasteForm.control,
+    name: "tags",
+    defaultValue: [],
+  });
+
+  const onTagsChange = (tags: string[]) => {
+    newPasteForm.setValue("tags", tags, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
+
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
       <div className={styles.group}>
@@ -39,7 +54,6 @@ export const NewPasteForm = () => {
         </label>
         <Field
           id="new-title"
-          name="title"
           type="text"
           className={styles.input}
           placeholder="e.g. api-gateway-notes.ts"
@@ -63,7 +77,6 @@ export const NewPasteForm = () => {
         <Field
           tag="textarea"
           id="new-description"
-          name="description"
           className={styles.textarea}
           placeholder="Add a description to your paste (optional)"
           rows={3}
@@ -77,7 +90,8 @@ export const NewPasteForm = () => {
       </div>
 
       <TagEditor
-        form={newPasteForm}
+        tags={tags}
+        onChange={onTagsChange}
         id="new-tags"
         name="tags"
         placeholder="Add tags to your paste (optional)"
@@ -93,7 +107,6 @@ export const NewPasteForm = () => {
           </label>
           <Select
             id="new-language"
-            name="language"
             className={styles.select}
             {...register("language", {
               required: "is required",
@@ -116,7 +129,6 @@ export const NewPasteForm = () => {
           </label>
           <Select
             id="new-expire"
-            name="expiration"
             className={styles.select}
             {...register("expiration", {
               required: "is required",
@@ -139,7 +151,6 @@ export const NewPasteForm = () => {
           </label>
           <Select
             id="new-category"
-            name="category"
             className={styles.select}
             {...register("category", {
               required: "is required",
@@ -162,7 +173,6 @@ export const NewPasteForm = () => {
           </label>
           <Select
             id="new-exposure"
-            name="exposure"
             className={styles.select}
             {...register("exposure", {
               required: "is required",
@@ -186,7 +196,6 @@ export const NewPasteForm = () => {
         </label>
         <Field
           id="new-password"
-          name="password"
           type="text"
           className={styles.input}
           placeholder="Password (optional)"
@@ -207,7 +216,6 @@ export const NewPasteForm = () => {
         <Field
           tag="textarea"
           id="new-content"
-          name="content"
           className={styles.textarea}
           placeholder="Paste code or text here..."
           rows={10}

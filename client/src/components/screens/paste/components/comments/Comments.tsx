@@ -1,11 +1,19 @@
 import { useState } from "react";
 
-import { Comment } from "./comment/Comment.jsx";
+import type { Paste } from "@/types/paste.types.js";
+
+import { Comment, type ReplyState } from "./comment/Comment.js";
 
 import styles from "./Comments.module.scss";
 
-export const Comments = ({ isAuth, pasteId, data }) => {
-  const [replyState, setReplyState] = useState({
+type Props = {
+  isAuth: boolean;
+  pasteId: string;
+  data: Paste;
+};
+
+export const Comments = ({ isAuth, pasteId, data }: Props) => {
+  const [replyState, setReplyState] = useState<ReplyState>({
     isReplying: false,
     commentId: null,
   });

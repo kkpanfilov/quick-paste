@@ -13,7 +13,7 @@ import { useNotifications } from "@/hooks/useNotifications.js";
 import { registeredLanguages } from "@/shared/languagesStore.js";
 
 import { formatPastesData } from "../../../utils/formatPastesData.js";
-import { ErrorPage } from "../error/ErrorPage.jsx";
+import { ErrorPage } from "../error/ErrorPage.js";
 
 import styles from "./Home.module.scss";
 
@@ -78,7 +78,7 @@ export const Home = () => {
     );
   }
 
-  const onPageChange = (page) => {
+  const onPageChange = (page: number) => {
     setPage(page);
   };
 
@@ -154,7 +154,7 @@ export const Home = () => {
             <PasteCard key={paste.id} paste={paste} />
           ))}
         </section>
-        {!!items.length && (
+        {meta && items.length > 0 && (
           <Pagination {...meta} pageLimit={4} onPageChange={onPageChange} />
         )}
       </section>
