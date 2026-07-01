@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button/Button.jsx";
-import { Field } from "@/components/ui/field/Field.jsx";
-import { SearchIcon } from "@/components/ui/search-icon/SearchIcon.jsx";
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+import { Button } from "@/components/ui/button/Button.tsx";
+import { Field } from "@/components/ui/field/Field.tsx";
+import { SearchIcon } from "@/components/ui/search-icon/SearchIcon.tsx";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
 
 import styles from "./Search.module.scss";
 

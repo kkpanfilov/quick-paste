@@ -1,14 +1,14 @@
 import { useState } from "react";
 
-import { isApiError } from "@/api/apiClient.js";
-import { Button } from "@/components/ui/button/Button.jsx";
-import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
-import { useLogout } from "@/hooks/auth/useLogout.js";
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
-import { useAuth } from "@/hooks/useAuth.js";
-import { useNotifications } from "@/hooks/useNotifications.js";
+import { isApiError } from "@/api/apiClient.ts";
+import { Button } from "@/components/ui/button/Button.tsx";
+import { Confirm } from "@/components/ui/confirm/Confirm.tsx";
+import { useLogout } from "@/hooks/auth/useLogout.ts";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useNotifications } from "@/hooks/useNotifications.ts";
 
-import { Search } from "../search/Search.js";
+import { Search } from "../search/Search.tsx";
 
 import styles from "./Hamburger.module.scss";
 

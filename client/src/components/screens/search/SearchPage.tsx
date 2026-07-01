@@ -2,16 +2,16 @@ import { useMemo, useRef, useState } from "react";
 
 import { useParams } from "react-router";
 
-import { Loader } from "@/components/ui/loader/Loader.jsx";
-import { Pagination } from "@/components/ui/pagination/Pagination.jsx";
-import { PasteCard } from "@/components/ui/paste-card/PasteCard.jsx";
-import { useSearchPastes } from "@/hooks/pastes/useSearchPastes.js";
-import { useLoadLanguages } from "@/hooks/syntax-highlighter/useLoadLanguages.js";
-import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
-import { registeredLanguages } from "@/shared/languagesStore.js";
-import { formatPastesData } from "@/utils/formatPastesData.js";
+import { Loader } from "@/components/ui/loader/Loader.tsx";
+import { Pagination } from "@/components/ui/pagination/Pagination.tsx";
+import { PasteCard } from "@/components/ui/paste-card/PasteCard.tsx";
+import { useSearchPastes } from "@/hooks/pastes/useSearchPastes.ts";
+import { useLoadLanguages } from "@/hooks/syntax-highlighter/useLoadLanguages.ts";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle.ts";
+import { registeredLanguages } from "@/shared/languagesStore.ts";
+import { formatPastesData } from "@/utils/formatPastesData.ts";
 
-import { ErrorPage } from "../error/ErrorPage.js";
+import { ErrorPage } from "../error/ErrorPage.tsx";
 
 import styles from "./SearchPage.module.scss";
 

@@ -1,8 +1,8 @@
 import { formatDistanceToNow } from "date-fns";
 
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
-import { type Exposure, exposureMap } from "@/shared/lists/exposure.map.js";
-import { languageMap } from "@/shared/lists/language.map.js";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
+import { type Exposure, exposureMap } from "@/shared/lists/exposure.map.ts";
+import { languageMap } from "@/shared/lists/language.map.ts";
 import type { RecentPasteItem } from "@/types/paste.types.ts";
 
 import styles from "./RecentPaste.module.scss";

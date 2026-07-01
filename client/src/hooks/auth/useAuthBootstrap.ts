@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { refreshAccessToken } from "@/api/auth/refreshAccessToken.js";
-import { clearAccessToken, setAccessToken } from "@/shared/authStore.js";
+import { refreshAccessToken } from "@/api/auth/refreshAccessToken.ts";
+import { clearAccessToken, setAccessToken } from "@/shared/authStore.ts";
 
-import { useAuth } from "../useAuth.js";
+import { useAuth } from "../useAuth.ts";
 
 type UseAuthBootstrapResult = {
   isAuthChecked: boolean;

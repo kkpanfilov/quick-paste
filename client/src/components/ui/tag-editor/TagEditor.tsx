@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import { Button } from "../button/Button.js";
-import { Field } from "../field/Field.js";
+import { Button } from "../button/Button.tsx";
+import { Field } from "../field/Field.tsx";
 
 import styles from "./TagEditor.module.scss";
 

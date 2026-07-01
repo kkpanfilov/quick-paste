@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button/Button.jsx";
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
-import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { Button } from "@/components/ui/button/Button.tsx";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle.ts";
 
 import styles from "./ErrorPage.module.scss";
 

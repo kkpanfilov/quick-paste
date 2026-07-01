@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import type { Paste } from "@/types/paste.types.js";
+import type { Paste } from "@/types/paste.types.ts";
 
-import { Comment, type ReplyState } from "./comment/Comment.js";
+import { Comment, type ReplyState } from "./comment/Comment.tsx";
 
 import styles from "./Comments.module.scss";
 

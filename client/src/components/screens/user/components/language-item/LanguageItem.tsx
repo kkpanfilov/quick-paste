@@ -1,4 +1,4 @@
-import { languageMap } from "@/shared/lists/language.map.js";
+import { languageMap } from "@/shared/lists/language.map.ts";
 
 import styles from "./LanguageItem.module.scss";
 

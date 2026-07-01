@@ -2,11 +2,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { type SubmitHandler, useForm } from "react-hook-form";
 
 import { isApiError } from "@/api/apiClient.ts";
-import { Button } from "@/components/ui/button/Button.jsx";
-import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
-import { Field } from "@/components/ui/field/Field.jsx";
-import { useUnlockPaste } from "@/hooks/pastes/useUnlockPaste.js";
-import { useNotifications } from "@/hooks/useNotifications.js";
+import { Button } from "@/components/ui/button/Button.tsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
+import { Field } from "@/components/ui/field/Field.tsx";
+import { useUnlockPaste } from "@/hooks/pastes/useUnlockPaste.ts";
+import { useNotifications } from "@/hooks/useNotifications.ts";
 import type { Paste } from "@/types/paste.types.ts";
 
 import styles from "./PastePassword.module.scss";

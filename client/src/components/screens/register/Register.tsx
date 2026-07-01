@@ -2,15 +2,15 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router";
 
 import { isApiError } from "@/api/apiClient.ts";
-import { Button } from "@/components/ui/button/Button.jsx";
-import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
-import { Field } from "@/components/ui/field/Field.jsx";
-import { useRegister } from "@/hooks/auth/useRegister.js";
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
-import { useAuth } from "@/hooks/useAuth.js";
-import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { Button } from "@/components/ui/button/Button.tsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
+import { Field } from "@/components/ui/field/Field.tsx";
+import { useRegister } from "@/hooks/auth/useRegister.ts";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle.ts";
 import { useNotifications } from "@/hooks/useNotifications.ts";
-import { setAccessToken } from "@/shared/authStore.js";
+import { setAccessToken } from "@/shared/authStore.ts";
 import type { RegisterDto } from "@/types/auth.types.ts";
 
 import styles from "./Register.module.scss";

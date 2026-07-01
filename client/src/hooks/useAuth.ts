@@ -1,6 +1,6 @@
 import { shallowEqual } from "react-redux";
 
-import { login, logout } from "@/store/auth/authSlice.js";
+import { login, logout } from "@/store/auth/authSlice.ts";
 import { useAppDispatch, useAppSelector } from "@/store/hooks.ts";
 
 export function useAuth() {

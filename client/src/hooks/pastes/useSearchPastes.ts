@@ -1,6 +1,6 @@
 import { type UseQueryOptions, useQuery } from "@tanstack/react-query";
 
-import { apiClient } from "@/api/apiClient.js";
+import { apiClient } from "@/api/apiClient.ts";
 import type { FeedPasteItem } from "@/types/paste.types.ts";
 
 type GetSearchPastesResult = {

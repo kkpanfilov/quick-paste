@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { apiClient } from "@/api/apiClient.js";
+import { apiClient } from "@/api/apiClient.ts";
 import type { User } from "@/types/user.types.ts";
 
 export function useGetUser(id: string) {

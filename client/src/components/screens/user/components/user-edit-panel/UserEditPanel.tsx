@@ -5,20 +5,20 @@ import clsx from "clsx";
 import { type SubmitHandler, useForm } from "react-hook-form";
 
 import { isApiError } from "@/api/apiClient.ts";
-import { Button } from "@/components/ui/button/Button.jsx";
-import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
-import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
-import { Field } from "@/components/ui/field/Field.jsx";
-import { Select } from "@/components/ui/select/Select.jsx";
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
-import { useAuth } from "@/hooks/useAuth.js";
-import { useNotifications } from "@/hooks/useNotifications.js";
-import { useDeleteUser } from "@/hooks/users/useDeleteUser.js";
-import { useUpdateUser } from "@/hooks/users/useUpdateUser.js";
+import { Button } from "@/components/ui/button/Button.tsx";
+import { Confirm } from "@/components/ui/confirm/Confirm.tsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
+import { Field } from "@/components/ui/field/Field.tsx";
+import { Select } from "@/components/ui/select/Select.tsx";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useNotifications } from "@/hooks/useNotifications.ts";
+import { useDeleteUser } from "@/hooks/users/useDeleteUser.ts";
+import { useUpdateUser } from "@/hooks/users/useUpdateUser.ts";
 import type { UpdateUserDto, User } from "@/types/user.types.ts";
-import { getDirtyBody } from "@/utils/getDirtyBody.js";
-import { nullIfBlank } from "@/utils/nullIfBlank.js";
-import { removeEmptyFields } from "@/utils/removeEmptyFields.js";
+import { getDirtyBody } from "@/utils/getDirtyBody.ts";
+import { nullIfBlank } from "@/utils/nullIfBlank.ts";
+import { removeEmptyFields } from "@/utils/removeEmptyFields.ts";
 
 import styles from "./UserEditPanel.module.scss";
 

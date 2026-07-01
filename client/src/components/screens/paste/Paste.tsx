@@ -1,17 +1,17 @@
 import { useParams } from "react-router";
 
-import { PastePassword } from "@/components/screens/paste-password/PastePassword.jsx";
-import { Loader } from "@/components/ui/loader/Loader.jsx";
-import { useGetPaste } from "@/hooks/pastes/useGetPaste.js";
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
-import { useAuth } from "@/hooks/useAuth.js";
-import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
+import { PastePassword } from "@/components/screens/paste-password/PastePassword.tsx";
+import { Loader } from "@/components/ui/loader/Loader.tsx";
+import { useGetPaste } from "@/hooks/pastes/useGetPaste.ts";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle.ts";
 
-import { ErrorPage } from "../error/ErrorPage.js";
-import { NotFound } from "../not-found/NotFound.js";
-import { CommentForm } from "./components/comment-form/CommentForm.js";
+import { ErrorPage } from "../error/ErrorPage.tsx";
+import { NotFound } from "../not-found/NotFound.tsx";
+import { CommentForm } from "./components/comment-form/CommentForm.tsx";
 import { Comments } from "./components/comments/Comments.tsx";
-import { PasteContent } from "./components/paste-content/PasteContent.js";
+import { PasteContent } from "./components/paste-content/PasteContent.tsx";
 
 import styles from "./Paste.module.scss";
 

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button/Button.jsx";
+import { Button } from "@/components/ui/button/Button.tsx";
 import type { User } from "@/types/user.types.ts";
 
 import styles from "./ProfileInfo.module.scss";

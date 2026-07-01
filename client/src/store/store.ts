@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import authReducer from "@/store/auth/authSlice.js";
-import notificationReducer from "@/store/notification/notificationSlice.js";
+import authReducer from "@/store/auth/authSlice.ts";
+import notificationReducer from "@/store/notification/notificationSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +10,6 @@ export const store = configureStore({
   },
 });
 
-export type AppStore = typeof store
-export type RootState = ReturnType<AppStore['getState']>
-export type AppDispatch = AppStore['dispatch']
+export type AppStore = typeof store;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];

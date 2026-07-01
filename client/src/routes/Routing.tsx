@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router";
 
 import { NotFound } from "@/components/screens/not-found/NotFound.tsx";
 
-import { routes } from "./routes.data.js";
+import { routes } from "./routes.data.ts";
 
 export const Routing = () => {
   return (

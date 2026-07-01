@@ -6,18 +6,18 @@ import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import { isApiError } from "@/api/apiClient.ts";
-import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
-import { Field } from "@/components/ui/field/Field.jsx";
-import { Loader } from "@/components/ui/loader/Loader.jsx";
-import { useLikePaste } from "@/hooks/pastes/useLikePaste.js";
-import { useUnlikePaste } from "@/hooks/pastes/useUnlikePaste.js";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
+import { Field } from "@/components/ui/field/Field.tsx";
+import { Loader } from "@/components/ui/loader/Loader.tsx";
+import { useLikePaste } from "@/hooks/pastes/useLikePaste.ts";
+import { useUnlikePaste } from "@/hooks/pastes/useUnlikePaste.ts";
 import {
   type HighlightState,
   useLoadLanguage,
-} from "@/hooks/syntax-highlighter/useLoadLanguage.js";
-import { useNotifications } from "@/hooks/useNotifications.js";
+} from "@/hooks/syntax-highlighter/useLoadLanguage.ts";
+import { useNotifications } from "@/hooks/useNotifications.ts";
 import type { Paste, UpdatePasteDto } from "@/types/paste.types.ts";
-import { countLines } from "@/utils/countLines.js";
+import { countLines } from "@/utils/countLines.ts";
 
 import styles from "./PasteTextarea.module.scss";
 

@@ -3,19 +3,19 @@ import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { type SubmitHandler, useForm } from "react-hook-form";
 
-import { isApiError } from "@/api/apiClient.js";
-import { Confirm } from "@/components/ui/confirm/Confirm.jsx";
-import { useDeletePaste } from "@/hooks/pastes/useDeletePaste.js";
-import { useUpdatePaste } from "@/hooks/pastes/useUpdatePaste.js";
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
-import { useNotifications } from "@/hooks/useNotifications.js";
-import type { Paste, UpdatePasteDto } from "@/types/paste.types.js";
-import { getDirtyBody } from "@/utils/getDirtyBody.js";
-import { nullIfBlank } from "@/utils/nullIfBlank.js";
-import { removeEmptyFields } from "@/utils/removeEmptyFields.js";
+import { isApiError } from "@/api/apiClient.ts";
+import { Confirm } from "@/components/ui/confirm/Confirm.tsx";
+import { useDeletePaste } from "@/hooks/pastes/useDeletePaste.ts";
+import { useUpdatePaste } from "@/hooks/pastes/useUpdatePaste.ts";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
+import { useNotifications } from "@/hooks/useNotifications.ts";
+import type { Paste, UpdatePasteDto } from "@/types/paste.types.ts";
+import { getDirtyBody } from "@/utils/getDirtyBody.ts";
+import { nullIfBlank } from "@/utils/nullIfBlank.ts";
+import { removeEmptyFields } from "@/utils/removeEmptyFields.ts";
 
-import { PasteHeader } from "./paste-header/PasteHeader.jsx";
-import { PasteTextarea } from "./paste-textarea/PasteTextarea.jsx";
+import { PasteHeader } from "./paste-header/PasteHeader.tsx";
+import { PasteTextarea } from "./paste-textarea/PasteTextarea.tsx";
 
 type FormData = UpdatePasteDto;
 

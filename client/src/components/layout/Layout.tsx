@@ -1,4 +1,4 @@
-import { Routing } from "@/routes/Routing.jsx";
+import { Routing } from "@/routes/Routing.tsx";
 
 import { Header } from "./header/Header.tsx";
 

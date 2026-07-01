@@ -1,4 +1,4 @@
-import { statisticsLabels } from "../../assets/statisticsLabels.js";
+import { statisticsLabels } from "../../assets/statisticsLabels.ts";
 
 import styles from "./StatCard.module.scss";
 

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 
-import { languageLoaders } from "@/shared/lib/syntax-highlighter/language-loaders.js";
+import { languageLoaders } from "@/shared/lib/syntax-highlighter/language-loaders.ts";
 import type { Language } from "@/shared/lists/language.map.ts";
 
 export type HighlightState = {

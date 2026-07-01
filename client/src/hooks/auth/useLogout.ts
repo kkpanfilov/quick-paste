@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { apiClient } from "@/api/apiClient.js";
+import { apiClient } from "@/api/apiClient.ts";
 import type { LogoutResponse } from "@/types/auth.types.ts";
 
 export function useLogout() {

@@ -3,12 +3,12 @@ import { useEffect } from "react";
 import { type SubmitHandler, useForm, useWatch } from "react-hook-form";
 
 import { isApiError } from "@/api/apiClient.ts";
-import { useCreatePaste } from "@/hooks/pastes/useCreatePaste.js";
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+import { useCreatePaste } from "@/hooks/pastes/useCreatePaste.ts";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
 import { useNotifications } from "@/hooks/useNotifications.ts";
-import { exposureList } from "@/shared/lists/new-paste.list.js";
+import { exposureList } from "@/shared/lists/new-paste.list.ts";
 import type { CreatePasteDto } from "@/types/paste.types.ts";
-import { nullIfBlank } from "@/utils/nullIfBlank.js";
+import { nullIfBlank } from "@/utils/nullIfBlank.ts";
 
 type FormData = Omit<CreatePasteDto, "isBurn">;
 

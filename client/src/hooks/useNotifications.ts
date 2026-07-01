@@ -2,7 +2,7 @@ import { useAppDispatch } from "@/store/hooks.ts";
 import {
   addNotification,
   removeNotification,
-} from "@/store/notification/notificationSlice.js";
+} from "@/store/notification/notificationSlice.ts";
 
 type Notification = {
   title: string;

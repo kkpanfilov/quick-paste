@@ -1,7 +1,7 @@
 import axios, { AxiosHeaders } from "axios";
 import type { AxiosRequestConfig } from "axios";
 
-import { getAccessToken, setAccessToken } from "@/shared/authStore.js";
+import { getAccessToken, setAccessToken } from "@/shared/authStore.ts";
 
 import { refreshAccessToken } from "./auth/refreshAccessToken.ts";
 

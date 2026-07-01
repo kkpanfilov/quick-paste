@@ -3,19 +3,19 @@ import { useState } from "react";
 import { format, formatDistanceToNow } from "date-fns";
 import { useParams } from "react-router";
 
-import { Loader } from "@/components/ui/loader/Loader.jsx";
-import { useAuth } from "@/hooks/useAuth.js";
-import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
-import { useGetUser } from "@/hooks/users/useGetUser.js";
-import { exposureMap } from "@/shared/lists/exposure.map.js";
+import { Loader } from "@/components/ui/loader/Loader.tsx";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle.ts";
+import { useGetUser } from "@/hooks/users/useGetUser.ts";
+import { exposureMap } from "@/shared/lists/exposure.map.ts";
 
-import { ErrorPage } from "../error/ErrorPage.js";
-import { NotFound } from "../not-found/NotFound.js";
-import { LanguageItem } from "./components/language-item/LanguageItem.js";
-import { ProfileInfo } from "./components/profile-info/ProfileInfo.js";
-import { RecentPaste } from "./components/recent-paste/RecentPaste.jsx";
-import { StatCard } from "./components/stat-card/StatCard.js";
-import { UserEditPanel } from "./components/user-edit-panel/UserEditPanel.js";
+import { ErrorPage } from "../error/ErrorPage.tsx";
+import { NotFound } from "../not-found/NotFound.tsx";
+import { LanguageItem } from "./components/language-item/LanguageItem.tsx";
+import { ProfileInfo } from "./components/profile-info/ProfileInfo.tsx";
+import { RecentPaste } from "./components/recent-paste/RecentPaste.tsx";
+import { StatCard } from "./components/stat-card/StatCard.tsx";
+import { UserEditPanel } from "./components/user-edit-panel/UserEditPanel.tsx";
 
 import styles from "./User.module.scss";
 

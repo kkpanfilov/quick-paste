@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { apiClient } from "@/api/apiClient.js";
+import { apiClient } from "@/api/apiClient.ts";
 import type { CreatePasteDto } from "@/types/paste.types.ts";
 
 type CreatePasteResult = {

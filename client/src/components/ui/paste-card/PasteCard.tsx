@@ -1,7 +1,7 @@
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
 import type { FormattedFeedPasteItem } from "@/types/paste.types.ts";
 
 import styles from "./PasteCard.module.scss";

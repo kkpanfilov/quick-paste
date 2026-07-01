@@ -2,12 +2,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router";
 
-import { isApiError } from "@/api/apiClient.js";
-import { Button } from "@/components/ui/button/Button.jsx";
-import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
-import { Field } from "@/components/ui/field/Field.jsx";
-import { useCreateComment } from "@/hooks/comments/useCreateComment.js";
-import { useNotifications } from "@/hooks/useNotifications.js";
+import { isApiError } from "@/api/apiClient.ts";
+import { Button } from "@/components/ui/button/Button.tsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
+import { Field } from "@/components/ui/field/Field.tsx";
+import { useCreateComment } from "@/hooks/comments/useCreateComment.ts";
+import { useNotifications } from "@/hooks/useNotifications.ts";
 import type { CreateCommentDto } from "@/types/comment.types.ts";
 import type { Paste } from "@/types/paste.types.ts";
 

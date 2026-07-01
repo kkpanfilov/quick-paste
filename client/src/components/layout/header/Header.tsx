@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import { Actions } from "./actions/Actions.jsx";
-import { Hamburger } from "./hamburger/Hamburger.js";
-import { Logo } from "./logo/Logo.js";
-import { Search } from "./search/Search.js";
+import { Actions } from "./actions/Actions.tsx";
+import { Hamburger } from "./hamburger/Hamburger.tsx";
+import { Logo } from "./logo/Logo.tsx";
+import { Search } from "./search/Search.tsx";
 
 import styles from "./Header.module.scss";
 

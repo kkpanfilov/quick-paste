@@ -8,23 +8,23 @@ import {
 import { Link } from "react-router";
 
 import { isApiError } from "@/api/apiClient.ts";
-import { Button } from "@/components/ui/button/Button.jsx";
-import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
-import { Field } from "@/components/ui/field/Field.jsx";
-import { Select } from "@/components/ui/select/Select.jsx";
-import { TagEditor } from "@/components/ui/tag-editor/TagEditor.jsx";
-import { useNotifications } from "@/hooks/useNotifications.js";
-import { categoryMap } from "@/shared/lists/category.map.js";
-import { exposureMap } from "@/shared/lists/exposure.map.js";
-import { languageMap } from "@/shared/lists/language.map.js";
+import { Button } from "@/components/ui/button/Button.tsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
+import { Field } from "@/components/ui/field/Field.tsx";
+import { Select } from "@/components/ui/select/Select.tsx";
+import { TagEditor } from "@/components/ui/tag-editor/TagEditor.tsx";
+import { useNotifications } from "@/hooks/useNotifications.ts";
+import { categoryMap } from "@/shared/lists/category.map.ts";
+import { exposureMap } from "@/shared/lists/exposure.map.ts";
+import { languageMap } from "@/shared/lists/language.map.ts";
 import {
   categoryList,
   exposureList,
   languageList,
-} from "@/shared/lists/new-paste.list.js";
+} from "@/shared/lists/new-paste.list.ts";
 import type { Paste, UpdatePasteDto } from "@/types/paste.types.ts";
-import { countLines } from "@/utils/countLines.js";
-import { getContentSize } from "@/utils/getContentSize.js";
+import { countLines } from "@/utils/countLines.ts";
+import { getContentSize } from "@/utils/getContentSize.ts";
 
 import styles from "./PasteHeader.module.scss";
 

@@ -3,11 +3,11 @@ import { formatDistanceToNow } from "date-fns";
 import { type SubmitHandler, useForm } from "react-hook-form";
 
 import { isApiError } from "@/api/apiClient.ts";
-import { Button } from "@/components/ui/button/Button.jsx";
-import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
-import { Field } from "@/components/ui/field/Field.jsx";
-import { useCreateReply } from "@/hooks/comments/useCreateReply.js";
-import { useNotifications } from "@/hooks/useNotifications.js";
+import { Button } from "@/components/ui/button/Button.tsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
+import { Field } from "@/components/ui/field/Field.tsx";
+import { useCreateReply } from "@/hooks/comments/useCreateReply.ts";
+import { useNotifications } from "@/hooks/useNotifications.ts";
 import type { CommentItem } from "@/types/comment.types.ts";
 import type { Paste } from "@/types/paste.types.ts";
 import type { CreateReplyDto } from "@/types/reply.types.ts";

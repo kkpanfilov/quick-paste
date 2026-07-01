@@ -1,19 +1,19 @@
 import { useMemo, useRef, useState } from "react";
 
-import { Loader } from "@/components/ui/loader/Loader.jsx";
-import { Pagination } from "@/components/ui/pagination/Pagination.jsx";
-import { PasteCard } from "@/components/ui/paste-card/PasteCard.jsx";
-import { useGetOwnPastes } from "@/hooks/pastes/useGetOwnPastes.js";
-import { useGetPublicPaste } from "@/hooks/pastes/useGetPublicPastes.js";
-import { useLoadLanguages } from "@/hooks/syntax-highlighter/useLoadLanguages.js";
-import { useAppNavigation } from "@/hooks/useAppNavigation.js";
-import { useAuth } from "@/hooks/useAuth.js";
-import { useDocumentTitle } from "@/hooks/useDocumentTitle.js";
-import { useNotifications } from "@/hooks/useNotifications.js";
-import { registeredLanguages } from "@/shared/languagesStore.js";
+import { Loader } from "@/components/ui/loader/Loader.tsx";
+import { Pagination } from "@/components/ui/pagination/Pagination.tsx";
+import { PasteCard } from "@/components/ui/paste-card/PasteCard.tsx";
+import { useGetOwnPastes } from "@/hooks/pastes/useGetOwnPastes.ts";
+import { useGetPublicPaste } from "@/hooks/pastes/useGetPublicPastes.ts";
+import { useLoadLanguages } from "@/hooks/syntax-highlighter/useLoadLanguages.ts";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle.ts";
+import { useNotifications } from "@/hooks/useNotifications.ts";
+import { registeredLanguages } from "@/shared/languagesStore.ts";
 
-import { formatPastesData } from "../../../utils/formatPastesData.js";
-import { ErrorPage } from "../error/ErrorPage.js";
+import { formatPastesData } from "../../../utils/formatPastesData.ts";
+import { ErrorPage } from "../error/ErrorPage.tsx";
 
 import styles from "./Home.module.scss";
 

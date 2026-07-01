@@ -3,13 +3,13 @@ import { formatDistanceToNow } from "date-fns";
 import type {
   FeedPasteItem,
   FormattedFeedPasteItem,
-} from "@/types/paste.types.js";
+} from "@/types/paste.types.ts";
 
-import { getCertainLines } from "../components/screens/home/utils/getCertainLines.js";
-import { categoryMap } from "../shared/lists/category.map.js";
-import { type Language, languageMap } from "../shared/lists/language.map.js";
-import { countLines } from "./countLines.js";
-import { getContentSize } from "./getContentSize.js";
+import { getCertainLines } from "../components/screens/home/utils/getCertainLines.ts";
+import { categoryMap } from "../shared/lists/category.map.ts";
+import { type Language, languageMap } from "../shared/lists/language.map.ts";
+import { countLines } from "./countLines.ts";
+import { getContentSize } from "./getContentSize.ts";
 
 export type Data = {
   items: FeedPasteItem[];

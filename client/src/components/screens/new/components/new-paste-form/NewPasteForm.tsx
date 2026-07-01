@@ -1,17 +1,17 @@
 import { useWatch } from "react-hook-form";
 
-import { Button } from "@/components/ui/button/Button.jsx";
-import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.jsx";
-import { Field } from "@/components/ui/field/Field.jsx";
-import { Select } from "@/components/ui/select/Select.jsx";
-import { TagEditor } from "@/components/ui/tag-editor/TagEditor.jsx";
+import { Button } from "@/components/ui/button/Button.tsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
+import { Field } from "@/components/ui/field/Field.tsx";
+import { Select } from "@/components/ui/select/Select.tsx";
+import { TagEditor } from "@/components/ui/tag-editor/TagEditor.tsx";
 import {
   categoryList,
   expirationList,
   languageList,
-} from "@/shared/lists/new-paste.list.js";
+} from "@/shared/lists/new-paste.list.ts";
 
-import { useNewPasteForm } from "./hooks/useNewPasteForm.js";
+import { useNewPasteForm } from "./hooks/useNewPasteForm.tsx";
 
 import styles from "./NewPasteForm.module.scss";
 

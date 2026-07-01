@@ -8,7 +8,7 @@ import { SearchPage } from "@/components/screens/search/SearchPage.tsx";
 import { Signin } from "@/components/screens/signin/Signin.tsx";
 import { User } from "@/components/screens/user/User.tsx";
 
-import { paths } from "./paths.config.js";
+import { paths } from "./paths.config.ts";
 
 type RouteId = keyof typeof paths;
 

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { useNotifications } from "@/hooks/useNotifications.js";
+import { useNotifications } from "@/hooks/useNotifications.ts";
 
 import styles from "./Notification.module.scss";
 
