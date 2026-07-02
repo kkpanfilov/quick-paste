@@ -13,9 +13,9 @@ import { PasteExposure, Prisma } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CreatePasteDto } from "./dto/create-paste.dto.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
-import { FindOneOptions } from "./types/find-one-paste.type.js";
 import { Password } from "./types/password.type.js";
 import { PasteUnlockTokenType } from "./types/paste-unlock-token.type.js";
+import { ReadPasteOptions } from "./types/read-paste.type.js";
 
 @Injectable()
 export class PastesService {
@@ -196,20 +196,14 @@ export class PastesService {
     userId: string | undefined,
     request: Request | null,
     password?: Password,
-    options: FindOneOptions = {},
   ) {
     const paste = await this.getAccessiblePaste(id, userId, request, password);
 
-    const shouldBurnAfterRead = options.burnAfterRead ?? true;
-    const { isBurn, exposure, ...rest } = paste;
-
-    if (isBurn && paste.authorId !== userId && shouldBurnAfterRead)
-      await this.burn(id);
+    const { exposure, ...rest } = paste;
 
     return {
       ...rest,
       exposure: exposure.toLowerCase(),
-      isBurn,
       likesCount: paste.likesCount,
       isLiked: paste.isLiked ? true : false,
       author: paste.author,
@@ -217,25 +211,21 @@ export class PastesService {
   }
 
   async like(id: string, userId: string, request: Request | null) {
-    const paste = await this.findOne(id, userId, request, null, {
+    const paste = await this.getAccessiblePaste(id, userId, request, null, {
       burnAfterRead: false,
     });
-
-    if (paste.isBurn) {
-      throw new BadRequestException("This paste has been burned");
-    }
 
     try {
       await this.prisma.like.create({
         data: {
           userId,
-          pasteId: id,
+          pasteId: paste.id,
         },
       });
 
       const currentLikesCount = await this.prisma.like.count({
         where: {
-          pasteId: id,
+          pasteId: paste.id,
         },
       });
 
@@ -256,18 +246,14 @@ export class PastesService {
   }
 
   async unlike(id: string, userId: string, request: Request | null) {
-    const paste = await this.findOne(id, userId, request, null, {
+    const paste = await this.getAccessiblePaste(id, userId, request, null, {
       burnAfterRead: false,
     });
-
-    if (paste.isBurn) {
-      throw new BadRequestException("This paste has been burned");
-    }
 
     const unliked = await this.prisma.like.deleteMany({
       where: {
         userId,
-        pasteId: id,
+        pasteId: paste.id,
       },
     });
 
@@ -277,7 +263,7 @@ export class PastesService {
 
     const currentLikesCount = await this.prisma.like.count({
       where: {
-        pasteId: id,
+        pasteId: paste.id,
       },
     });
 
@@ -291,19 +277,15 @@ export class PastesService {
   async update(
     id: string,
     userId: string,
+    request: Request | null,
     updatePasteDto: UpdatePasteDto & { password?: string },
   ) {
     if (Object.keys(updatePasteDto).length === 0) {
       throw new BadRequestException("No data provided");
     }
 
-    const paste = await this.prisma.paste.findUnique({
-      where: {
-        id,
-      },
-      select: {
-        authorId: true,
-      },
+    const paste = await this.getAccessiblePaste(id, userId, request, null, {
+      burnAfterRead: false,
     });
 
     if (!paste) {
@@ -348,10 +330,8 @@ export class PastesService {
           category: true,
           language: true,
           exposure: true,
-          isBurn: true,
           authorId: true,
           createdAt: true,
-          expiresAt: true,
           pasteTags: {
             select: {
               content: true,
@@ -409,11 +389,12 @@ export class PastesService {
       : false;
 
     return {
+      ...updatedPaste,
       likesCount,
       pasteTags: pasteTags.map((tag) => tag.content),
       isLiked: isLikedByUser ? true : false,
+      author: paste.author,
       exposure: exposure.toLowerCase(),
-      ...updatedPaste,
     };
   }
 
@@ -529,6 +510,7 @@ export class PastesService {
     userId: string | undefined,
     request: Request | null,
     password?: Password,
+    options: ReadPasteOptions = {},
   ) {
     const paste = await this.prisma.paste.findUnique({
       where: {
@@ -617,6 +599,13 @@ export class PastesService {
       throw new NotFoundException("Paste not found");
     }
 
+    const shouldBurnAfterRead = options.burnAfterRead ?? true;
+
+    if (isBurn && paste.authorId !== userId && shouldBurnAfterRead) {
+      await this.burn(id);
+      throw new NotFoundException("Paste not found");
+    }
+
     const likesCount = await this.prisma.like.count({
       where: {
         pasteId: id,
@@ -644,7 +633,6 @@ export class PastesService {
           return {
             ...rest,
             exposure: exposure.toLowerCase(),
-            isBurn,
             likesCount,
             pasteTags: pasteTags.map((tag) => tag.content),
             isLiked: isLikedByUser ? true : false,
@@ -669,7 +657,6 @@ export class PastesService {
     return {
       ...rest,
       exposure: exposure.toLowerCase(),
-      isBurn,
       likesCount,
       pasteTags: pasteTags.map((tag) => tag.content),
       isLiked: isLikedByUser ? true : false,

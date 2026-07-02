@@ -34,7 +34,8 @@ export class CreatePastePipe implements PipeTransform {
       exposure: normalizedExposure as PasteExposure,
     };
 
-    if (expiration === "never" || !expiration) return newDto;
+    if (expiration === "never" || expiration === "burn" || !expiration)
+      return newDto;
 
     const durationMs = ms(expiration as ms.StringValue);
 

@@ -6,8 +6,6 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 
-import { Request } from "express";
-
 import {
   PasteExposure,
   User,
@@ -108,11 +106,6 @@ export class UsersService {
         exposure: true,
         createdAt: true,
         lastActiveAt: true,
-        userTags: {
-          select: {
-            content: true,
-          },
-        },
         pastes: {
           select: {
             id: true,
@@ -204,11 +197,6 @@ export class UsersService {
         exposure: true,
         createdAt: true,
         lastActiveAt: true,
-        userTags: {
-          select: {
-            content: true,
-          },
-        },
         pastes: {
           where: {
             exposure: PasteExposure.PUBLIC,

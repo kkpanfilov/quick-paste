@@ -28,7 +28,7 @@ export class UpdateUserDto {
   @MaxLength(1000, {
     message: "Description must be at most 1000 characters long",
   })
-  description?: string;
+  description?: string | null;
 
   @IsOptional()
   @IsString({ message: "Email must be a string" })

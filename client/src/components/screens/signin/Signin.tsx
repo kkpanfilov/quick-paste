@@ -1,0 +1,147 @@
+import { type SubmitHandler, useForm } from "react-hook-form";
+import { Link } from "react-router";
+
+import { isApiError } from "@/api/apiClient.ts";
+import { Button } from "@/components/ui/button/Button.tsx";
+import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
+import { Field } from "@/components/ui/field/Field.tsx";
+import { useLogin } from "@/hooks/auth/useLogin.ts";
+import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
+import { useAuth } from "@/hooks/useAuth.ts";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle.ts";
+import { useNotifications } from "@/hooks/useNotifications.ts";
+import { setAccessToken } from "@/shared/authStore.ts";
+import type { LoginDto } from "@/types/auth.types.ts";
+
+import styles from "./Signin.module.scss";
+
+type FormData = LoginDto;
+
+export const Signin = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    mode: "onSubmit",
+    defaultValues: {
+      email: "",
+      password: "",
+      remember: false,
+    },
+  });
+
+  const { notifySuccess, notifyError } = useNotifications();
+
+  const { goHome } = useAppNavigation();
+  const { login } = useAuth();
+
+  const { mutateAsync: loginUser, isPending } = useLogin();
+
+  useDocumentTitle("Sign in");
+
+  const onSubmit: SubmitHandler<FormData> = async (body) => {
+    try {
+      const data = await loginUser(body);
+
+      if (data.accessToken) {
+        notifySuccess({
+          title: "Sign in successful",
+          message: "You have been signed in successfully",
+        });
+        setAccessToken(data.accessToken);
+        goHome();
+      }
+
+      login({ userId: data.id });
+    } catch (error: unknown) {
+      notifyError({
+        title: "Sign in error",
+        message: isApiError(error) ? error.message : "Unknown error",
+      });
+    }
+  };
+
+  return (
+    <main className={styles.screen}>
+      <section className={styles.card} aria-labelledby="signin-title">
+        <header className={styles.header}>
+          <h1 id="signin-title" className={styles.title}>
+            Welcome back
+          </h1>
+          <p className={styles.subtitle}>Sign in to continue to Quick Paste.</p>
+        </header>
+
+        <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+          <div className={styles.group}>
+            <label htmlFor="signin-email" className={styles.label}>
+              Email
+            </label>
+            <Field
+              id="signin-email"
+              type="email"
+              className={styles.signInField}
+              placeholder="name@example.com"
+              autoComplete="email"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^\S+@\S+\.\S+$/,
+                  message: "Invalid email",
+                },
+              })}
+            />
+            {errors.email && <ErrorMessage message={errors.email.message} />}
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="signin-password" className={styles.label}>
+              Password
+            </label>
+            <Field
+              id="signin-password"
+              type="password"
+              className={styles.signInField}
+              placeholder="Enter password"
+              autoComplete="current-password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters long",
+                },
+                maxLength: {
+                  value: 64,
+                  message: "Password must be at most 64 characters long",
+                },
+              })}
+            />
+            {errors.password && (
+              <ErrorMessage message={errors.password.message} />
+            )}
+          </div>
+          <div className={styles.actions}>
+            <label className={styles.remember}>
+              <input type="checkbox" {...register("remember")} />
+              <span>Remember me</span>
+            </label>
+          </div>
+          <Button
+            type="submit"
+            variant="primary"
+            className={styles.submit}
+            disabled={isPending}
+          >
+            {isPending ? "Logining..." : "Sign in"}
+          </Button>
+        </form>
+
+        <p className={styles.footer}>
+          Don&apos;t have an account?{" "}
+          <Link to="/register" className={styles.footerLink}>
+            Create one
+          </Link>
+        </p>
+      </section>
+    </main>
+  );
+};
