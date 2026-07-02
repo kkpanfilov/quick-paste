@@ -14,7 +14,7 @@ export const ProfileInfo = ({ data, isMe, setIsEditing }: Props) => {
     <section className={styles.profile}>
       <div className={styles.identity}>
         <div className={styles.avatar} aria-hidden="true">
-          {data.username[0].toUpperCase()}
+          {data.username.charAt(0).toUpperCase() || "?"}
         </div>
         <div>
           <p className={styles.eyebrow}>Profile</p>

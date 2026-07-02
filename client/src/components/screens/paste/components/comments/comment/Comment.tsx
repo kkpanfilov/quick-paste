@@ -108,7 +108,7 @@ export const Comment = ({
     <article key={comment.id} className={styles.comment}>
       <header className={styles.commentHeader}>
         <div className={styles.avatar} aria-hidden="true">
-          {comment.author.username[0].toUpperCase()}
+          {comment.author.username.charAt(0).toUpperCase() || "?"}
         </div>
         <div>
           <h3 className={styles.commentAuthor}>{comment.author.username}</h3>
@@ -196,7 +196,7 @@ export const Comment = ({
             >
               <header className={styles.commentHeader}>
                 <div className={styles.avatar} aria-hidden="true">
-                  {reply.author.username[0].toUpperCase()}
+                  {reply.author.username.charAt(0).toUpperCase() || "?"}
                 </div>
                 <div>
                   <h3 className={styles.commentAuthor}>

@@ -206,6 +206,8 @@ export const PasteHeader = ({
                         });
                         return "Password is required";
                       }
+
+                      return true;
                     },
                   })}
                 >

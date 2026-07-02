@@ -63,7 +63,7 @@ export async function apiClient<TResponse, TBody = unknown>(
       headers,
       baseURL: API_BASE_URL,
       url: endpoint,
-      data,
+      ...(data !== undefined ? { data } : {}),
       ...options,
     };
 

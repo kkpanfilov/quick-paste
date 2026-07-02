@@ -175,7 +175,7 @@ export const UserEditPanel = ({
       <form className={styles.profile}>
         <div className={styles.identity}>
           <div className={styles.avatar} aria-hidden="true">
-            {data.username[0].toUpperCase()}
+            {data.username.charAt(0).toUpperCase() || "?"}
           </div>
           <div className={styles.profileFormWrapper}>
             <p className={styles.eyebrow}>{"Edit profile"}</p>
