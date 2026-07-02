@@ -48,15 +48,6 @@ const UserView = ({ paramUserId }: Props) => {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  if (!data) {
-    return (
-      <ErrorPage
-        title="Failed to load user"
-        description="The user is temporarily unavailable"
-      />
-    );
-  }
-
   if (isLoading) {
     return (
       <main>
@@ -89,6 +80,15 @@ const UserView = ({ paramUserId }: Props) => {
         />
       );
     }
+  }
+
+  if (!data) {
+    return (
+      <ErrorPage
+        title="Failed to load user"
+        description="The user is temporarily unavailable"
+      />
+    );
   }
 
   return (

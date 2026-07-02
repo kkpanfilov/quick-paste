@@ -43,15 +43,6 @@ const PasteView = ({ pasteId }: Props) => {
 
   const { data, isLoading, error } = useGetPaste(pasteId);
 
-  if (!data) {
-    return (
-      <ErrorPage
-        title="Failed to load paste"
-        description="The paste is temporarily unavailable"
-      />
-    );
-  }
-
   if (isLoading) {
     return (
       <main>
@@ -78,6 +69,15 @@ const PasteView = ({ pasteId }: Props) => {
         />
       );
     }
+  }
+
+  if (!data) {
+    return (
+      <ErrorPage
+        title="Failed to load paste"
+        description="The paste is temporarily unavailable"
+      />
+    );
   }
 
   return (
