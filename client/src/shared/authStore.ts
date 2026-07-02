@@ -11,6 +11,3 @@ export function getAccessToken(): string | null {
 export function clearAccessToken(): void {
   accessToken = null;
 }
-
-window.getAccessToken = getAccessToken;
-window.clearAccessToken = clearAccessToken;
