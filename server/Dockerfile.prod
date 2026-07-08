@@ -13,6 +13,7 @@ RUN npm ci
 RUN npm run prisma:generate
 RUN npm run build
 
+RUN npm prune --omit=dev
 
 FROM node:24-alpine AS runner
 
