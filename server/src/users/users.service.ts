@@ -1,10 +1,14 @@
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+
+import type { Cache } from "cache-manager";
 
 import {
   PasteExposure,
@@ -17,7 +21,11 @@ import { UpdateUserDto } from "./dto/update-user.dto.js";
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const isUserExistsEmail = await this.prisma.user.findUnique({
@@ -274,12 +282,16 @@ export class UsersService {
       }))
       .slice(0, 3);
 
-    return {
+    const data = {
       ...user,
       exposure: user.exposure.toLowerCase(),
       statistics,
       mostUsedLanguages,
     };
+
+    await this.cacheManager.set(`users:${userId}`, data);
+
+    return data;
   }
 
   async updateRefreshTokenHash(
@@ -344,6 +356,8 @@ export class UsersService {
       },
     });
 
+    await this.cacheManager.del(`users:${id}`);
+
     return {
       ...updatedUser,
       exposure: updatedUser.exposure.toLowerCase(),
@@ -376,6 +390,8 @@ export class UsersService {
         id: true,
       },
     });
+
+    await this.cacheManager.del(`users:${id}`);
 
     return { success: true, message: "User removed" };
   }

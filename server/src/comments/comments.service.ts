@@ -1,14 +1,25 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 
+import type { Cache } from "cache-manager";
+
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CreateCommentDto } from "./dto/create-comment.dto.js";
 import { CreateReplyDto } from "./dto/create-reply.dto.js";
 
 @Injectable()
 export class CommentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cacheManager: Cache,
+  ) {}
 
   async getPasteComments(pasteId: string, page: number = 1) {
+    const cache = await this.cacheManager.get(
+      `comments:paste=${pasteId};page=${page}`,
+    );
+
+    if (cache) return cache;
+
     const paste = await this.prisma.paste.findUnique({
       where: {
         id: pasteId,
@@ -52,6 +63,13 @@ export class CommentsService {
     if (!paste) {
       throw new NotFoundException("Paste not found");
     }
+
+    await this.cacheManager.set(
+      `comments:paste=${pasteId};page=${page}`,
+      paste.comments,
+    );
+
+    return paste.comments;
   }
 
   async create(
