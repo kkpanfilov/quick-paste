@@ -3,7 +3,6 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CreateCommentDto } from "./dto/create-comment.dto.js";
 import { CreateReplyDto } from "./dto/create-reply.dto.js";
-import { UpdateCommentDto } from "./dto/update-comment.dto.js";
 
 @Injectable()
 export class CommentsService {
@@ -150,13 +149,5 @@ export class CommentsService {
     });
 
     return reply;
-  }
-
-  async update(updateCommentDto: UpdateCommentDto, id: string, userId: string) {
-    return `This action updates a #${id} comment`;
-  }
-
-  async remove(id: string, userId: string) {
-    return `This action removes a #${id} comment`;
   }
 }
