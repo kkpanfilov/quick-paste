@@ -1,4 +1,14 @@
 services:
+  redis:
+    image: redis:8-alpine
+    volumes:
+      - redis:/data/redis
+    healthcheck:
+      test: ["CMD-SHELL", "[ $(redis-cli ping) = 'PONG' ] || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
   postgres:
     image: postgres:18
     environment:
@@ -31,11 +41,12 @@ services:
       context: ./server
       dockerfile: Dockerfile.prod
     command: sh -c "cd app && npm run prisma:migrate && npm run start:prod"
-    env_file:
-      - .env
     environment:
-      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"
+      NODE_ENV: production
       JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"
+      REDIS_URL: "redis://redis:6379"
+      CACHE_TTL: ${CACHE_TTL}
       PORT: 4200
     depends_on:
       postgres:
@@ -45,4 +56,5 @@ services:
     restart: unless-stopped
 
 volumes:
+  redis:
   postgres:
