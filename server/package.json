@@ -55,7 +55,6 @@
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.0",
-    "@types/ioredis": "^4.28.10",
     "@types/jest": "^30.0.0",
     "@types/ms": "^2.1.0",
     "@types/node": "^24.0.0",
