@@ -6,6 +6,7 @@ import { CommentsService } from "./comments.service.js";
 
 @Module({
   controllers: [CommentsController],
+  exports: [CommentsService],
   providers: [CommentsService, PrismaService],
 })
 export class CommentsModule {}
