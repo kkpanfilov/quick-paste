@@ -55,20 +55,4 @@ export class CommentsController {
       authorId,
     );
   }
-
-  @Patch(":id")
-  @Auth()
-  async update(
-    @Param("id") id: string,
-    @Body() updateCommentDto: UpdateCommentDto,
-    @User("id") userId: string,
-  ) {
-    return await this.commentsService.update(updateCommentDto, id, userId);
-  }
-
-  @Delete(":id")
-  @Auth()
-  async remove(@Param("id") id: string, @User("id") userId: string) {
-    return await this.commentsService.remove(id, userId);
-  }
 }

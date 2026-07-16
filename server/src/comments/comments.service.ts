@@ -1,15 +1,27 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 
 import { PrismaService } from "../prisma/prisma.service.js";
+import { CacheKeys } from "../redis/redis.keys.js";
+import { RedisService } from "../redis/redis.service.js";
 import { CreateCommentDto } from "./dto/create-comment.dto.js";
 import { CreateReplyDto } from "./dto/create-reply.dto.js";
-import { UpdateCommentDto } from "./dto/update-comment.dto.js";
 
+// TODO: stop embedding comments with paste
+// client should get comments separately
 @Injectable()
 export class CommentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly redis: RedisService,
+  ) {}
 
   async getPasteComments(pasteId: string, page: number = 1) {
+    const cache = await this.redis.getCache(
+      CacheKeys.comments.list(pasteId, page),
+    );
+
+    if (cache) return cache;
+
     const paste = await this.prisma.paste.findUnique({
       where: {
         id: pasteId,
@@ -53,6 +65,13 @@ export class CommentsService {
     if (!paste) {
       throw new NotFoundException("Paste not found");
     }
+
+    await this.redis.setCache(
+      CacheKeys.comments.list(pasteId, page),
+      paste.comments,
+    );
+
+    return paste.comments;
   }
 
   async create(
@@ -102,6 +121,8 @@ export class CommentsService {
       },
     });
 
+    await this.invalidateListPasteComments(pasteId);
+
     return comment;
   }
 
@@ -149,14 +170,16 @@ export class CommentsService {
       },
     });
 
+    await this.invalidateListPasteComments(createReplyDto.pasteId);
+
     return reply;
   }
 
-  async update(updateCommentDto: UpdateCommentDto, id: string, userId: string) {
-    return `This action updates a #${id} comment`;
-  }
+  async invalidateListPasteComments(pasteId: string) {
+    const keys = await this.redis.getKeysByPattern(
+      CacheKeys.comments.listAllPages(pasteId),
+    );
 
-  async remove(id: string, userId: string) {
-    return `This action removes a #${id} comment`;
+    if (keys) await this.redis.mdelCache(keys);
   }
 }

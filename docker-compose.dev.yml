@@ -1,4 +1,15 @@
 services:
+  redis:
+    image: redis:8-alpine
+    container_name: redis_dev
+    volumes:
+      - redis_dev:/data/redis
+    healthcheck:
+      test: ["CMD-SHELL", "[ $(redis-cli ping) = 'PONG' ] || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
   postgres:
     image: postgres:18
     container_name: postgres_dev
@@ -37,14 +48,17 @@ services:
       context: ./server
       dockerfile: Dockerfile.dev
     command: sh -c "npm run prisma:push && npm run prisma:generate && npm run start:dev"
-    env_file:
-      - .env
     environment:
-      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"
+      NODE_ENV: development
       JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"
+      REDIS_HOST: "localhost"
+      REDIS_PORT: 6379
       PORT: 4200
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     ports:
       - "4200:4200"
@@ -54,6 +68,7 @@ services:
     restart: unless-stopped
 
 volumes:
+  redis_dev:
   postgres_dev:
   server_node_modules:
   client_node_modules:
