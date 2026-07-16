@@ -1,21 +1,23 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 
-import type { Cache } from "cache-manager";
-
 import { PrismaService } from "../prisma/prisma.service.js";
+import { CacheKeys } from "../redis/redis.keys.js";
+import { RedisService } from "../redis/redis.service.js";
 import { CreateCommentDto } from "./dto/create-comment.dto.js";
 import { CreateReplyDto } from "./dto/create-reply.dto.js";
 
+// TODO: stop embedding comments with paste
+// client should get comments separately
 @Injectable()
 export class CommentsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly cacheManager: Cache,
+    private readonly redis: RedisService,
   ) {}
 
   async getPasteComments(pasteId: string, page: number = 1) {
-    const cache = await this.cacheManager.get(
-      `comments:paste=${pasteId};page=${page}`,
+    const cache = await this.redis.getCache(
+      CacheKeys.comments.list(pasteId, page),
     );
 
     if (cache) return cache;
@@ -64,8 +66,8 @@ export class CommentsService {
       throw new NotFoundException("Paste not found");
     }
 
-    await this.cacheManager.set(
-      `comments:paste=${pasteId};page=${page}`,
+    await this.redis.setCache(
+      CacheKeys.comments.list(pasteId, page),
       paste.comments,
     );
 
@@ -119,6 +121,8 @@ export class CommentsService {
       },
     });
 
+    await this.invalidateListPasteComments(pasteId);
+
     return comment;
   }
 
@@ -166,6 +170,16 @@ export class CommentsService {
       },
     });
 
+    await this.invalidateListPasteComments(createReplyDto.pasteId);
+
     return reply;
+  }
+
+  async invalidateListPasteComments(pasteId: string) {
+    const keys = await this.redis.getKeysByPattern(
+      CacheKeys.comments.listAllPages(pasteId),
+    );
+
+    if (keys) await this.redis.mdelCache(keys);
   }
 }

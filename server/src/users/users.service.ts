@@ -1,14 +1,10 @@
-import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
-  Inject,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-
-import type { Cache } from "cache-manager";
 
 import {
   PasteExposure,
@@ -16,6 +12,8 @@ import {
   UserExposure,
 } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { CacheKeys } from "../redis/redis.keys.js";
+import { RedisService } from "../redis/redis.service.js";
 import { CreateUserDto } from "./dto/create-user.dto.js";
 import { UpdateUserDto } from "./dto/update-user.dto.js";
 
@@ -23,8 +21,7 @@ import { UpdateUserDto } from "./dto/update-user.dto.js";
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(CACHE_MANAGER)
-    private readonly cacheManager: Cache,
+    private readonly redis: RedisService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -200,6 +197,28 @@ export class UsersService {
       },
       select: {
         id: true,
+        exposure: true,
+      },
+    });
+
+    if (!user) {
+      throw new ConflictException("User not found");
+    }
+
+    if (user.exposure === UserExposure.PRIVATE) {
+      throw new ForbiddenException("User is private");
+    }
+
+    const cache = await this.redis.getCache(CacheKeys.user.public(userId));
+
+    if (cache) return cache;
+
+    const userInfo = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
         username: true,
         description: true,
         exposure: true,
@@ -224,14 +243,6 @@ export class UsersService {
         },
       },
     });
-
-    if (!user) {
-      throw new ConflictException("User not found");
-    }
-
-    if (user.exposure === UserExposure.PRIVATE) {
-      throw new ForbiddenException("User is private");
-    }
 
     const [languagesStatistics, pasteStatistics] = await Promise.all([
       this.prisma.paste.groupBy({
@@ -283,13 +294,13 @@ export class UsersService {
       .slice(0, 3);
 
     const data = {
-      ...user,
+      ...userInfo,
       exposure: user.exposure.toLowerCase(),
       statistics,
       mostUsedLanguages,
     };
 
-    await this.cacheManager.set(`users:${userId}`, data);
+    await this.redis.setCache(CacheKeys.user.public(userId), data);
 
     return data;
   }
@@ -356,7 +367,7 @@ export class UsersService {
       },
     });
 
-    await this.cacheManager.del(`users:${id}`);
+    await this.redis.delCache(CacheKeys.user.public(userId));
 
     return {
       ...updatedUser,
@@ -391,7 +402,7 @@ export class UsersService {
       },
     });
 
-    await this.cacheManager.del(`users:${id}`);
+    await this.invalidateUserPublicInfoCache(userId);
 
     return { success: true, message: "User removed" };
   }
@@ -409,5 +420,9 @@ export class UsersService {
         lastActiveAt: now,
       },
     });
+  }
+
+  async invalidateUserPublicInfoCache(userId: string) {
+    await this.redis.delCache(CacheKeys.user.public(userId));
   }
 }

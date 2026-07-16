@@ -1,8 +1,6 @@
-import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import {
   BadRequestException,
   ForbiddenException,
-  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -10,13 +8,17 @@ import {
 import { JwtService } from "@nestjs/jwt";
 
 import * as argon2 from "argon2";
-import type { Cache } from "cache-manager";
 import { Request } from "express";
 
+import { CommentsService } from "../comments/comments.service.js";
 import { PasteExposure, Prisma } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { CacheKeys } from "../redis/redis.keys.js";
+import { RedisService } from "../redis/redis.service.js";
+import { UsersService } from "../users/users.service.js";
 import { CreatePasteDto } from "./dto/create-paste.dto.js";
 import { UpdatePasteDto } from "./dto/update-paste.dto.js";
+import { CachePaste } from "./types/cache-paste.type.js";
 import { IsPasteAccessible } from "./types/is-paste-accessible.type.js";
 import { Password } from "./types/password.type.js";
 import { PasteUnlockTokenType } from "./types/paste-unlock-token.type.js";
@@ -33,9 +35,10 @@ export const EXCEPTION_MAP = {
 export class PastesService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly commentsService: CommentsService,
+    private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    @Inject(CACHE_MANAGER)
-    private readonly cacheManager: Cache,
+    private readonly redis: RedisService,
   ) {}
 
   async create(
@@ -73,13 +76,21 @@ export class PastesService {
       },
     });
 
-    await this.cacheManager.del(`pastes:author:${authorId}`);
+    const invalidations = [
+      this.invalidateListAuthorPastes(authorId),
+      this.usersService.invalidateUserPublicInfoCache(authorId),
+    ];
+
+    if (data.exposure === PasteExposure.PUBLIC)
+      invalidations.push(this.invalidateListPublicPastes());
+
+    await Promise.all(invalidations);
 
     return paste;
   }
 
   async findPublic(page: number = 1) {
-    const cache = await this.cacheManager.get(`pastes:public:${page}`);
+    const cache = await this.redis.getCache(CacheKeys.paste.publicList(page));
 
     if (cache) return cache;
 
@@ -137,7 +148,7 @@ export class PastesService {
       },
     };
 
-    await this.cacheManager.set(`pastes:public:${page}`, data);
+    await this.redis.setCache(CacheKeys.paste.publicList(page), data);
 
     return data;
   }
@@ -160,7 +171,9 @@ export class PastesService {
       throw new NotFoundException("Author not found");
     }
 
-    const cache = await this.cacheManager.get(`pastes:author:${authorId}`);
+    const cache = await this.redis.getCache(
+      CacheKeys.paste.authorList(authorId, page),
+    );
 
     if (cache) return cache;
 
@@ -218,11 +231,10 @@ export class PastesService {
       },
     };
 
-    await this.cacheManager.set(`pastes:author:${authorId}`, data);
+    await this.redis.setCache(CacheKeys.paste.authorList(authorId, page), data);
 
     return data;
   }
-
 
   async findOne(
     id: string,
@@ -230,7 +242,7 @@ export class PastesService {
     request: Request | null,
     password?: Password,
   ) {
-    const { isAccessible, error } = await this._isPasteAccessible(
+    const { isAccessible, error } = await this.isPasteAccessible(
       id,
       userId,
       password,
@@ -238,27 +250,37 @@ export class PastesService {
 
     if (!isAccessible && error !== null) throw EXCEPTION_MAP[error];
 
-    const cache = await this.cacheManager.get(`pastes:${id}`);
+    const cache = await this.redis.getCache<CachePaste>(
+      CacheKeys.paste.item(id),
+    );
 
-    if (cache) return cache;
+    if (cache) {
+      const { id: pasteId } = cache;
+
+      const isLiked = await this.checkIsLiked(pasteId, userId);
+
+      return { ...cache, isLiked };
+    }
 
     const paste = await this.getAccessiblePaste(id, userId, request, password, {
       isAccessGuaranteed: true,
     });
 
-    const { exposure, ...rest } = paste;
+    const { exposure, isLiked, isBurn, ...rest } = paste;
 
     const data = {
       ...rest,
       exposure: exposure.toLowerCase(),
       likesCount: paste.likesCount,
-      isLiked: paste.isLiked ? true : false,
       author: paste.author,
-    };
+    } as CachePaste;
 
-    await this.cacheManager.set(`pastes:${id}`, data);
+    if (isBurn) return { ...data, isLiked };
+    else {
+      await this.redis.setCache(CacheKeys.paste.item(id), data);
 
-    return data;
+      return { ...data, isLiked };
+    }
   }
 
   async like(id: string, userId: string, request: Request | null) {
@@ -279,6 +301,8 @@ export class PastesService {
           pasteId: paste.id,
         },
       });
+
+      await this.invalidatePasteItem(id);
 
       return {
         id,
@@ -317,6 +341,8 @@ export class PastesService {
         pasteId: paste.id,
       },
     });
+
+    await this.invalidatePasteItem(id);
 
     return {
       id,
@@ -439,7 +465,30 @@ export class PastesService {
         })
       : false;
 
-    await this.cacheManager.del(`pastes:${id}`);
+    const previousExposure = paste.exposure;
+    const currentExposure = exposure;
+
+    const invalidations = [
+      this.invalidatePasteItem(id),
+      this.invalidateListAuthorPastes(paste.authorId),
+      this.usersService.invalidateUserPublicInfoCache(paste.authorId),
+    ];
+
+    if (
+      previousExposure === PasteExposure.PUBLIC &&
+      (currentExposure === PasteExposure.PRIVATE ||
+        currentExposure === PasteExposure.PROTECTED ||
+        currentExposure === PasteExposure.UNLISTED ||
+        currentExposure === PasteExposure.SHARED)
+    ) {
+      invalidations.push(this.invalidateListPublicPastes());
+    }
+
+    if (currentExposure === PasteExposure.PUBLIC) {
+      invalidations.push(this.invalidateListPublicPastes());
+    }
+
+    await Promise.all(invalidations);
 
     return {
       ...updatedPaste,
@@ -458,6 +507,7 @@ export class PastesService {
       },
       select: {
         authorId: true,
+        exposure: true,
       },
     });
 
@@ -469,9 +519,7 @@ export class PastesService {
       throw new ForbiddenException("You are not the author of this paste");
     }
 
-    await this.cacheManager.del(`pastes:${id}`);
-
-    return await this.prisma.paste.delete({
+    const deletedPaste = await this.prisma.paste.delete({
       where: {
         id,
       },
@@ -479,6 +527,20 @@ export class PastesService {
         id: true,
       },
     });
+
+    const invalidations = [
+      this.invalidatePasteItem(id),
+      this.invalidateListAuthorPastes(paste.authorId),
+      this.usersService.invalidateUserPublicInfoCache(paste.authorId),
+      this.commentsService.invalidateListPasteComments(id),
+    ];
+
+    if (paste.exposure === PasteExposure.PUBLIC)
+      invalidations.push(this.invalidateListPublicPastes());
+
+    await Promise.all(invalidations);
+
+    return deletedPaste;
   }
 
   async search(query: string, page: number = 1) {
@@ -540,31 +602,35 @@ export class PastesService {
       },
     };
 
-    await this.cacheManager.set(`search:pastes:${page}:${query}`, data);
-
     return data;
   }
 
   private async burn(id: string) {
-    const paste = await this.prisma.paste.findUnique({
+    const deletedPaste = await this.prisma.paste.delete({
       where: {
         id,
       },
+      select: {
+        authorId: true,
+        exposure: true,
+      },
     });
 
-    if (!paste) return false;
+    const invalidations = [
+      this.invalidatePasteItem(id),
+      this.invalidateListAuthorPastes(deletedPaste.authorId),
+      this.usersService.invalidateUserPublicInfoCache(deletedPaste.authorId),
+      this.commentsService.invalidateListPasteComments(id),
+    ];
 
-    return await this.prisma.paste
-      .delete({
-        where: {
-          id,
-        },
-      })
-      .then(() => true)
-      .catch(() => false);
+    if (deletedPaste.exposure === PasteExposure.PUBLIC) {
+      invalidations.push(this.invalidateListPublicPastes());
+    }
+
+    await Promise.all(invalidations);
   }
 
-  private async _isPasteAccessible(
+  private async isPasteAccessible(
     id: string,
     userId: string | undefined,
     password?: Password,
@@ -577,7 +643,6 @@ export class PastesService {
         id: true,
         authorId: true,
         passwordHash: true,
-        isBurn: true,
         expiresAt: true,
         exposure: true,
       },
@@ -634,7 +699,7 @@ export class PastesService {
     const isAccessGuaranteed = options.isAccessGuaranteed ?? false;
 
     if (!isAccessGuaranteed) {
-      const { isAccessible, error } = await this._isPasteAccessible(
+      const { isAccessible, error } = await this.isPasteAccessible(
         id,
         userId,
         password,
@@ -656,10 +721,8 @@ export class PastesService {
         language: true,
         exposure: true,
         isBurn: true,
-        passwordHash: true,
         authorId: true,
         createdAt: true,
-        expiresAt: true,
         pasteTags: {
           select: {
             content: true,
@@ -722,25 +785,28 @@ export class PastesService {
 
     const shouldBurnAfterRead = options.burnAfterRead ?? true;
 
-    if (isBurn && paste.authorId !== userId && shouldBurnAfterRead) {
-      await this.burn(id);
-      throw new NotFoundException("Paste not found");
-    }
-
     const likesCount = await this.prisma.like.count({
       where: {
         pasteId: id,
       },
     });
 
-    const isLikedByUser = userId
-      ? await this.prisma.like.count({
-          where: {
-            userId,
-            pasteId: id,
-          },
-        })
-      : false;
+    const isLikedByUser = await this.checkIsLiked(id, userId);
+
+    const data = {
+      ...rest,
+      isBurn,
+      exposure,
+      likesCount,
+      pasteTags: pasteTags.map((tag) => tag.content),
+      isLiked: isLikedByUser ? true : false,
+      author: user.username,
+    };
+
+    if (isBurn && paste.authorId !== userId && shouldBurnAfterRead) {
+      await this.burn(id);
+      return data;
+    }
 
     if (request) {
       const cookies = request.cookies;
@@ -751,25 +817,42 @@ export class PastesService {
           await this.jwtService.verifyAsync<PasteUnlockTokenType>(token);
 
         if (isTokenValid) {
-          return {
-            ...rest,
-            exposure: exposure.toLowerCase(),
-            likesCount,
-            pasteTags: pasteTags.map((tag) => tag.content),
-            isLiked: isLikedByUser ? true : false,
-            author: user.username,
-          };
+          return data;
         }
       }
     }
 
-    return {
-      ...rest,
-      exposure: exposure.toLowerCase(),
-      likesCount,
-      pasteTags: pasteTags.map((tag) => tag.content),
-      isLiked: isLikedByUser ? true : false,
-      author: user.username,
-    };
+    return data;
+  }
+
+  private async checkIsLiked(pasteId: string, userId: string | undefined) {
+    return userId
+      ? await this.prisma.like.count({
+          where: {
+            userId,
+            pasteId,
+          },
+        })
+      : false;
+  }
+
+  private async invalidatePasteItem(pasteId: string) {
+    await this.redis.delCache(CacheKeys.paste.item(pasteId));
+  }
+
+  private async invalidateListAuthorPastes(authorId: string) {
+    const keys = await this.redis.getKeysByPattern(
+      CacheKeys.paste.authorListAllPages(authorId),
+    );
+
+    if (keys) await this.redis.mdelCache(keys);
+  }
+
+  private async invalidateListPublicPastes() {
+    const keys = await this.redis.getKeysByPattern(
+      CacheKeys.paste.publicListAllPages(),
+    );
+
+    if (keys) await this.redis.mdelCache(keys);
   }
 }
