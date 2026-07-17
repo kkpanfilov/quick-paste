@@ -17,7 +17,7 @@ type UseGetPublicPastesOptions = Omit<
   "queryKey" | "queryFn" | "select"
 >;
 
-export function useGetPublicPaste(
+export function useGetPublicPastes(
   page: number = 1,
   options: UseGetPublicPastesOptions = {},
 ) {
