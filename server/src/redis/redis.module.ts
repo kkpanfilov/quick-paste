@@ -1,4 +1,5 @@
 import { Global, Logger, Module } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 import { Redis } from "ioredis";
 
@@ -11,15 +12,20 @@ import { RedisService } from "./redis.service.js";
     RedisService,
     {
       provide: REDIS_CLIENT,
-      useFactory: () => {
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
         const logger = new Logger("Redis");
+
+        const nodeEnv = configService.getOrThrow<string>("NODE_ENV");
+        const redisHost = configService.getOrThrow<string>("REDIS_HOST");
+        const redisPort = configService.getOrThrow<string>("REDIS_PORT");
 
         const client = new Redis({
           host:
-            process.env.NODE_ENV === "production"
-              ? process.env.REDIS_HOST || "redis"
-              : process.env.REDIS_HOST || "localhost",
-          port: Number.parseInt(process.env.REDIS_PORT ?? "6379", 10),
+            nodeEnv === "production"
+              ? redisHost || "redis"
+              : redisHost || "localhost",
+          port: Number.parseInt(redisPort ?? "6379", 10),
           maxRetriesPerRequest: 3,
           connectTimeout: 5000,
           commandTimeout: 2000,
