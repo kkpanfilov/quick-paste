@@ -40,19 +40,19 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.prod
-    command: sh -c "cd app && npm run prisma:migrate && npm run start:prod"
+    command: sh -c "cd app && npm run prisma:deploy && npm run start:prod"
     environment:
       NODE_ENV: production
       JWT_SECRET: ${JWT_SECRET}
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"
       REDIS_HOST: "redis"
       REDIS_PORT: 6379
-      PORT: 4200
+      BACKEND_PORT: ${BACKEND_PORT}
     depends_on:
       postgres:
         condition: service_healthy
     expose:
-      - "4200"
+      - ${BACKEND_PORT}
     restart: unless-stopped
 
 volumes:
