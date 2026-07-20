@@ -91,7 +91,7 @@ model Comment {
   @@index([authorId])
   @@index([pasteId])
   @@index([parentId])
-  @@index([pasteId, parentId, createdAt])
+  @@index([pasteId, parentId, createdAt, id])
 }
 
 model Like {
