@@ -1,17 +1,39 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { apiClient } from "@/api/apiClient.ts";
 import type { CommentItem } from "@/types/comment.types.ts";
+import type { ISODateString } from "@/types/common.types.ts";
 
-type GetCommentsResult = {
+type Cursor = {
+  createdAt: ISODateString;
   id: string;
-  data: CommentItem[];
+} | null;
+
+export type GetCommentsResult = {
+  items: CommentItem[];
+  nextCursor: Cursor | null;
 };
 
 export function useGetComments(pasteId: string) {
-  return useQuery({
-    queryKey: ["paste_comments", pasteId],
-    queryFn: (): Promise<GetCommentsResult> =>
-      apiClient<GetCommentsResult>("GET", `comments/${pasteId}`),
+  return useInfiniteQuery({
+    queryKey: [`paste-comments`, pasteId],
+    queryFn: ({
+      pageParam,
+    }: {
+      pageParam: Cursor | null;
+    }): Promise<GetCommentsResult> => {
+      const cursor = pageParam
+        ? encodeURIComponent(JSON.stringify(pageParam))
+        : "";
+
+      return apiClient<GetCommentsResult>(
+        "GET",
+        `comments/${pasteId}${cursor ? `?cursor=${cursor}` : ""}`,
+      );
+    },
+    initialPageParam: null,
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextCursor;
+    },
   });
 }
