@@ -1,6 +1,6 @@
 import type { CommentItem } from "./comment.types.ts";
 
-export type ReplyItem = Omit<CommentItem, "replies">;
+export type ReplyItem = Omit<CommentItem, "repliesCount">;
 
 export type CreateReplyDto = {
   content: string;
