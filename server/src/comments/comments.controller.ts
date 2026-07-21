@@ -14,25 +14,27 @@ import { User } from "../auth/decorators/user.decorator.js";
 import { CommentsService } from "./comments.service.js";
 import { CreateCommentDto } from "./dto/create-comment.dto.js";
 import { CreateReplyDto } from "./dto/create-reply.dto.js";
-import { UpdateCommentDto } from "./dto/update-comment.dto.js";
+import { extractCursor } from "./utils/extract-cursor.js";
 
 @Controller("comments")
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @Get()
+  @Get(":paste_id")
   async getPasteComments(
-    @Query("paste_id") pasteId: string,
-    @Query("page") page: number,
+    @Param("paste_id") pasteId: string,
+    @Query("cursor") cursorValue?: string,
   ) {
-    return await this.commentsService.getPasteComments(pasteId, page);
+    const cursor = extractCursor(cursorValue);
+
+    return await this.commentsService.getPasteComments(pasteId, cursor);
   }
 
-  @Post(":id")
+  @Post(":paste_id")
   @Auth()
   async create(
     @Body() createCommentDto: CreateCommentDto,
-    @Param("id") pasteId: string,
+    @Param("paste_id") pasteId: string,
     @User("id") authorId: string,
   ) {
     return await this.commentsService.create(
@@ -42,11 +44,11 @@ export class CommentsController {
     );
   }
 
-  @Post(":id/reply")
+  @Post(":paste_id/reply")
   @Auth()
   async reply(
     @Body() createCommentDto: CreateReplyDto,
-    @Param("id") parentId: string,
+    @Param("paste_id") parentId: string,
     @User("id") authorId: string,
   ) {
     return await this.commentsService.reply(
