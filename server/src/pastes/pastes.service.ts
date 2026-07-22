@@ -31,6 +31,7 @@ export const EXCEPTION_MAP = {
   "Password is required": new BadRequestException("Password is required"),
 } as const;
 
+// TODO: both findPublic and findAuthorPaste methods should return only 4 lines of content for now
 @Injectable()
 export class PastesService {
   constructor(
@@ -532,7 +533,6 @@ export class PastesService {
       this.invalidatePasteItem(id),
       this.invalidateListAuthorPastes(paste.authorId),
       this.usersService.invalidateUserPublicInfoCache(paste.authorId),
-      this.commentsService.invalidateListPasteComments(id),
     ];
 
     if (paste.exposure === PasteExposure.PUBLIC)
@@ -620,7 +620,6 @@ export class PastesService {
       this.invalidatePasteItem(id),
       this.invalidateListAuthorPastes(deletedPaste.authorId),
       this.usersService.invalidateUserPublicInfoCache(deletedPaste.authorId),
-      this.commentsService.invalidateListPasteComments(id),
     ];
 
     if (deletedPaste.exposure === PasteExposure.PUBLIC) {
@@ -728,39 +727,6 @@ export class PastesService {
             content: true,
           },
         },
-        comments: {
-          select: {
-            id: true,
-            content: true,
-            createdAt: true,
-            author: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-            replies: {
-              select: {
-                id: true,
-                content: true,
-                createdAt: true,
-                author: {
-                  select: {
-                    id: true,
-                    username: true,
-                  },
-                },
-              },
-            },
-          },
-          where: {
-            parentId: null,
-          },
-          take: 10,
-          orderBy: {
-            createdAt: "desc",
-          },
-        },
       },
     });
 
@@ -791,6 +757,13 @@ export class PastesService {
       },
     });
 
+    const commentsCount = await this.prisma.comment.count({
+      where: {
+        pasteId: id,
+        parentId: null,
+      },
+    });
+
     const isLikedByUser = await this.checkIsLiked(id, userId);
 
     const data = {
@@ -798,6 +771,7 @@ export class PastesService {
       isBurn,
       exposure,
       likesCount,
+      commentsCount,
       pasteTags: pasteTags.map((tag) => tag.content),
       isLiked: isLikedByUser ? true : false,
       author: user.username,
