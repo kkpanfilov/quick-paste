@@ -10,7 +10,6 @@ import { JwtService } from "@nestjs/jwt";
 import * as argon2 from "argon2";
 import { Request } from "express";
 
-import { CommentsService } from "../comments/comments.service.js";
 import { PasteExposure, Prisma } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CacheKeys } from "../redis/redis.keys.js";
@@ -36,7 +35,6 @@ export const EXCEPTION_MAP = {
 export class PastesService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly commentsService: CommentsService,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly redis: RedisService,
