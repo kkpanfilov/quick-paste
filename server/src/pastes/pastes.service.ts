@@ -605,31 +605,7 @@ export class PastesService {
     return data;
   }
 
-  private async burn(id: string) {
-    const deletedPaste = await this.prisma.paste.delete({
-      where: {
-        id,
-      },
-      select: {
-        authorId: true,
-        exposure: true,
-      },
-    });
-
-    const invalidations = [
-      this.invalidatePasteItem(id),
-      this.invalidateListAuthorPastes(deletedPaste.authorId),
-      this.usersService.invalidateUserPublicInfoCache(deletedPaste.authorId),
-    ];
-
-    if (deletedPaste.exposure === PasteExposure.PUBLIC) {
-      invalidations.push(this.invalidateListPublicPastes());
-    }
-
-    await Promise.all(invalidations);
-  }
-
-  private async isPasteAccessible(
+  async isPasteAccessible(
     id: string,
     userId: string | undefined,
     password?: Password,
@@ -686,6 +662,30 @@ export class PastesService {
     }
 
     return { isAccessible: true, error: null };
+  }
+
+  private async burn(id: string) {
+    const deletedPaste = await this.prisma.paste.delete({
+      where: {
+        id,
+      },
+      select: {
+        authorId: true,
+        exposure: true,
+      },
+    });
+
+    const invalidations = [
+      this.invalidatePasteItem(id),
+      this.invalidateListAuthorPastes(deletedPaste.authorId),
+      this.usersService.invalidateUserPublicInfoCache(deletedPaste.authorId),
+    ];
+
+    if (deletedPaste.exposure === PasteExposure.PUBLIC) {
+      invalidations.push(this.invalidateListPublicPastes());
+    }
+
+    await Promise.all(invalidations);
   }
 
   private async getAccessiblePaste(
