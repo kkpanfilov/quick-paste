@@ -16,6 +16,7 @@ import { CreateCommentDto } from "./dto/create-comment.dto.js";
 import { CreateReplyDto } from "./dto/create-reply.dto.js";
 import { extractCursor } from "./utils/extract-cursor.js";
 
+// TODO: review the endpoints
 @Controller("comments")
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
@@ -28,6 +29,16 @@ export class CommentsController {
     const cursor = extractCursor(cursorValue);
 
     return await this.commentsService.getPasteComments(pasteId, cursor);
+  }
+
+  @Get(":comment_id/reply")
+  async getCommentsReplies(
+    @Param("comment_id") commentId: string,
+    @Query("cursor") cursorValue?: string,
+  ) {
+    const cursor = extractCursor(cursorValue);
+
+    return await this.commentsService.getCommentsReplies(commentId, cursor);
   }
 
   @Post(":paste_id")
