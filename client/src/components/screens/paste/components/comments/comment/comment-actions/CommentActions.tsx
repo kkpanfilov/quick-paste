@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import type { ReplyState } from "@/components/screens/paste/components/comments/comment/Comment.tsx";
 import { ReplyForm } from "@/components/screens/paste/components/comments/comment/comment-actions/reply-form/ReplyForm.tsx";
 import { Button } from "@/components/ui/button/Button.tsx";
 
@@ -13,14 +12,8 @@ type Props = {
 };
 
 export const CommentActions = ({ isAuth, commentId, pasteId }: Props) => {
-  const [replyState, setReplyState] = useState<ReplyState>({
-    isReplying: false,
-    commentId: null,
-  });
-
+  const [isReplying, setIsReplying] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const isReplying = replyState.isReplying;
 
   return (
     <>
@@ -32,10 +25,7 @@ export const CommentActions = ({ isAuth, commentId, pasteId }: Props) => {
             aria-expanded={isReplying}
             aria-controls={`reply-form-${commentId}`}
             onClick={() =>
-              setReplyState({
-                isReplying: true,
-                commentId,
-              })
+              isReplying ? setIsReplying(false) : setIsReplying((prev) => !prev)
             }
           >
             Reply
@@ -84,9 +74,7 @@ export const CommentActions = ({ isAuth, commentId, pasteId }: Props) => {
         <ReplyForm
           commentId={commentId}
           pasteId={pasteId}
-          closeForm={() =>
-            setReplyState({ isReplying: false, commentId: null })
-          }
+          closeForm={() => setIsReplying(false)}
         />
       )}
     </>

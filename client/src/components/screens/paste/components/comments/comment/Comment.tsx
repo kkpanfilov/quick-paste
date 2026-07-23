@@ -5,11 +5,6 @@ import type { CommentItem } from "@/types/comment.types.ts";
 
 import styles from "./Comment.module.scss";
 
-export type ReplyState = {
-  isReplying: boolean;
-  commentId: string | null;
-};
-
 type Props = {
   isAuth: boolean;
   pasteId: string;
