@@ -18,8 +18,9 @@ export const CommentActions = ({ isAuth, commentId, pasteId }: Props) => {
     commentId: null,
   });
 
-  const isReplying =
-    replyState.isReplying && replyState.commentId === commentId;
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const isReplying = replyState.isReplying;
 
   return (
     <>
@@ -39,6 +40,43 @@ export const CommentActions = ({ isAuth, commentId, pasteId }: Props) => {
           >
             Reply
           </Button>
+
+          <div className={styles.menu}>
+            <Button
+              variant="ghost"
+              className={styles.menuButton}
+              aria-label="Open comment actions"
+              aria-haspopup="menu"
+              aria-expanded="true"
+              aria-controls={`comment-actions-menu-${commentId}`}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <span aria-hidden="true">•••</span>
+            </Button>
+
+            {isMenuOpen && (
+              <div
+                id={`comment-actions-menu-${commentId}`}
+                className={styles.menuPopup}
+                role="menu"
+              >
+                <button
+                  className={styles.menuItem}
+                  type="button"
+                  role="menuitem"
+                >
+                  Edit
+                </button>
+                <button
+                  className={`${styles.menuItem} ${styles.deleteMenuItem}`}
+                  type="button"
+                  role="menuitem"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -46,7 +84,9 @@ export const CommentActions = ({ isAuth, commentId, pasteId }: Props) => {
         <ReplyForm
           commentId={commentId}
           pasteId={pasteId}
-          closeForm={() => setReplyState({ isReplying: false, commentId: null })}
+          closeForm={() =>
+            setReplyState({ isReplying: false, commentId: null })
+          }
         />
       )}
     </>
