@@ -17,8 +17,10 @@
 .repliesButton {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 100%;
   gap: 8px;
-  height: 32px;
+  height: 40px;
   margin: 14px 0 0;
   padding: 0 12px;
   border-radius: 999px;
