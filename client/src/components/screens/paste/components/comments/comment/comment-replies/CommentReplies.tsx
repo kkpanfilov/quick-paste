@@ -1,20 +1,20 @@
 import { useState } from "react";
 
-import { Reply } from "@/components/screens/paste/components/comments/comment/replies/reply/Reply.tsx";
+import { CommentReply } from "@/components/screens/paste/components/comments/comment/comment-replies/comment-reply/CommentReply";
 import { Button } from "@/components/ui/button/Button.tsx";
 import { ErrorBlock } from "@/components/ui/error-block/ErrorBlock.tsx";
 import { LoaderBlock } from "@/components/ui/loader-block/LoaderBlock.tsx";
 import { useGetReplies } from "@/hooks/comments/useGetReplies.ts";
 import type { CommentItem } from "@/types/comment.types.ts";
 
-import styles from "./Replies.module.scss";
+import styles from "./CommentReplies.module.scss";
 
 type Props = {
   comment: CommentItem;
   pasteId: string;
 };
 
-export const Replies = ({ comment, pasteId }: Props) => {
+export const CommentReplies = ({ comment, pasteId }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const commentId = comment.id;
@@ -56,7 +56,7 @@ export const Replies = ({ comment, pasteId }: Props) => {
       {isExpanded && (
         <div className={styles.replies} aria-label="Replies">
           {replyPages.map((page) =>
-            page.items.map((reply) => <Reply key={reply.id} reply={reply} />),
+            page.items.map((reply) => <CommentReply key={reply.id} reply={reply} />),
           )}
         </div>
       )}
