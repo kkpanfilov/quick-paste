@@ -17,8 +17,13 @@ export const Comment = ({ isAuth, pasteId, comment }: Props) => {
   return (
     <article key={commentId} className={styles.comment}>
       <CommentHeader comment={comment} />
-      <CommentActions pasteId={pasteId} commentId={commentId} isAuth={isAuth} />
-      <CommentReplies comment={comment} pasteId={pasteId} />
+      <CommentActions
+        pasteId={pasteId}
+        commentId={commentId}
+        isAuth={isAuth}
+        variant={"comment"}
+      />
+      <CommentReplies isAuth={isAuth} comment={comment} pasteId={pasteId} />
     </article>
   );
 };

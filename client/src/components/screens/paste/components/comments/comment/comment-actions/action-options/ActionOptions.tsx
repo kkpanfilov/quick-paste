@@ -1,3 +1,4 @@
+import type { CommentActionsVariant } from "@/components/screens/paste/components/comments/comment/comment-actions/CommentActions.tsx";
 import { Button } from "@/components/ui/button/Button.tsx";
 
 import styles from "./ActionOptions.module.scss";
@@ -8,6 +9,7 @@ type Props = {
   isMenuOpen: boolean;
   toggleReplyForm: () => void;
   toggleMenu: () => void;
+  variant: CommentActionsVariant;
 };
 
 export const ActionOptions = ({
@@ -16,6 +18,7 @@ export const ActionOptions = ({
   isMenuOpen,
   toggleReplyForm,
   toggleMenu,
+  variant = "comment",
 }: Props) => {
   return (
     <div className={styles.commentActions}>
@@ -24,6 +27,7 @@ export const ActionOptions = ({
         className={styles.replyButton}
         aria-expanded={isReplying}
         aria-controls={`reply-form-${commentId}`}
+        disabled={variant === "reply"}
         onClick={toggleReplyForm}
       >
         Reply

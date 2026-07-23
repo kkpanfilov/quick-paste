@@ -7,9 +7,17 @@ type Props = {
   isAuth: boolean;
   commentId: string;
   pasteId: string;
+  variant: "comment" | "reply";
 };
 
-export const CommentActions = ({ isAuth, commentId, pasteId }: Props) => {
+export type CommentActionsVariant = Props["variant"];
+
+export const CommentActions = ({
+  isAuth,
+  commentId,
+  pasteId,
+  variant = "comment",
+}: Props) => {
   const [isReplying, setIsReplying] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -23,6 +31,7 @@ export const CommentActions = ({ isAuth, commentId, pasteId }: Props) => {
         isMenuOpen={isMenuOpen}
         toggleReplyForm={() => setIsReplying(!isReplying)}
         toggleMenu={() => setIsMenuOpen(!isMenuOpen)}
+        variant={variant}
       />
 
       {isReplying && (
