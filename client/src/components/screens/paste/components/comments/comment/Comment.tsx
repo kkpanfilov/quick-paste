@@ -14,30 +14,16 @@ type Props = {
   isAuth: boolean;
   pasteId: string;
   comment: CommentItem;
-  replyState: ReplyState;
-  setReplyState: React.Dispatch<React.SetStateAction<ReplyState>>;
 };
 
-export const Comment = ({
-  isAuth,
-  pasteId,
-  comment,
-  replyState,
-  setReplyState,
-}: Props) => {
+export const Comment = ({ isAuth, pasteId, comment }: Props) => {
   const commentId = comment.id;
 
   return (
     <article key={commentId} className={styles.comment}>
       <CommentHeader comment={comment} />
 
-      <CommentActions
-        pasteId={pasteId}
-        commentId={commentId}
-        isAuth={isAuth}
-        replyState={replyState}
-        setReplyState={setReplyState}
-      />
+      <CommentActions pasteId={pasteId} commentId={commentId} isAuth={isAuth} />
       <Replies comment={comment} pasteId={pasteId} />
     </article>
   );

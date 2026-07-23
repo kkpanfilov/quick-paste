@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { type InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { type SubmitHandler, useForm } from "react-hook-form";
 
@@ -30,17 +32,9 @@ type Props = {
   isAuth: boolean;
   commentId: string;
   pasteId: string;
-  replyState: ReplyState;
-  setReplyState: React.Dispatch<React.SetStateAction<ReplyState>>;
 };
 
-export const CommentActions = ({
-  isAuth,
-  commentId,
-  pasteId,
-  replyState,
-  setReplyState,
-}: Props) => {
+export const CommentActions = ({ isAuth, commentId, pasteId }: Props) => {
   const {
     register,
     handleSubmit,
@@ -49,6 +43,11 @@ export const CommentActions = ({
   } = useForm<FormData>({
     mode: "onSubmit",
     defaultValues: DEFAULT_VALUES,
+  });
+
+  const [replyState, setReplyState] = useState<ReplyState>({
+    isReplying: false,
+    commentId: null,
   });
 
   const isReplying =

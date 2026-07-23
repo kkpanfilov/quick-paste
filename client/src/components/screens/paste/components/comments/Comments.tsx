@@ -1,11 +1,9 @@
-import { useState } from "react";
-
 import { Button } from "@/components/ui/button/Button.tsx";
 import { ErrorBlock } from "@/components/ui/error-block/ErrorBlock.tsx";
 import { LoaderBlock } from "@/components/ui/loader-block/LoaderBlock.tsx";
 import { useGetComments } from "@/hooks/comments/useGetComments.ts";
 
-import { Comment, type ReplyState } from "./comment/Comment.tsx";
+import { Comment } from "./comment/Comment.tsx";
 
 import styles from "./Comments.module.scss";
 
@@ -15,11 +13,6 @@ type Props = {
 };
 
 export const Comments = ({ isAuth, pasteId }: Props) => {
-  const [replyState, setReplyState] = useState<ReplyState>({
-    isReplying: false,
-    commentId: null,
-  });
-
   const { data, isLoading, error, fetchNextPage } = useGetComments(pasteId);
 
   if (isLoading) {
@@ -55,8 +48,6 @@ export const Comments = ({ isAuth, pasteId }: Props) => {
             isAuth={isAuth}
             pasteId={pasteId}
             comment={comment}
-            replyState={replyState}
-            setReplyState={setReplyState}
           />
         )),
       )}
