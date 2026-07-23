@@ -24,21 +24,29 @@ export class CommentsController {
   @Get(":paste_id")
   async getPasteComments(
     @Param("paste_id") pasteId: string,
+    @User("id") userId: string | undefined,
     @Query("cursor") cursorValue?: string,
   ) {
     const cursor = extractCursor(cursorValue);
 
-    return await this.commentsService.getPasteComments(pasteId, cursor);
+    return await this.commentsService.getPasteComments(pasteId, userId, cursor);
   }
 
-  @Get(":comment_id/reply")
+  @Get(":paste_id/replies/:comment_id")
   async getCommentsReplies(
     @Param("comment_id") commentId: string,
+    @Param("paste_id") pasteId: string,
+    @User("id") userId: string | undefined,
     @Query("cursor") cursorValue?: string,
   ) {
     const cursor = extractCursor(cursorValue);
 
-    return await this.commentsService.getCommentsReplies(commentId, cursor);
+    return await this.commentsService.getCommentsReplies(
+      commentId,
+      pasteId,
+      userId,
+      cursor,
+    );
   }
 
   @Post(":paste_id")
@@ -55,11 +63,11 @@ export class CommentsController {
     );
   }
 
-  @Post(":paste_id/reply")
+  @Post(":parent_id/replies")
   @Auth()
   async reply(
     @Body() createCommentDto: CreateReplyDto,
-    @Param("paste_id") parentId: string,
+    @Param("parent_id") parentId: string,
     @User("id") authorId: string,
   ) {
     return await this.commentsService.reply(
