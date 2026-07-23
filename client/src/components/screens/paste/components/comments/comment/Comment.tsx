@@ -1,6 +1,6 @@
 import { CommentActions } from "@/components/screens/paste/components/comments/comment/comment-actions/CommentActions";
 import { CommentHeader } from "@/components/screens/paste/components/comments/comment/comment-header/CommentHeader.tsx";
-import { Replies } from "@/components/screens/paste/components/comments/comment/replies/Replies.tsx";
+import { CommentReplies } from "@/components/screens/paste/components/comments/comment/comment-replies/CommentReplies";
 import type { CommentItem } from "@/types/comment.types.ts";
 
 import styles from "./Comment.module.scss";
@@ -22,9 +22,8 @@ export const Comment = ({ isAuth, pasteId, comment }: Props) => {
   return (
     <article key={commentId} className={styles.comment}>
       <CommentHeader comment={comment} />
-
       <CommentActions pasteId={pasteId} commentId={commentId} isAuth={isAuth} />
-      <Replies comment={comment} pasteId={pasteId} />
+      <CommentReplies comment={comment} pasteId={pasteId} />
     </article>
   );
 };
