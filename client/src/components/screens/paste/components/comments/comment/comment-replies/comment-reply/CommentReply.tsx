@@ -2,13 +2,13 @@ import { CommentHeader } from "@/components/screens/paste/components/comments/co
 import type { ReplyItem } from "@/types/reply.types.ts";
 
 
-import styles from "./Reply.module.scss";
+import styles from "./CommentReply.module.scss";
 
 type Props = {
   reply: ReplyItem;
 };
 
-export const Reply = ({ reply }: Props) => {
+export const CommentReply = ({ reply }: Props) => {
   return (
     <article key={reply.id} className={`${styles.comment} ${styles.reply}`}>
       <CommentHeader comment={reply} />
