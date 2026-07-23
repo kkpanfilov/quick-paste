@@ -1,4 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { type InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router";
 
@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button/Button.tsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
 import { Field } from "@/components/ui/field/Field.tsx";
 import { useCreateComment } from "@/hooks/comments/useCreateComment.ts";
+import type {
+  Cursor,
+  GetCommentsResult,
+} from "@/hooks/comments/useGetComments.ts";
 import { useNotifications } from "@/hooks/useNotifications.ts";
 import type { CreateCommentDto } from "@/types/comment.types.ts";
 import type { Paste } from "@/types/paste.types.ts";
@@ -56,9 +60,27 @@ export const CommentForm = ({ isAuth, pasteId, data }: CommentFormProps) => {
 
           return {
             ...oldData,
-            comments: [result, ...oldData.comments],
+            commentsCount: oldData.commentsCount + 1,
           };
         });
+
+        queryClient.setQueryData<InfiniteData<GetCommentsResult, Cursor>>(
+          ["paste-comments", pasteId],
+          (oldData) => {
+            if (!oldData || !oldData.pages[0]) return oldData;
+
+            return {
+              ...oldData,
+              pages: [
+                {
+                  ...oldData.pages[0],
+                  items: [result, ...oldData.pages[0].items],
+                },
+                ...oldData.pages.slice(1),
+              ],
+            };
+          },
+        );
 
         reset();
       }
@@ -81,9 +103,7 @@ export const CommentForm = ({ isAuth, pasteId, data }: CommentFormProps) => {
           {errors.content && <ErrorMessage message={errors.content.message} />}
         </div>
 
-        <span className={styles.commentsCount}>
-          {data.comments.length || 0}
-        </span>
+        <span className={styles.commentsCount}>{data.commentsCount || 0}</span>
       </div>
 
       {isAuth ? (

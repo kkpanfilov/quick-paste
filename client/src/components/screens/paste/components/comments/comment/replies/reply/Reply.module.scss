@@ -1,5 +1,10 @@
 @use "@/styles/tokens" as *;
 
+.reply {
+  border-radius: 10px;
+  background: rgba($bg-surface-1, 0.42);
+}
+
 .comment {
   border: 1px solid $border-subtle;
   border-radius: 12px;

@@ -104,3 +104,31 @@
     color: $primary-hover;
   }
 }
+
+@media (max-width: 768px) {
+  .comments {
+    padding: 20px 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .comments {
+    padding: 18px 14px;
+  }
+
+  .commentsHeader {
+    align-items: center;
+  }
+
+  .commentsTitle {
+    font-size: $font-size-xl;
+  }
+
+  .commentFormActions {
+    display: block;
+  }
+
+  .commentButton {
+    width: 100%;
+  }
+}
