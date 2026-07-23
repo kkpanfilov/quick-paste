@@ -1,6 +1,6 @@
+import { CommentActions } from "@/components/screens/paste/components/comments/comment/comment-actions/CommentActions";
 import { CommentHeader } from "@/components/screens/paste/components/comments/comment/comment-header/CommentHeader.tsx";
 import { Replies } from "@/components/screens/paste/components/comments/comment/replies/Replies.tsx";
-import { ReplyForm } from "@/components/screens/paste/components/comments/comment/reply-form/ReplyForm.tsx";
 import type { CommentItem } from "@/types/comment.types.ts";
 
 import styles from "./Comment.module.scss";
@@ -31,7 +31,7 @@ export const Comment = ({
     <article key={commentId} className={styles.comment}>
       <CommentHeader comment={comment} />
 
-      <ReplyForm
+      <CommentActions
         pasteId={pasteId}
         commentId={commentId}
         isAuth={isAuth}

@@ -18,7 +18,7 @@ import type {
 import { useNotifications } from "@/hooks/useNotifications.ts";
 import type { CreateReplyDto } from "@/types/reply.types.ts";
 
-import styles from "./ReplyForm.module.scss";
+import styles from "./CommentActions.module.scss";
 
 type FormData = Omit<CreateReplyDto, "pasteId">;
 
@@ -34,7 +34,7 @@ type Props = {
   setReplyState: React.Dispatch<React.SetStateAction<ReplyState>>;
 };
 
-export const ReplyForm = ({
+export const CommentActions = ({
   isAuth,
   commentId,
   pasteId,
