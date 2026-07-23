@@ -4,7 +4,7 @@ import { apiClient } from "@/api/apiClient.ts";
 import type { CommentItem } from "@/types/comment.types.ts";
 import type { ISODateString } from "@/types/common.types.ts";
 
-type Cursor = {
+export type Cursor = {
   createdAt: ISODateString;
   id: string;
 } | null;
