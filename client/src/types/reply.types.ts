@@ -1,6 +1,15 @@
-import type { CommentItem } from "./comment.types.ts";
+import type { ISODateString } from "@/types/common.types.ts";
 
-export type ReplyItem = Omit<CommentItem, "repliesCount">;
+import type { CommentAuthor } from "./comment.types.ts";
+
+export type ReplyAuthor = CommentAuthor;
+
+export type ReplyItem = {
+  id: string;
+  content: string;
+  author: CommentAuthor;
+  createdAt: ISODateString;
+};
 
 export type CreateReplyDto = {
   content: string;
