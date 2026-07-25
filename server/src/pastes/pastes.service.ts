@@ -10,6 +10,7 @@ import { JwtService } from "@nestjs/jwt";
 import * as argon2 from "argon2";
 import { Request } from "express";
 
+import { Message } from "../auth/types/message.type.js";
 import { PasteExposure, Prisma } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CacheKeys } from "../redis/redis.keys.js";
@@ -499,7 +500,7 @@ export class PastesService {
     };
   }
 
-  async remove(id: string, authorId: string) {
+  async remove(id: string, authorId: string): Promise<Message> {
     const paste = await this.prisma.paste.findUnique({
       where: {
         id,
@@ -518,7 +519,7 @@ export class PastesService {
       throw new ForbiddenException("You are not the author of this paste");
     }
 
-    const deletedPaste = await this.prisma.paste.delete({
+    await this.prisma.paste.delete({
       where: {
         id,
       },
@@ -538,7 +539,7 @@ export class PastesService {
 
     await Promise.all(invalidations);
 
-    return deletedPaste;
+    return { success: true, message: "Paste removed" };
   }
 
   async search(query: string, page: number = 1) {
