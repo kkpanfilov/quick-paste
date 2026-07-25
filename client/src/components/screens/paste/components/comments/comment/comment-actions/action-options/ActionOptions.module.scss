@@ -36,8 +36,8 @@
 .menuPopup {
   position: absolute;
   z-index: 10;
-  top: calc(100% + 8px);
-  right: 0;
+  top: 0;
+  right: 45px;
   display: flex;
   flex-direction: column;
   min-width: 150px;
@@ -46,6 +46,16 @@
   border-radius: 8px;
   background: $bg-surface-2;
   box-shadow: $card-shadow;
+}
+
+[data-comment]:last-child .menuPopup {
+  top: -65px;
+  right: 45px;
+}
+
+[data-comment]:last-child [data-reply]:last-child .menuPopup {
+  top: -65px;
+  right: 45px;
 }
 
 .menuItem {
