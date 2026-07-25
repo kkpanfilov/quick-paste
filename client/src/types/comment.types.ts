@@ -16,3 +16,7 @@ export type CommentItem = {
 export type CreateCommentDto = {
   content: string;
 };
+
+export type UpdateCommentDto = {
+  content: string;
+};
