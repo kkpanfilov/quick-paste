@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 
+import { Message } from "../auth/types/message.type.js";
 import {
   PasteExposure,
   User,
@@ -375,7 +376,7 @@ export class UsersService {
     };
   }
 
-  async remove(id: string, userId: string) {
+  async remove(id: string, userId: string): Promise<Message> {
     const user = await this.prisma.user.findUnique({
       where: {
         id,
