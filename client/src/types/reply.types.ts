@@ -6,8 +6,9 @@ export type ReplyAuthor = CommentAuthor;
 
 export type ReplyItem = {
   id: string;
-  content: string;
+  content: string | null;
   author: CommentAuthor;
+  parentId: string;
   createdAt: ISODateString;
 };
 

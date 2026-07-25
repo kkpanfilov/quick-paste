@@ -7,7 +7,7 @@ export type CommentAuthor = {
 
 export type CommentItem = {
   id: string;
-  content: string;
+  content: string | null;
   author: CommentAuthor;
   repliesCount: number;
   createdAt: ISODateString;
