@@ -10,12 +10,11 @@ import type { CommentItem } from "@/types/comment.types.ts";
 import styles from "./CommentReplies.module.scss";
 
 type Props = {
-  isAuth: boolean;
   comment: CommentItem;
   pasteId: string;
 };
 
-export const CommentReplies = ({ isAuth, comment, pasteId }: Props) => {
+export const CommentReplies = ({ comment, pasteId }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const commentId = comment.id;
@@ -60,7 +59,6 @@ export const CommentReplies = ({ isAuth, comment, pasteId }: Props) => {
             page.items.map((reply) => (
               <CommentReply
                 key={reply.id}
-                isAuth={isAuth}
                 pasteId={pasteId}
                 reply={reply}
               />

@@ -1,12 +1,17 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 
+import { Message } from "../auth/types/message.type.js";
 import { EXCEPTION_MAP, PastesService } from "../pastes/pastes.service.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CreateCommentDto } from "./dto/create-comment.dto.js";
 import { CreateReplyDto } from "./dto/create-reply.dto.js";
 import { Cursor } from "./types/cursor.type.js";
 
-// TODO: implement cursor pagination
 // TODO: add tests
 const DEFAULT_LIMIT_COMMENTS = 10;
 const DEFAULT_LIMIT_REPLIES = 5;
@@ -133,6 +138,7 @@ export class CommentsService {
         id: true,
         content: true,
         createdAt: true,
+        parentId: true,
         author: {
           select: {
             id: true,
@@ -160,6 +166,7 @@ export class CommentsService {
         id: reply.id,
         content: reply.content,
         createdAt: reply.createdAt,
+        parentId: reply.parentId,
         author: reply.author,
       })),
       nextCursor: hasNextPage
@@ -244,6 +251,7 @@ export class CommentsService {
 
     const parent = await this.prisma.comment.findUnique({
       where: {
+        pasteId: createReplyDto.pasteId,
         id: parentId,
       },
     });
@@ -272,5 +280,67 @@ export class CommentsService {
     });
 
     return reply;
+  }
+
+  async remove(commentId: string, authorId: string): Promise<Message> {
+    const comment = await this.prisma.comment.findUnique({
+      where: {
+        id: commentId,
+      },
+      select: {
+        id: true,
+        authorId: true,
+        parentId: true,
+        isDeleted: true,
+        replies: true,
+      },
+    });
+
+    if (!comment) {
+      throw new NotFoundException("Comment not found");
+    }
+
+    if (comment.authorId !== authorId) {
+      throw new ForbiddenException("You can't delete this comment");
+    }
+
+    if (comment.isDeleted) {
+      throw new BadRequestException("Comment already deleted");
+    }
+
+    const commentHasReplies = comment.replies.length > 0;
+    const commentIsReply = comment.parentId !== null;
+
+    if (commentHasReplies || commentIsReply) {
+      await this.prisma.comment.update({
+        where: {
+          id: commentId,
+        },
+        select: {
+          id: true,
+        },
+        data: {
+          isDeleted: true,
+          deletedAt: new Date(),
+          content: null,
+        },
+      });
+
+      return {
+        success: true,
+        message: "Comment marked as deleted successfully",
+      };
+    } else {
+      await this.prisma.comment.delete({
+        where: {
+          id: commentId,
+        },
+      });
+
+      return {
+        success: true,
+        message: "Comment deleted successfully",
+      };
+    }
   }
 }

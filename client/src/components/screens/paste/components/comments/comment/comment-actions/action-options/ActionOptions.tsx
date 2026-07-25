@@ -1,25 +1,41 @@
+import type {
+  CommentActionsType,
+  CommentHandlersType,
+  CommentStatesType,
+} from "@/components/screens/paste/components/comments/comment/Comment.tsx";
 import type { CommentActionsVariant } from "@/components/screens/paste/components/comments/comment/comment-actions/CommentActions.tsx";
 import { Button } from "@/components/ui/button/Button.tsx";
+import type { CommentItem } from "@/types/comment.types.ts";
+import type { ReplyItem } from "@/types/reply.types.ts";
 
 import styles from "./ActionOptions.module.scss";
 
 type Props = {
-  commentId: string;
-  isReplying: boolean;
-  isMenuOpen: boolean;
-  toggleReplyForm: () => void;
-  toggleMenu: () => void;
+  comment: CommentItem | ReplyItem;
+  states: CommentStatesType;
+  actions: CommentActionsType;
   variant: CommentActionsVariant;
 };
 
 export const ActionOptions = ({
-  commentId,
-  isReplying,
-  isMenuOpen,
-  toggleReplyForm,
-  toggleMenu,
+  comment,
+  states,
+  actions,
   variant = "comment",
 }: Props) => {
+  const commentId = comment.id;
+
+  const { isReplying, isMenuOpen } = states;
+  const {
+    toggleReplyForm,
+    toggleMenu,
+    toggleEditing,
+    toggleConfirmDelete,
+    toggleActions,
+  } = actions;
+
+  if (!states.isActionsVisible) return null;
+
   return (
     <div className={styles.commentActions}>
       <Button
@@ -52,13 +68,25 @@ export const ActionOptions = ({
             className={styles.menuPopup}
             role="menu"
           >
-            <button className={styles.menuItem} type="button" role="menuitem">
+            <button
+              className={styles.menuItem}
+              type="button"
+              role="menuitem"
+              onClick={() => {
+                toggleEditing();
+                toggleMenu();
+                toggleActions();
+              }}
+            >
               Edit
             </button>
             <button
               className={`${styles.menuItem} ${styles.deleteMenuItem}`}
               type="button"
               role="menuitem"
+              onClick={() => {
+                toggleConfirmDelete();
+              }}
             >
               Delete
             </button>

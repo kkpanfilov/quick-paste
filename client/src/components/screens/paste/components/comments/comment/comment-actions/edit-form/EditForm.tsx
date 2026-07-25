@@ -6,25 +6,16 @@ import type { CommentActionsType } from "@/components/screens/paste/components/c
 import { Button } from "@/components/ui/button/Button.tsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
 import { Field } from "@/components/ui/field/Field.tsx";
-import { useCreateReply } from "@/hooks/comments/useCreateReply.ts";
-import type {
-  Cursor as CommentCursor,
-  GetCommentsResult,
-} from "@/hooks/comments/useGetComments.ts";
-import type {
-  GetRepliesResult,
-  Cursor as ReplyCursor,
-} from "@/hooks/comments/useGetReplies.ts";
 import { useNotifications } from "@/hooks/useNotifications.ts";
-import type { CommentItem } from "@/types/comment.types.ts";
-import type { CreateReplyDto } from "@/types/reply.types.ts";
+import type { CommentItem, UpdateCommentDto } from "@/types/comment.types.ts";
+import type { ReplyItem } from "@/types/reply.types.ts";
 
-import styles from "./ReplyForm.module.scss";
+import styles from "./EditForm.module.scss";
 
-type FormData = Omit<CreateReplyDto, "pasteId">;
+type FormData = UpdateCommentDto;
 
 type Props = {
-  comment: CommentItem;
+  comment: CommentItem | ReplyItem;
   pasteId: string;
   actions: CommentActionsType;
 };
@@ -33,7 +24,7 @@ const DEFAULT_VALUES = {
   content: "",
 };
 
-export const ReplyForm = ({ comment, pasteId, actions }: Props) => {
+export const EditForm = ({ comment, pasteId, actions }: Props) => {
   const {
     register,
     handleSubmit,
@@ -45,11 +36,10 @@ export const ReplyForm = ({ comment, pasteId, actions }: Props) => {
   });
 
   const commentId = comment.id;
-  const { toggleReplyForm } = actions;
-
+  const { toggleEditing, toggleActions } = actions;
   const { notifySuccess, notifyError } = useNotifications();
 
-  const { mutateAsync: createReply } = useCreateReply();
+  // const { mutateAsync: createReply } = useCreateReply();
   const queryClient = useQueryClient();
 
   const onReply: SubmitHandler<FormData> = async (body) => {
@@ -105,12 +95,12 @@ export const ReplyForm = ({ comment, pasteId, actions }: Props) => {
           };
         });
 
-        toggleReplyForm();
+        toggleEditing();
         reset();
       }
     } catch (error) {
       notifyError({
-        title: "Reply not added",
+        title: "Comment is not edited",
         message: isApiError(error) ? error.message : "Unknown error",
       });
     }
@@ -119,38 +109,41 @@ export const ReplyForm = ({ comment, pasteId, actions }: Props) => {
   return (
     <form
       id={`reply-form-${commentId}`}
-      className={styles.replyForm}
+      className={styles.editForm}
       aria-label="Reply to comment"
     >
       <Field
         tag="textarea"
-        className={styles.replyTextarea}
-        placeholder="Write a reply..."
-        aria-label="Write a reply"
+        className={styles.editTextarea}
+        placeholder="Edit a comment..."
+        aria-label="Edit a comment"
         rows={3}
         {...register("content", {
           required: "Content is required",
           maxLength: {
             value: 1000,
-            message: "Reply is too long",
+            message: "Content is too long",
           },
         })}
       />
-      <div className={styles.replyFormActions}>
+      <div className={styles.editFormActions}>
         {errors.content && <ErrorMessage message={errors.content.message} />}
         <Button
           variant="ghost"
-          className={styles.replyCancelButton}
-          onClick={toggleReplyForm}
+          className={styles.editCancelButton}
+          onClick={() => {
+            toggleEditing();
+            toggleActions();
+          }}
         >
           Cancel
         </Button>
         <Button
           variant="primary"
-          className={styles.replySubmitButton}
+          className={styles.editSubmitButton}
           onClick={handleSubmit(onReply)}
         >
-          Send reply
+          Edit
         </Button>
       </div>
     </form>

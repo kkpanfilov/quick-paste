@@ -1,44 +1,64 @@
-import { useState } from "react";
-
+import type {
+  CommentActionsType,
+  CommentHandlersType,
+  CommentStatesType,
+} from "@/components/screens/paste/components/comments/comment/Comment.tsx";
 import { ActionOptions } from "@/components/screens/paste/components/comments/comment/comment-actions/action-options/ActionOptions.tsx";
 import { ReplyForm } from "@/components/screens/paste/components/comments/comment/comment-actions/reply-form/ReplyForm.tsx";
+import { Confirm } from "@/components/ui/confirm/Confirm.tsx";
+import { useAuth } from "@/hooks/useAuth.ts";
+import type { CommentItem } from "@/types/comment.types.ts";
+import type { ReplyItem } from "@/types/reply.types.ts";
 
 type Props = {
-  isAuth: boolean;
-  commentId: string;
+  comment: CommentItem | ReplyItem;
   pasteId: string;
+  states: CommentStatesType;
+  actions: CommentActionsType;
+  handlers: CommentHandlersType;
   variant: "comment" | "reply";
 };
 
 export type CommentActionsVariant = Props["variant"];
 
 export const CommentActions = ({
-  isAuth,
-  commentId,
+  comment,
   pasteId,
+  states,
+  actions,
+  handlers,
   variant = "comment",
 }: Props) => {
-  const [isReplying, setIsReplying] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { author } = comment;
 
-  if (!isAuth) return null;
+  const { isAuth, userId } = useAuth();
+
+  if (!isAuth || author.id !== userId) return null;
+  if (comment.content === null && author.id === userId) return null;
 
   return (
     <>
       <ActionOptions
-        commentId={commentId}
-        isReplying={isReplying}
-        isMenuOpen={isMenuOpen}
-        toggleReplyForm={() => setIsReplying(!isReplying)}
-        toggleMenu={() => setIsMenuOpen(!isMenuOpen)}
+        comment={comment}
+        states={states}
+        actions={actions}
         variant={variant}
       />
 
-      {isReplying && (
+      {states.isConfirmDeleteOpen && (
+        <Confirm
+          title={"Delete comment?"}
+          description={"Are you sure you want to delete this comment?"}
+          action={"Delete"}
+          onCancel={actions.toggleActions}
+          onConfirm={handlers.handlerDelete}
+        />
+      )}
+      {states.isReplying && (
         <ReplyForm
-          commentId={commentId}
+          comment={comment as CommentItem}
           pasteId={pasteId}
-          closeForm={() => setIsReplying(false)}
+          actions={actions}
         />
       )}
     </>

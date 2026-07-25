@@ -43,3 +43,11 @@
   font-size: $font-size-sm;
   line-height: 1.55;
 }
+
+.commentTextDeleted {
+  margin: 12px 0 0;
+  color: $text-tertiary;
+  font-size: $font-size-sm;
+  font-style: italic;
+  line-height: 1.55;
+}
