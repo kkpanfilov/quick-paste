@@ -15,7 +15,6 @@ import type {
   GetRepliesResult,
   Cursor as ReplyCursor,
 } from "@/hooks/comments/useGetReplies.ts";
-import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
 import { useNotifications } from "@/hooks/useNotifications.ts";
 import type { ReplyItem } from "@/types/reply.types.ts";
 
@@ -39,7 +38,6 @@ export const CommentReply = ({ pasteId, reply }: Props) => {
   const { notifySuccess, notifyError } = useNotifications();
 
   const { mutateAsync: deleteComment } = useDeleteComment();
-  // const { mutateAsync: updateComment } = useUpdatePaste();
 
   const queryClient = useQueryClient();
 

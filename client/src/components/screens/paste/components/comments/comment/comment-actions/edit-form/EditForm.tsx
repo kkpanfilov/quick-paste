@@ -6,6 +6,15 @@ import type { CommentActionsType } from "@/components/screens/paste/components/c
 import { Button } from "@/components/ui/button/Button.tsx";
 import { ErrorMessage } from "@/components/ui/error-message/ErrorMessage.tsx";
 import { Field } from "@/components/ui/field/Field.tsx";
+import type {
+  Cursor as CommentsCursor,
+  GetCommentsResult,
+} from "@/hooks/comments/useGetComments.ts";
+import type {
+  GetRepliesResult,
+  Cursor as RepliesCursor,
+} from "@/hooks/comments/useGetReplies.ts";
+import { useUpdateComment } from "@/hooks/comments/useUpdateComment.ts";
 import { useNotifications } from "@/hooks/useNotifications.ts";
 import type { CommentItem, UpdateCommentDto } from "@/types/comment.types.ts";
 import type { ReplyItem } from "@/types/reply.types.ts";
@@ -36,66 +45,74 @@ export const EditForm = ({ comment, pasteId, actions }: Props) => {
   });
 
   const commentId = comment.id;
+  const isReply = "parentId" in comment;
+
   const { toggleEditing, toggleActions } = actions;
   const { notifySuccess, notifyError } = useNotifications();
 
-  // const { mutateAsync: createReply } = useCreateReply();
+  const { mutateAsync: updateComment } = useUpdateComment();
   const queryClient = useQueryClient();
 
   const onReply: SubmitHandler<FormData> = async (body) => {
     try {
-      const result = await createReply({
+      const result = await updateComment({
         id: commentId,
-        pasteId,
-        data: { ...body, pasteId },
+        body,
       });
 
       if (result.id) {
         notifySuccess({
-          title: "Comment added",
-          message: "Comment has been added successfully",
+          title: `${isReply ? "Reply" : "Comment"} edited`,
+          message: `${isReply ? "Reply" : "Comment"} has been edited successfully`,
         });
 
-        queryClient.setQueryData<InfiniteData<GetRepliesResult, ReplyCursor>>(
-          ["comments-replies", commentId],
-          (oldData) => {
+        toggleEditing();
+        toggleActions();
+
+        if (isReply) {
+          queryClient.setQueryData<
+            InfiniteData<GetRepliesResult, RepliesCursor>
+          >(["comments-replies", comment.parentId], (oldData) => {
             if (!oldData || !oldData.pages[0]) return oldData;
 
             return {
               ...oldData,
-              pages: [
-                {
-                  ...oldData.pages[0],
-                  items: [result, ...oldData.pages[0].items],
-                },
-                ...oldData.pages.slice(1),
-              ],
+              pages: oldData.pages.map((page) => ({
+                ...page,
+                items: page.items.map((reply) =>
+                  reply.id === commentId
+                    ? {
+                        ...reply,
+                        content: body.content,
+                      }
+                    : reply,
+                ),
+              })),
             };
-          },
-        );
+          });
+        } else {
+          queryClient.setQueryData<
+            InfiniteData<GetCommentsResult, CommentsCursor>
+          >(["paste-comments", pasteId], (oldData) => {
+            if (!oldData || !oldData.pages[0]) return oldData;
 
-        queryClient.setQueryData<
-          InfiniteData<GetCommentsResult, CommentCursor>
-        >(["paste-comments", pasteId], (oldData) => {
-          if (!oldData || !oldData.pages[0]) return oldData;
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page) => ({
+                ...page,
+                items: page.items.map((comment) =>
+                  comment.id === commentId
+                    ? {
+                        ...comment,
+                        content: body.content,
+                      }
+                    : comment,
+                ),
+              })),
+            };
+          });
+        }
 
-          return {
-            ...oldData,
-            pages: oldData.pages.map((page) => ({
-              ...page,
-              items: page.items.map((comment) =>
-                comment.id === commentId
-                  ? {
-                      ...comment,
-                      repliesCount: comment.repliesCount + 1,
-                    }
-                  : comment,
-              ),
-            })),
-          };
-        });
-
-        toggleEditing();
         reset();
       }
     } catch (error) {

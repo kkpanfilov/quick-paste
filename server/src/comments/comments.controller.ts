@@ -14,6 +14,7 @@ import { User } from "../auth/decorators/user.decorator.js";
 import { CommentsService } from "./comments.service.js";
 import { CreateCommentDto } from "./dto/create-comment.dto.js";
 import { CreateReplyDto } from "./dto/create-reply.dto.js";
+import { UpdateCommentDto } from "./dto/update-comment.dto.js";
 import { extractCursor } from "./utils/extract-cursor.js";
 
 // TODO: review the endpoints
@@ -75,5 +76,28 @@ export class CommentsController {
       parentId,
       authorId,
     );
+  }
+
+  @Patch(":comment_id")
+  @Auth()
+  async update(
+    @Param("comment_id") commentId: string,
+    @Body() updateCommentDto: UpdateCommentDto,
+    @User("id") authorId: string,
+  ) {
+    return await this.commentsService.update(
+      commentId,
+      updateCommentDto,
+      authorId,
+    );
+  }
+
+  @Delete(":comment_id")
+  @Auth()
+  async delete(
+    @Param("comment_id") commentId: string,
+    @User("id") authorId: string,
+  ) {
+    return await this.commentsService.remove(commentId, authorId);
   }
 }

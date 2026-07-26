@@ -10,6 +10,7 @@ import { EXCEPTION_MAP, PastesService } from "../pastes/pastes.service.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CreateCommentDto } from "./dto/create-comment.dto.js";
 import { CreateReplyDto } from "./dto/create-reply.dto.js";
+import { UpdateCommentDto } from "./dto/update-comment.dto.js";
 import { Cursor } from "./types/cursor.type.js";
 
 // TODO: add tests
@@ -280,6 +281,54 @@ export class CommentsService {
     });
 
     return reply;
+  }
+
+  async update(
+    commentId: string,
+    updateCommentDto: UpdateCommentDto,
+    authorId: string,
+  ) {
+    const comment = await this.prisma.comment.findUnique({
+      where: {
+        id: commentId,
+      },
+    });
+
+    if (!comment) {
+      throw new NotFoundException("Comment not found");
+    }
+
+    if (comment.authorId !== authorId) {
+      throw new ForbiddenException("You can't update this comment");
+    }
+
+    if (comment.isDeleted) {
+      throw new BadRequestException("Comment already deleted");
+    }
+
+    const updatedComment = await this.prisma.comment.update({
+      where: {
+        id: commentId,
+        authorId,
+        isDeleted: false,
+      },
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        author: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+      data: {
+        ...updateCommentDto,
+      },
+    });
+
+    return updatedComment;
   }
 
   async remove(commentId: string, authorId: string): Promise<Message> {
