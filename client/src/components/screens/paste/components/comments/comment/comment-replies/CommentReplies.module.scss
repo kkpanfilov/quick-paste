@@ -1,0 +1,80 @@
+@use "@/styles/tokens" as *;
+
+.replies {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  margin-left: 18px;
+  padding-left: 14px;
+  border-left: 1px solid $border-subtle;
+}
+
+.repliesButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.repliesButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 8px;
+  height: 40px;
+  margin: 14px 0 0;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: $font-size-xs;
+
+  &[data-close="true"]::after {
+    width: 8px;
+    height: 8px;
+    border: none;
+    background:
+      linear-gradient(
+        45deg,
+        transparent calc(50% - 0.50px),
+        currentColor calc(50% - 0.50px),
+        currentColor calc(50% + 0.50px),
+        transparent calc(50% + 0.50px)
+      ),
+      linear-gradient(
+        -45deg,
+        transparent calc(50% - 0.50px),
+        currentColor calc(50% - 0.50px),
+        currentColor calc(50% + 0.50px),
+        transparent calc(50% + 0.50px)
+      );
+    transform: rotate(0);
+  }
+
+  &::after {
+    width: 6px;
+    height: 6px;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    content: "";
+    transform: rotate(45deg);
+    transition: transform 160ms ease;
+  }
+
+  &:not(:disabled):hover::after {
+    transform: translateX(2px) rotate(45deg);
+  }
+
+  &:not(:disabled):active {
+    transform: translateY(1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $border-focus;
+    outline-offset: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .replies {
+    margin-left: 10px;
+    padding-left: 10px;
+  }
+}

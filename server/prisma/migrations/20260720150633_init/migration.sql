@@ -108,7 +108,7 @@ CREATE INDEX "Comment_pasteId_idx" ON "Comment"("pasteId");
 CREATE INDEX "Comment_parentId_idx" ON "Comment"("parentId");
 
 -- CreateIndex
-CREATE INDEX "Comment_pasteId_parentId_createdAt_idx" ON "Comment"("pasteId", "parentId", "createdAt");
+CREATE INDEX "Comment_pasteId_parentId_createdAt_id_idx" ON "Comment"("pasteId", "parentId", "createdAt", "id");
 
 -- CreateIndex
 CREATE INDEX "Like_userId_idx" ON "Like"("userId");

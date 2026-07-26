@@ -12,7 +12,7 @@ type CreateReplyType = {
 export function useCreateReply() {
   return useMutation({
     mutationFn: ({ id, pasteId, data }: CreateReplyType): Promise<ReplyItem> =>
-      apiClient<ReplyItem, CreateReplyDto>("POST", `comments/${id}/reply`, {
+      apiClient<ReplyItem, CreateReplyDto>("POST", `comments/${id}/replies`, {
         ...data,
         pasteId,
       }),

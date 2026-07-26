@@ -1,5 +1,4 @@
 import type { ISODateString } from "./common.types.ts";
-import type { ReplyItem } from "./reply.types.ts";
 
 export type CommentAuthor = {
   id: string;
@@ -8,12 +7,16 @@ export type CommentAuthor = {
 
 export type CommentItem = {
   id: string;
-  content: string;
+  content: string | null;
   author: CommentAuthor;
-  replies: ReplyItem[];
+  repliesCount: number;
   createdAt: ISODateString;
 };
 
 export type CreateCommentDto = {
+  content: string;
+};
+
+export type UpdateCommentDto = {
   content: string;
 };

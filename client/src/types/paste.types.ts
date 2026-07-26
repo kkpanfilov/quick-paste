@@ -3,7 +3,6 @@ import type { Expiration } from "@/shared/lists/expiration.map.ts";
 import type { Exposure } from "@/shared/lists/exposure.map.ts";
 import type { Language, LanguageLabel } from "@/shared/lists/language.map.ts";
 
-import type { CommentItem } from "./comment.types.ts";
 import type { ISODateString } from "./common.types.ts";
 
 export type Paste = {
@@ -18,9 +17,10 @@ export type Paste = {
   language: Language;
 
   likesCount: number;
+  commentsCount: number;
+
   isLiked: boolean;
 
-  comments: CommentItem[];
   pasteTags: string[];
 
   author: string;

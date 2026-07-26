@@ -91,7 +91,7 @@ const PasteView = ({ pasteId }: Props) => {
             data={data}
           />
           <CommentForm isAuth={isAuth} pasteId={pasteId} data={data} />
-          <Comments isAuth={isAuth} pasteId={pasteId} data={data} />
+          <Comments isAuth={isAuth} pasteId={pasteId} />
         </article>
       </main>
     </>

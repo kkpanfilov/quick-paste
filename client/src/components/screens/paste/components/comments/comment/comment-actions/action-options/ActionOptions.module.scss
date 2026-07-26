@@ -1,0 +1,82 @@
+@use "@/styles/tokens" as *;
+
+.commentActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.replyButton {
+  height: 36px;
+  padding: 0 26px;
+  border-width: 1px;
+  border-radius: 8px;
+  font-size: $font-size-xs;
+}
+
+.menu {
+  position: relative;
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  color: $text-secondary;
+  font-size: $font-size-xs;
+  letter-spacing: 1px;
+}
+
+.menuPopup {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  right: 45px;
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  padding: 8px;
+  border: 1px solid $border-subtle;
+  border-radius: 8px;
+  background: $bg-surface-2;
+  box-shadow: $card-shadow;
+}
+
+[data-comment]:last-child .menuPopup {
+  top: -65px;
+  right: 45px;
+}
+
+[data-comment]:last-child [data-reply]:last-child .menuPopup {
+  top: -65px;
+  right: 45px;
+}
+
+.menuItem {
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 6px;
+  color: $text-primary;
+  background: transparent;
+  font: inherit;
+  font-size: $font-size-sm;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: $bg-surface-3;
+    outline: none;
+  }
+}
+
+.deleteMenuItem {
+  color: $danger;
+}

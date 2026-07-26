@@ -1,39 +1,48 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { apiClient } from "@/api/apiClient.ts";
-import type { CommentItem } from "@/types/comment.types.ts";
 import type { ISODateString } from "@/types/common.types.ts";
+import type { ReplyItem } from "@/types/reply.types.ts";
 
 export type Cursor = {
   createdAt: ISODateString;
   id: string;
 } | null;
 
-export type GetCommentsResult = {
-  items: CommentItem[];
+export type GetRepliesResult = {
+  items: ReplyItem[];
   nextCursor: Cursor | null;
 };
 
-export function useGetComments(pasteId: string) {
+type Options = {
+  enabled: boolean;
+};
+
+export function useGetReplies(
+  pasteId: string,
+  commentId: string,
+  options: Options = { enabled: false },
+) {
   return useInfiniteQuery({
-    queryKey: [`paste-comments`, pasteId],
+    queryKey: [`comments-replies`, commentId],
     queryFn: ({
       pageParam,
     }: {
       pageParam: Cursor | null;
-    }): Promise<GetCommentsResult> => {
+    }): Promise<GetRepliesResult> => {
       const cursor = pageParam
         ? encodeURIComponent(JSON.stringify(pageParam))
         : "";
 
-      return apiClient<GetCommentsResult>(
+      return apiClient<GetRepliesResult>(
         "GET",
-        `comments/${pasteId}${cursor ? `?cursor=${cursor}` : ""}`,
+        `comments/${pasteId}/replies/${commentId}${cursor ? `?cursor=${cursor}` : ""}`,
       );
     },
     initialPageParam: null,
     getNextPageParam: (lastPage) => {
       return lastPage.nextCursor;
     },
+    enabled: options.enabled,
   });
 }

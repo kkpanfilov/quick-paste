@@ -3,50 +3,36 @@ import { useState } from "react";
 import { type InfiniteData, useQueryClient } from "@tanstack/react-query";
 
 import { isApiError } from "@/api/apiClient.ts";
-import { CommentActions } from "@/components/screens/paste/components/comments/comment/comment-actions/CommentActions";
+import type {
+  CommentActionsType,
+  CommentHandlersType,
+  CommentStatesType,
+} from "@/components/screens/paste/components/comments/comment/Comment.tsx";
+import { CommentActions } from "@/components/screens/paste/components/comments/comment/comment-actions/CommentActions.tsx";
 import { CommentHeader } from "@/components/screens/paste/components/comments/comment/comment-header/CommentHeader.tsx";
-import { CommentReplies } from "@/components/screens/paste/components/comments/comment/comment-replies/CommentReplies";
 import { useDeleteComment } from "@/hooks/comments/useDeleteComment.ts";
 import type {
-  Cursor as CommentCursor,
-  GetCommentsResult,
-} from "@/hooks/comments/useGetComments.ts";
+  GetRepliesResult,
+  Cursor as ReplyCursor,
+} from "@/hooks/comments/useGetReplies.ts";
 import { useNotifications } from "@/hooks/useNotifications.ts";
-import type { CommentItem } from "@/types/comment.types.ts";
+import type { ReplyItem } from "@/types/reply.types.ts";
 
-import styles from "./Comment.module.scss";
+import styles from "./CommentReply.module.scss";
 
 type Props = {
-  isAuth: boolean;
   pasteId: string;
-  comment: CommentItem;
+  reply: ReplyItem;
 };
 
-export type CommentStatesType = {
-  isReplying: boolean;
-  isEditing: boolean;
-  isMenuOpen: boolean;
-  isConfirmDeleteOpen: boolean;
-  isActionsVisible: boolean;
-};
+type ReplyStatesType = CommentStatesType;
+type ReplyActionsType = CommentActionsType;
+type ReplyHandlersType = CommentHandlersType;
 
-export type CommentActionsType = {
-  toggleReplyForm: () => void;
-  toggleEditing: () => void;
-  toggleMenu: () => void;
-  toggleConfirmDelete: () => void;
-  toggleActions: () => void;
-};
-
-export type CommentHandlersType = {
-  handlerDelete: () => void;
-};
-
-export const Comment = ({ pasteId, comment }: Props) => {
+export const CommentReply = ({ pasteId, reply }: Props) => {
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isActionsVisible, setIsActionsVisible] = useState(true);
 
   const { notifySuccess, notifyError } = useNotifications();
@@ -66,8 +52,8 @@ export const Comment = ({ pasteId, comment }: Props) => {
         });
       }
 
-      queryClient.setQueryData<InfiniteData<GetCommentsResult, CommentCursor>>(
-        ["paste-comments", pasteId],
+      queryClient.setQueryData<InfiniteData<GetRepliesResult, ReplyCursor>>(
+        ["comments-replies", reply.parentId],
         (oldData) => {
           if (!oldData) return oldData;
 
@@ -100,43 +86,44 @@ export const Comment = ({ pasteId, comment }: Props) => {
     }
   };
 
-  const commentUI = {
+  const replyUI = {
     isReplying,
-    isEditing,
     isMenuOpen,
-    isConfirmDeleteOpen,
+    isEditing,
     isActionsVisible,
-  } as CommentStatesType;
+  } as ReplyStatesType;
 
-  const commentActions = {
+  const replyActions = {
     toggleReplyForm: () => setIsReplying((value) => !value),
-    toggleEditing: () => setIsEditing((value) => !value),
     toggleMenu: () => setIsMenuOpen((value) => !value),
-    toggleConfirmDelete: () => setIsConfirmDeleteOpen((value) => !value),
+    toggleEditing: () => setIsEditing((value) => !value),
     toggleActions: () => setIsActionsVisible((value) => !value),
-  } as CommentActionsType;
+  } as ReplyActionsType;
 
   const handleActions = {
-    handlerDelete: () => onDelete(comment.id),
-  } as CommentHandlersType;
+    handlerDelete: () => onDelete(reply.id),
+  } as ReplyHandlersType;
 
   return (
-    <article key={comment.id} className={styles.comment} data-comment>
+    <article
+      key={reply.id}
+      className={`${styles.comment} ${styles.reply}`}
+      data-reply
+    >
       <CommentHeader
-        comment={comment}
+        comment={reply}
         pasteId={pasteId}
-        states={commentUI}
-        actions={commentActions}
+        states={replyUI}
+        actions={replyActions}
       />
       <CommentActions
-        comment={comment}
+        comment={reply}
         pasteId={pasteId}
-        states={commentUI}
-        actions={commentActions}
+        states={replyUI}
+        actions={replyActions}
         handlers={handleActions}
-        variant={"comment"}
+        variant={"reply"}
       />
-      <CommentReplies comment={comment} pasteId={pasteId} />
     </article>
   );
 };

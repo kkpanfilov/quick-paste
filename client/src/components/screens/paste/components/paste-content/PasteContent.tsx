@@ -58,7 +58,7 @@ export const PasteContent = ({
     try {
       const result = await deletePaste(id);
 
-      if (result.id) {
+      if (result.success) {
         notifySuccess({
           title: "Paste deleted",
           message: "Paste has been deleted successfully",

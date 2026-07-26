@@ -1,5 +1,8 @@
-import { PartialType } from "@nestjs/mapped-types";
+import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 
-import { CreateCommentDto } from "./create-comment.dto.js";
-
-export class UpdateCommentDto extends PartialType(CreateCommentDto) {}
+export class UpdateCommentDto {
+  @IsString({ message: "Content must be a string" })
+  @IsNotEmpty({ message: "Content is required" })
+  @MaxLength(1000, { message: "Content must be at most 1000 characters long" })
+  content!: string;
+}

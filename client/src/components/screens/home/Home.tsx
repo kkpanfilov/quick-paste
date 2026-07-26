@@ -4,7 +4,7 @@ import { Loader } from "@/components/ui/loader/Loader.tsx";
 import { Pagination } from "@/components/ui/pagination/Pagination.tsx";
 import { PasteCard } from "@/components/ui/paste-card/PasteCard.tsx";
 import { useGetOwnPastes } from "@/hooks/pastes/useGetOwnPastes.ts";
-import { useGetPublicPaste } from "@/hooks/pastes/useGetPublicPastes.ts";
+import { useGetPublicPastes } from "@/hooks/pastes/useGetPublicPastes.ts";
 import { useLoadLanguages } from "@/hooks/syntax-highlighter/useLoadLanguages.ts";
 import { useAppNavigation } from "@/hooks/useAppNavigation.ts";
 import { useAuth } from "@/hooks/useAuth.ts";
@@ -38,7 +38,7 @@ export const Home = () => {
     enabled: currentCategory === "workspace",
   });
 
-  const publicPastesQuery = useGetPublicPaste(page, {
+  const publicPastesQuery = useGetPublicPastes(page, {
     enabled: currentCategory === "feed",
   });
 

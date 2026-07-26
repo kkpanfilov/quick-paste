@@ -1,10 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { apiClient } from "@/api/apiClient.ts";
+import type { Message } from "@/types/common.types.ts";
 
-type DeletePasteResult = {
-  id: string;
-};
+type DeletePasteResult = Message;
 
 export function useDeletePaste() {
   return useMutation({

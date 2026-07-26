@@ -10,7 +10,7 @@ import { JwtService } from "@nestjs/jwt";
 import * as argon2 from "argon2";
 import { Request } from "express";
 
-import { CommentsService } from "../comments/comments.service.js";
+import { Message } from "../auth/types/message.type.js";
 import { PasteExposure, Prisma } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CacheKeys } from "../redis/redis.keys.js";
@@ -31,11 +31,11 @@ export const EXCEPTION_MAP = {
   "Password is required": new BadRequestException("Password is required"),
 } as const;
 
+// TODO: both findPublic and findAuthorPaste methods should return only 4 lines of content for now
 @Injectable()
 export class PastesService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly commentsService: CommentsService,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly redis: RedisService,
@@ -500,7 +500,7 @@ export class PastesService {
     };
   }
 
-  async remove(id: string, authorId: string) {
+  async remove(id: string, authorId: string): Promise<Message> {
     const paste = await this.prisma.paste.findUnique({
       where: {
         id,
@@ -519,7 +519,7 @@ export class PastesService {
       throw new ForbiddenException("You are not the author of this paste");
     }
 
-    const deletedPaste = await this.prisma.paste.delete({
+    await this.prisma.paste.delete({
       where: {
         id,
       },
@@ -532,7 +532,6 @@ export class PastesService {
       this.invalidatePasteItem(id),
       this.invalidateListAuthorPastes(paste.authorId),
       this.usersService.invalidateUserPublicInfoCache(paste.authorId),
-      this.commentsService.invalidateListPasteComments(id),
     ];
 
     if (paste.exposure === PasteExposure.PUBLIC)
@@ -540,7 +539,7 @@ export class PastesService {
 
     await Promise.all(invalidations);
 
-    return deletedPaste;
+    return { success: true, message: "Paste removed" };
   }
 
   async search(query: string, page: number = 1) {
@@ -605,32 +604,7 @@ export class PastesService {
     return data;
   }
 
-  private async burn(id: string) {
-    const deletedPaste = await this.prisma.paste.delete({
-      where: {
-        id,
-      },
-      select: {
-        authorId: true,
-        exposure: true,
-      },
-    });
-
-    const invalidations = [
-      this.invalidatePasteItem(id),
-      this.invalidateListAuthorPastes(deletedPaste.authorId),
-      this.usersService.invalidateUserPublicInfoCache(deletedPaste.authorId),
-      this.commentsService.invalidateListPasteComments(id),
-    ];
-
-    if (deletedPaste.exposure === PasteExposure.PUBLIC) {
-      invalidations.push(this.invalidateListPublicPastes());
-    }
-
-    await Promise.all(invalidations);
-  }
-
-  private async isPasteAccessible(
+  async isPasteAccessible(
     id: string,
     userId: string | undefined,
     password?: Password,
@@ -689,6 +663,30 @@ export class PastesService {
     return { isAccessible: true, error: null };
   }
 
+  private async burn(id: string) {
+    const deletedPaste = await this.prisma.paste.delete({
+      where: {
+        id,
+      },
+      select: {
+        authorId: true,
+        exposure: true,
+      },
+    });
+
+    const invalidations = [
+      this.invalidatePasteItem(id),
+      this.invalidateListAuthorPastes(deletedPaste.authorId),
+      this.usersService.invalidateUserPublicInfoCache(deletedPaste.authorId),
+    ];
+
+    if (deletedPaste.exposure === PasteExposure.PUBLIC) {
+      invalidations.push(this.invalidateListPublicPastes());
+    }
+
+    await Promise.all(invalidations);
+  }
+
   private async getAccessiblePaste(
     id: string,
     userId: string | undefined,
@@ -728,39 +726,6 @@ export class PastesService {
             content: true,
           },
         },
-        comments: {
-          select: {
-            id: true,
-            content: true,
-            createdAt: true,
-            author: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-            replies: {
-              select: {
-                id: true,
-                content: true,
-                createdAt: true,
-                author: {
-                  select: {
-                    id: true,
-                    username: true,
-                  },
-                },
-              },
-            },
-          },
-          where: {
-            parentId: null,
-          },
-          take: 10,
-          orderBy: {
-            createdAt: "desc",
-          },
-        },
       },
     });
 
@@ -791,6 +756,13 @@ export class PastesService {
       },
     });
 
+    const commentsCount = await this.prisma.comment.count({
+      where: {
+        pasteId: id,
+        parentId: null,
+      },
+    });
+
     const isLikedByUser = await this.checkIsLiked(id, userId);
 
     const data = {
@@ -798,6 +770,7 @@ export class PastesService {
       isBurn,
       exposure,
       likesCount,
+      commentsCount,
       pasteTags: pasteTags.map((tag) => tag.content),
       isLiked: isLikedByUser ? true : false,
       author: user.username,
