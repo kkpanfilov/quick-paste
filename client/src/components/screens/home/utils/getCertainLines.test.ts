@@ -30,7 +30,7 @@ describe("getCertainLines", () => {
   it("should return empty string if text is null", () => {
     const text = null;
 
-    // @ts-expect-error Testing runtime protection againts null input
+    // @ts-expect-error Testing runtime protection against null input
     const result = getCertainLines(text);
 
     expect(result).toBe("");
@@ -38,7 +38,7 @@ describe("getCertainLines", () => {
   it("should return empty string if text is undefined", () => {
     const text = undefined;
 
-    // @ts-expect-error Testing runtime protection againts undefined input
+    // @ts-expect-error Testing runtime protection against undefined input
     const result = getCertainLines(text);
 
     expect(result).toBe("");
