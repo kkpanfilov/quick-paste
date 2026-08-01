@@ -1,6 +1,5 @@
 import type {
   CommentActionsType,
-  CommentHandlersType,
   CommentStatesType,
 } from "@/components/screens/paste/components/comments/comment/Comment.tsx";
 import type { CommentActionsVariant } from "@/components/screens/paste/components/comments/comment/comment-actions/CommentActions.tsx";
