@@ -2,12 +2,8 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { apiClient } from "@/api/apiClient.ts";
 import type { CommentItem } from "@/types/comment.types.ts";
-import type { ISODateString } from "@/types/common.types.ts";
 
-export type Cursor = {
-  createdAt: ISODateString;
-  id: string;
-} | null;
+export type Cursor = string | null;
 
 export type GetCommentsResult = {
   items: CommentItem[];
@@ -22,9 +18,7 @@ export function useGetComments(pasteId: string) {
     }: {
       pageParam: Cursor | null;
     }): Promise<GetCommentsResult> => {
-      const cursor = pageParam
-        ? encodeURIComponent(JSON.stringify(pageParam))
-        : "";
+      const cursor = pageParam ? encodeURIComponent(pageParam) : "";
 
       return apiClient<GetCommentsResult>(
         "GET",

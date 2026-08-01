@@ -1,13 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { apiClient } from "@/api/apiClient.ts";
-import type { ISODateString } from "@/types/common.types.ts";
 import type { ReplyItem } from "@/types/reply.types.ts";
 
-export type Cursor = {
-  createdAt: ISODateString;
-  id: string;
-} | null;
+export type Cursor = string | null;
 
 export type GetRepliesResult = {
   items: ReplyItem[];
@@ -30,9 +26,7 @@ export function useGetReplies(
     }: {
       pageParam: Cursor | null;
     }): Promise<GetRepliesResult> => {
-      const cursor = pageParam
-        ? encodeURIComponent(JSON.stringify(pageParam))
-        : "";
+      const cursor = pageParam ? encodeURIComponent(pageParam) : "";
 
       return apiClient<GetRepliesResult>(
         "GET",
