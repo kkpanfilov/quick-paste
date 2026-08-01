@@ -12,8 +12,6 @@ import {
   MaxLength,
 } from "class-validator";
 
-import { PasteExposure } from "../../generated/prisma/enums.js";
-
 export const LANGUAGE_VALUES = [
   "plain",
   "markdown",
@@ -152,7 +150,7 @@ export class CreatePasteDto {
   @IsIn(EXPIRATION_VALUES, {
     message: `Expiration must be one of [${EXPIRATION_VALUES.join(", ")}]`,
   })
-  expiration!: string | null;
+  expiration!: string;
 
   @IsBoolean({ message: "IsBurn must be a boolean" })
   isBurn!: boolean;
@@ -167,7 +165,7 @@ export class CreatePasteDto {
   @IsIn(EXPOSURE_VALUES, {
     message: `Exposure must be one of [${EXPOSURE_VALUES.join(", ")}]`,
   })
-  exposure!: PasteExposure;
+  exposure!: string;
 
   @IsOptional()
   @IsString({ message: "Password must be a string" })

@@ -1,4 +1,4 @@
-import { BadRequestException, PipeTransform } from "@nestjs/common";
+import { PipeTransform } from "@nestjs/common";
 
 import ms from "ms";
 
@@ -7,10 +7,10 @@ import { CreatePasteDto } from "../dto/create-paste.dto.js";
 
 export type CreatePasteServiceDto = Omit<
   CreatePasteDto,
-  "expiration" | "exposure"
+  "exposure" | "expiration"
 > & {
-  expiresAt: Date | null;
   exposure: PasteExposure;
+  expiresAt: Date | null;
 };
 
 export class CreatePastePipe implements PipeTransform {
@@ -20,28 +20,15 @@ export class CreatePastePipe implements PipeTransform {
     const normalizedExposure =
       typeof exposure === "string" ? exposure.toUpperCase() : exposure;
 
-    if (
-      !Object.values(PasteExposure).includes(
-        normalizedExposure as PasteExposure,
-      )
-    ) {
-      throw new BadRequestException("Exposure must be a valid exposure");
-    }
-
     const newDto: CreatePasteServiceDto = {
       ...pasteDto,
       expiresAt: null,
       exposure: normalizedExposure as PasteExposure,
     };
 
-    if (expiration === "never" || expiration === "burn" || !expiration)
-      return newDto;
+    if (expiration === "never" || expiration === "burn") return newDto;
 
     const durationMs = ms(expiration as ms.StringValue);
-
-    if (typeof durationMs !== "number") {
-      throw new BadRequestException("Invalid expiration format");
-    }
 
     newDto.expiresAt = new Date(Date.now() + durationMs);
 
