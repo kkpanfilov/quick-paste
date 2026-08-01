@@ -16,8 +16,8 @@ import { PrismaService } from "../prisma/prisma.service.js";
 import { CacheKeys } from "../redis/redis.keys.js";
 import { RedisService } from "../redis/redis.service.js";
 import { UsersService } from "../users/users.service.js";
-import { CreatePasteDto } from "./dto/create-paste.dto.js";
-import { UpdatePasteDto } from "./dto/update-paste.dto.js";
+import { CreatePasteServiceDto } from "./pipes/create-paste.pipe.js";
+import { UpdatePasteServiceDto } from "./pipes/update-paste.pipe.js";
 import { CachePaste } from "./types/cache-paste.type.js";
 import { IsPasteAccessible } from "./types/is-paste-accessible.type.js";
 import { Password } from "./types/password.type.js";
@@ -41,15 +41,10 @@ export class PastesService {
     private readonly redis: RedisService,
   ) {}
 
-  async create(
-    createPasteDto: CreatePasteDto & {
-      exposure: PasteExposure;
-    },
-    authorId: string,
-  ) {
+  async create(createPasteDto: CreatePasteServiceDto, authorId: string) {
     const { password, tags, ...rest } = createPasteDto;
 
-    const data = { ...rest, authorId } as CreatePasteDto & {
+    const data = { ...rest, authorId } as CreatePasteServiceDto & {
       authorId: string;
       exposure: PasteExposure;
       passwordHash?: string;
@@ -355,7 +350,7 @@ export class PastesService {
     id: string,
     userId: string,
     request: Request | null,
-    updatePasteDto: UpdatePasteDto & { password?: string },
+    updatePasteDto: UpdatePasteServiceDto,
   ) {
     if (Object.keys(updatePasteDto).length === 0) {
       throw new BadRequestException("No data provided");
@@ -373,9 +368,10 @@ export class PastesService {
       throw new ForbiddenException("You are not the author of this paste");
     }
 
-    const { password, tags, ...data } = updatePasteDto as UpdatePasteDto & {
-      passwordHash?: string | null;
-    };
+    const { password, tags, ...data } =
+      updatePasteDto as UpdatePasteServiceDto & {
+        passwordHash?: string | null;
+      };
 
     if (data.exposure && data.exposure !== PasteExposure.PROTECTED) {
       data.passwordHash = null;
