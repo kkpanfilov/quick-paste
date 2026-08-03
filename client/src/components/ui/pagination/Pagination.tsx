@@ -59,6 +59,7 @@ export const Pagination = ({
             <button
               className={`${styles.paginationButton}`}
               type="button"
+              aria-label="First page"
               onClick={() => setActivePage(1)}
             >
               1
@@ -71,6 +72,7 @@ export const Pagination = ({
             key={page}
             className={`${styles.paginationButton}`}
             type="button"
+            aria-label={`Go to page ${page}`}
             onClick={() => setActivePage(page)}
           >
             {page}
@@ -79,7 +81,7 @@ export const Pagination = ({
         <button
           className={`${styles.paginationButton} ${styles.paginationButtonActive}`}
           type="button"
-          aria-current="page"
+          aria-label="Current page"
         >
           {activePage}
         </button>
@@ -88,6 +90,7 @@ export const Pagination = ({
             key={page}
             className={`${styles.paginationButton}`}
             type="button"
+            aria-label={`Go to page ${page}`}
             onClick={() => setActivePage(page)}
           >
             {page}
@@ -100,6 +103,7 @@ export const Pagination = ({
             <button
               className={`${styles.paginationButton}`}
               type="button"
+              aria-label="Last page"
               onClick={() => setActivePage(totalPages)}
             >
               {totalPages}
