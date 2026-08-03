@@ -54,16 +54,20 @@ export const TagEditor = ({
       <label htmlFor={id} className={styles.label}>
         Tags
       </label>
-      <div className={styles.tags}>
+      <ul className={styles.tags} aria-label="Tags">
         {tags.map((tag) => (
-          <span key={tag} className={styles.tag}>
+          <li className={styles.tag}>
             {tag}
-            <span className={styles.tagClose} onClick={() => removeTag(tag)}>
+            <span
+              className={styles.tagClose}
+              aria-label="Remove tag"
+              onClick={() => removeTag(tag)}
+            >
               X
             </span>
-          </span>
+          </li>
         ))}
-      </div>
+      </ul>
       <Field
         tag="input"
         id={id}
