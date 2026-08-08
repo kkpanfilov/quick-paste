@@ -87,7 +87,7 @@ export function useNewPasteForm() {
       }
     } catch (error: unknown) {
       notifyError({
-        title: "Comment not added",
+        title: "Paste not added",
         message: isApiError(error) ? error.message : "Unknown error",
       });
     }
