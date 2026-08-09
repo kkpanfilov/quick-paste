@@ -63,32 +63,20 @@ export class UsersService {
     return user;
   }
 
-  async _byId(userId: string) {
-    const user = await this.prisma.user.findUnique({
+  async _byId(userId: string): Promise<User | null> {
+    return await this.prisma.user.findUnique({
       where: {
         id: userId,
       },
     });
-
-    if (!user) {
-      throw new ConflictException("User not found");
-    }
-
-    return user;
   }
 
-  async _byEmail(email: string): Promise<User> {
-    const user = await this.prisma.user.findUnique({
+  async _byEmail(email: string): Promise<User | null> {
+    return await this.prisma.user.findUnique({
       where: {
         email,
       },
     });
-
-    if (!user) {
-      throw new ConflictException("User not found");
-    }
-
-    return user;
   }
 
   async getUser(userId: string, currentUserId: string | undefined) {
