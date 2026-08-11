@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import * as argon2 from "argon2";
@@ -19,6 +23,22 @@ export class AuthService {
   ) {}
 
   async register(registerUserDto: RegisterUserDto): Promise<AuthResponse> {
+    const isUserExistsEmail = await this.usersService._byEmail(
+      registerUserDto.email,
+    );
+
+    if (isUserExistsEmail) {
+      throw new ConflictException("User already exists");
+    }
+
+    const isUserExistsUsername = await this.usersService._byUsername(
+      registerUserDto.username,
+    );
+
+    if (isUserExistsUsername) {
+      throw new ConflictException("User already exists");
+    }
+
     const passwordHash = await argon2.hash(registerUserDto.password);
 
     const user = await this.usersService.create({

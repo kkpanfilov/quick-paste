@@ -26,32 +26,6 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const isUserExistsEmail = await this.prisma.user.findUnique({
-      where: {
-        email: createUserDto.email,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (isUserExistsEmail) {
-      throw new ConflictException("User already exists");
-    }
-
-    const isUserExistsUsername = await this.prisma.user.findUnique({
-      where: {
-        username: createUserDto.username,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (isUserExistsUsername) {
-      throw new ConflictException("User already exists");
-    }
-
     const user = await this.prisma.user.create({
       data: {
         email: createUserDto.email,
