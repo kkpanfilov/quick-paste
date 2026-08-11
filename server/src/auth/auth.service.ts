@@ -129,7 +129,16 @@ export class AuthService {
 
   async logout(request: Request): Promise<Message> {
     const refreshToken = this.getRefreshToken(request);
+
+    if (!refreshToken) {
+      throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND_ERROR_MESSAGE);
+    }
+
     const payload = await this.getPayload(refreshToken);
+
+    if (!payload) {
+      throw new UnauthorizedException(UNAUTHORIZED_REFRESH_ERROR_MESSAGE);
+    }
 
     const user = await this.usersService._byId(payload.id);
 
@@ -160,7 +169,16 @@ export class AuthService {
 
   async refresh(request: Request): Promise<AuthResponse> {
     const refreshToken = this.getRefreshToken(request);
+
+    if (!refreshToken) {
+      throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND_ERROR_MESSAGE);
+    }
+
     const payload = await this.getPayload(refreshToken);
+
+    if (!payload) {
+      throw new UnauthorizedException(UNAUTHORIZED_REFRESH_ERROR_MESSAGE);
+    }
 
     const user = await this.usersService._byId(payload.id);
 
@@ -191,30 +209,30 @@ export class AuthService {
     };
   }
 
-  private getRefreshToken(request: Request): string {
+  private getRefreshToken(request: Request): string | null {
     const cookies: unknown = request.cookies;
 
     if (!cookies || typeof cookies !== "object") {
-      throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND_ERROR_MESSAGE);
+      return null;
     }
 
     const refreshToken = (cookies as Record<string, unknown>).refreshToken;
 
     if (typeof refreshToken !== "string") {
-      throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND_ERROR_MESSAGE);
+      return null;
     }
 
     return refreshToken;
   }
 
-  private async getPayload(refreshToken: string): Promise<JwtPayload> {
+  private async getPayload(refreshToken: string): Promise<JwtPayload | null> {
     const jwtPayload: JwtPayload | null = await this.jwtService
       .verifyAsync(refreshToken)
       .then((payload) => payload as JwtPayload)
       .catch(() => null);
 
     if (jwtPayload === null) {
-      throw new UnauthorizedException(UNAUTHORIZED_REFRESH_ERROR_MESSAGE);
+      return null;
     }
 
     const payload: JwtPayload = {
