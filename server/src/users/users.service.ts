@@ -53,6 +53,14 @@ export class UsersService {
     });
   }
 
+  async _byUsername(username: string): Promise<User | null> {
+    return await this.prisma.user.findUnique({
+      where: {
+        username,
+      },
+    });
+  }
+
   async getUser(userId: string, currentUserId: string | undefined) {
     if (userId === currentUserId) {
       return this.getUserPrivateInfo(userId);
