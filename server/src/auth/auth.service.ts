@@ -210,17 +210,15 @@ export class AuthService {
   }
 
   private getRefreshToken(request: Request): string | null {
+    if (!request || !request.cookies) return null;
+
     const cookies: unknown = request.cookies;
 
-    if (!cookies || typeof cookies !== "object") {
-      return null;
-    }
+    if (!cookies || typeof cookies !== "object") return null;
 
     const refreshToken = (cookies as Record<string, unknown>).refreshToken;
 
-    if (typeof refreshToken !== "string") {
-      return null;
-    }
+    if (typeof refreshToken !== "string") return null;
 
     return refreshToken;
   }
