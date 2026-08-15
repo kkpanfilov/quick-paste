@@ -12,13 +12,28 @@ import { RedisModule } from "./redis/redis.module.js";
 import { LastActiveMiddleware } from "./users/middlewares/last-active.middleware.js";
 import { UsersModule } from "./users/users.module.js";
 
-const isProduction = process.env.NODE_ENV === "production";
+const nodeEnv = process.env.NODE_ENV;
+
+const envMap = {
+  development: "dev",
+  production: "prod",
+  test: "test",
+} as const;
+
+if (!nodeEnv || !(nodeEnv in envMap)) {
+  throw new Error(`Invalid NODE_ENV: ${nodeEnv}`);
+}
+
+const envType = envMap[nodeEnv as keyof typeof envMap];
+const envFilePath = `../.env.${envType}`;
+
+const isProduction = nodeEnv === "production";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: isProduction ? undefined : "../.env.dev",
+      envFilePath: envFilePath,
       ignoreEnvFile: isProduction,
       validate: (config) => envSchema.parse(config),
     }),
