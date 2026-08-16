@@ -32,7 +32,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(registerUserDto: RegisterUserDto): Promise<AuthResponse> {
+  async register(registerUserDto: RegisterUserDto) {
     const isUserExistsEmail = await this.usersService._byEmail(
       registerUserDto.email,
     );
@@ -83,7 +83,7 @@ export class AuthService {
     };
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<AuthResponse> {
+  async login(loginUserDto: LoginUserDto) {
     const user = await this.usersService._byEmail(loginUserDto.email);
 
     if (!user) {
