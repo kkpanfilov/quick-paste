@@ -15,18 +15,16 @@ export class RegisterUserDto {
   @Transform(({ value }): string =>
     typeof value === "string" ? value.trim() : value,
   )
-  @IsEmail({}, { message: "Email is not valid" })
   @Length(6, 50, {
     message: "Email must be at least 6 characters long and no more than 50",
   })
+  @IsEmail({}, { message: "Email is not valid" })
   email!: string;
 
   @IsString({ message: "Password must be a string" })
-  @Transform(({ value }): string =>
-    typeof value === "string" ? value.trim() : value,
-  )
   @Length(8, 64, {
-    message: "Password must be at least 8 characters long and no more than 64",
+    message:
+      "Password must be at least 8 characters long and no more than 64 characters",
   })
   @IsStrongPassword(
     {

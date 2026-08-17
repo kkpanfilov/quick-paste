@@ -13,7 +13,6 @@ import { CreateReplyDto } from "./dto/create-reply.dto.js";
 import { UpdateCommentDto } from "./dto/update-comment.dto.js";
 import { Cursor } from "./types/cursor.type.js";
 
-// TODO: add tests
 const DEFAULT_LIMIT_COMMENTS = 10;
 const DEFAULT_LIMIT_REPLIES = 5;
 
@@ -72,7 +71,7 @@ export class CommentsService {
       },
       ...(cursor && {
         cursor: {
-          id: cursor.id,
+          id: cursor,
         },
       }),
       take: DEFAULT_LIMIT_COMMENTS + 1,
@@ -93,12 +92,7 @@ export class CommentsService {
         author: comment.author,
         repliesCount: comment._count.replies,
       })),
-      nextCursor: hasNextPage
-        ? {
-            id: items[items.length - 1].id,
-            createdAt: items[items.length - 1].createdAt,
-          }
-        : null,
+      nextCursor: hasNextPage ? items[items.length - 1].id : null,
     };
 
     return data;
@@ -149,7 +143,7 @@ export class CommentsService {
       },
       ...(cursor && {
         cursor: {
-          id: cursor.id,
+          id: cursor,
         },
       }),
       take: DEFAULT_LIMIT_REPLIES + 1,
@@ -170,12 +164,7 @@ export class CommentsService {
         parentId: reply.parentId,
         author: reply.author,
       })),
-      nextCursor: hasNextPage
-        ? {
-            id: items[items.length - 1].id,
-            createdAt: items[items.length - 1].createdAt,
-          }
-        : null,
+      nextCursor: hasNextPage ? items[items.length - 1].id : null,
     };
 
     return data;

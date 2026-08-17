@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import * as argon2 from "argon2";
@@ -11,6 +15,16 @@ import { AuthResponse } from "./types/auth-response.type.js";
 import { JwtPayload } from "./types/jwt-payload.type.js";
 import { Message } from "./types/message.type.js";
 
+const ACCESS_TOKEN_EXPIRATION = "30m";
+const REFRESH_TOKEN_EXPIRATION = "30d";
+const REFRESH_TOKEN_NO_REMEMBER_EXPIRATION = "12h";
+
+const UNAUTHORIZED_ERROR_MESSAGE = "Invalid password or email";
+const UNAUTHORIZED_REFRESH_ERROR_MESSAGE = "Invalid refresh token";
+const REFRESH_TOKEN_NOT_FOUND_ERROR_MESSAGE = "Refresh token not found";
+const USER_NOT_FOUND_ERROR_MESSAGE = "User not found";
+const CONFLICT_ERROR_MESSAGE = "User already exists";
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -18,7 +32,23 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(registerUserDto: RegisterUserDto): Promise<AuthResponse> {
+  async register(registerUserDto: RegisterUserDto) {
+    const isUserExistsEmail = await this.usersService._byEmail(
+      registerUserDto.email,
+    );
+
+    if (isUserExistsEmail) {
+      throw new ConflictException(CONFLICT_ERROR_MESSAGE);
+    }
+
+    const isUserExistsUsername = await this.usersService._byUsername(
+      registerUserDto.username,
+    );
+
+    if (isUserExistsUsername) {
+      throw new ConflictException(CONFLICT_ERROR_MESSAGE);
+    }
+
     const passwordHash = await argon2.hash(registerUserDto.password);
 
     const user = await this.usersService.create({
@@ -35,10 +65,10 @@ export class AuthService {
     };
 
     const accessToken = await this.jwtService.signAsync(payload, {
-      expiresIn: "1m",
+      expiresIn: ACCESS_TOKEN_EXPIRATION,
     });
     const refreshToken = await this.jwtService.signAsync(payload, {
-      expiresIn: "15d",
+      expiresIn: REFRESH_TOKEN_EXPIRATION,
     });
 
     await this.usersService.updateRefreshTokenHash(
@@ -53,9 +83,7 @@ export class AuthService {
     };
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<AuthResponse> {
-    const UNAUTHORIZED_ERROR_MESSAGE = "Invalid password or email";
-
+  async login(loginUserDto: LoginUserDto) {
     const user = await this.usersService._byEmail(loginUserDto.email);
 
     if (!user) {
@@ -79,10 +107,12 @@ export class AuthService {
     };
 
     const accessToken = await this.jwtService.signAsync(payload, {
-      expiresIn: "30m",
+      expiresIn: ACCESS_TOKEN_EXPIRATION,
     });
     const refreshToken = await this.jwtService.signAsync(payload, {
-      expiresIn: loginUserDto.remember ? "30d" : "12h",
+      expiresIn: loginUserDto.remember
+        ? REFRESH_TOKEN_EXPIRATION
+        : REFRESH_TOKEN_NO_REMEMBER_EXPIRATION,
     });
 
     await this.usersService.updateRefreshTokenHash(
@@ -99,16 +129,25 @@ export class AuthService {
 
   async logout(request: Request): Promise<Message> {
     const refreshToken = this.getRefreshToken(request);
+
+    if (!refreshToken) {
+      throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND_ERROR_MESSAGE);
+    }
+
     const payload = await this.getPayload(refreshToken);
+
+    if (!payload) {
+      throw new UnauthorizedException(UNAUTHORIZED_REFRESH_ERROR_MESSAGE);
+    }
 
     const user = await this.usersService._byId(payload.id);
 
     if (!user) {
-      throw new UnauthorizedException("User not found");
+      throw new UnauthorizedException(USER_NOT_FOUND_ERROR_MESSAGE);
     }
 
     if (!user.refreshTokenHash) {
-      throw new UnauthorizedException("Refresh token not found");
+      throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND_ERROR_MESSAGE);
     }
 
     const isRefreshTokenValid = await argon2.verify(
@@ -117,7 +156,7 @@ export class AuthService {
     );
 
     if (!isRefreshTokenValid) {
-      throw new UnauthorizedException("Invalid refresh token");
+      throw new UnauthorizedException(UNAUTHORIZED_REFRESH_ERROR_MESSAGE);
     }
 
     await this.usersService.updateRefreshTokenHash(user.id, null);
@@ -130,16 +169,25 @@ export class AuthService {
 
   async refresh(request: Request): Promise<AuthResponse> {
     const refreshToken = this.getRefreshToken(request);
+
+    if (!refreshToken) {
+      throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND_ERROR_MESSAGE);
+    }
+
     const payload = await this.getPayload(refreshToken);
+
+    if (!payload) {
+      throw new UnauthorizedException(UNAUTHORIZED_REFRESH_ERROR_MESSAGE);
+    }
 
     const user = await this.usersService._byId(payload.id);
 
     if (!user) {
-      throw new UnauthorizedException("User not found");
+      throw new UnauthorizedException(USER_NOT_FOUND_ERROR_MESSAGE);
     }
 
     if (!user.refreshTokenHash) {
-      throw new UnauthorizedException("Refresh token not found");
+      throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND_ERROR_MESSAGE);
     }
 
     const isRefreshTokenValid = await argon2.verify(
@@ -148,7 +196,7 @@ export class AuthService {
     );
 
     if (!isRefreshTokenValid) {
-      throw new UnauthorizedException("Invalid refresh token");
+      throw new UnauthorizedException(UNAUTHORIZED_REFRESH_ERROR_MESSAGE);
     }
 
     const accessToken = await this.jwtService.signAsync(payload, {
@@ -161,30 +209,28 @@ export class AuthService {
     };
   }
 
-  private getRefreshToken(request: Request): string {
+  private getRefreshToken(request: Request): string | null {
+    if (!request || !request.cookies) return null;
+
     const cookies: unknown = request.cookies;
 
-    if (!cookies || typeof cookies !== "object") {
-      throw new UnauthorizedException("Refresh token not found");
-    }
+    if (!cookies || typeof cookies !== "object") return null;
 
     const refreshToken = (cookies as Record<string, unknown>).refreshToken;
 
-    if (typeof refreshToken !== "string") {
-      throw new UnauthorizedException("Refresh token not found");
-    }
+    if (typeof refreshToken !== "string") return null;
 
     return refreshToken;
   }
 
-  private async getPayload(refreshToken: string): Promise<JwtPayload> {
+  private async getPayload(refreshToken: string): Promise<JwtPayload | null> {
     const jwtPayload: JwtPayload | null = await this.jwtService
       .verifyAsync(refreshToken)
       .then((payload) => payload as JwtPayload)
       .catch(() => null);
 
     if (jwtPayload === null) {
-      throw new UnauthorizedException("Invalid refresh token");
+      return null;
     }
 
     const payload: JwtPayload = {

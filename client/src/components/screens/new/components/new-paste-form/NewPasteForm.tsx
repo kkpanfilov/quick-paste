@@ -58,10 +58,10 @@ export const NewPasteForm = () => {
           className={styles.input}
           placeholder="e.g. api-gateway-notes.ts"
           {...register("title", {
-            required: "is required",
+            required: "Title is required",
             maxLength: {
               value: 64,
-              message: "is too long",
+              message: "Title is too long",
             },
           })}
         />
@@ -109,7 +109,7 @@ export const NewPasteForm = () => {
             id="new-language"
             className={styles.select}
             {...register("language", {
-              required: "is required",
+              required: "Language is required",
             })}
           >
             {languageList.map(({ label, value }) => (
@@ -131,7 +131,7 @@ export const NewPasteForm = () => {
             id="new-expire"
             className={styles.select}
             {...register("expiration", {
-              required: "is required",
+              required: "Expiration is required",
             })}
           >
             {expirationList.map(({ label, value }) => (
@@ -153,7 +153,7 @@ export const NewPasteForm = () => {
             id="new-category"
             className={styles.select}
             {...register("category", {
-              required: "is required",
+              required: "Category is required",
             })}
           >
             {categoryList.map(({ label, value }) => (
@@ -175,7 +175,7 @@ export const NewPasteForm = () => {
             id="new-exposure"
             className={styles.select}
             {...register("exposure", {
-              required: "is required",
+              required: "Exposure is required",
             })}
           >
             {availableExposureList.map(({ label, value }) => (
@@ -220,10 +220,10 @@ export const NewPasteForm = () => {
           placeholder="Paste code or text here..."
           rows={10}
           {...register("content", {
-            required: "is required",
+            required: "Content is required",
             maxLength: {
               value: 100000,
-              message: "is too long",
+              message: "Content is too long",
             },
           })}
         />

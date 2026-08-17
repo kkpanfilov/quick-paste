@@ -13,7 +13,7 @@
     "noImplicitOverride": true,
     "noUncheckedSideEffectImports": true,
     "ignoreDeprecations": "6.0",
-    "types": ["vite/client"],
+    "types": ["vite/client", "vitest"],
     "skipLibCheck": true,
 
     /* Bundler mode */
