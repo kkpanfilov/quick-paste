@@ -5,6 +5,8 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 
+import { Request } from "express";
+
 import { Message } from "../auth/types/message.type.js";
 import { EXCEPTION_MAP, PastesService } from "../pastes/pastes.service.js";
 import { PrismaService } from "../prisma/prisma.service.js";
@@ -25,7 +27,8 @@ export class CommentsService {
 
   async getPasteComments(
     pasteId: string,
-    userId: string | undefined,
+    userId: string | null,
+    request: Request,
     cursor: Cursor | null,
   ) {
     const paste = await this.prisma.paste.findUnique({
@@ -42,7 +45,7 @@ export class CommentsService {
     }
 
     const { isAccessible: isPasteAccessible, error } =
-      await this.pasteService.isPasteAccessible(pasteId, userId);
+      await this.pasteService.isPasteAccessible(pasteId, userId, request);
 
     if (!isPasteAccessible && error !== null) {
       throw EXCEPTION_MAP[error];
@@ -101,7 +104,8 @@ export class CommentsService {
   async getCommentsReplies(
     commentId: string,
     pasteId: string,
-    userId: string | undefined,
+    userId: string | null,
+    request: Request,
     cursor: Cursor | null,
   ) {
     const comment = await this.prisma.comment.findUnique({
@@ -119,7 +123,7 @@ export class CommentsService {
     }
 
     const { isAccessible: isPasteAccessible, error } =
-      await this.pasteService.isPasteAccessible(pasteId, userId);
+      await this.pasteService.isPasteAccessible(pasteId, userId, request);
 
     if (!isPasteAccessible && error !== null) {
       throw EXCEPTION_MAP[error];
@@ -174,6 +178,7 @@ export class CommentsService {
     createCommentDto: CreateCommentDto,
     pasteId: string,
     authorId: string,
+    request: Request,
   ) {
     const paste = await this.prisma.paste.findUnique({
       where: {
@@ -186,7 +191,7 @@ export class CommentsService {
     }
 
     const { isAccessible: isPasteAccessible, error } =
-      await this.pasteService.isPasteAccessible(pasteId, authorId);
+      await this.pasteService.isPasteAccessible(pasteId, authorId, request);
 
     if (!isPasteAccessible && error !== null) {
       throw EXCEPTION_MAP[error];
@@ -218,6 +223,7 @@ export class CommentsService {
     createReplyDto: CreateReplyDto,
     parentId: string,
     authorId: string,
+    request: Request,
   ) {
     const paste = await this.prisma.paste.findUnique({
       where: {
@@ -233,6 +239,7 @@ export class CommentsService {
       await this.pasteService.isPasteAccessible(
         createReplyDto.pasteId,
         authorId,
+        request,
       );
 
     if (!isPasteAccessible && error !== null) {

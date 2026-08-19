@@ -233,13 +233,14 @@ export class PastesService {
 
   async findOne(
     id: string,
-    userId: string | undefined,
+    userId: string | null,
     request: Request | null,
     password?: Password,
   ) {
     const { isAccessible, error } = await this.isPasteAccessible(
       id,
       userId,
+      request,
       password,
     );
 
@@ -602,7 +603,8 @@ export class PastesService {
 
   async isPasteAccessible(
     id: string,
-    userId: string | undefined,
+    userId: string | null,
+    request: Request | null,
     password?: Password,
   ): IsPasteAccessible {
     const paste = await this.prisma.paste.findUnique({
@@ -627,7 +629,7 @@ export class PastesService {
         id: paste.authorId,
       },
       select: {
-        username: true,
+        id: true,
       },
     });
 
@@ -645,6 +647,29 @@ export class PastesService {
     }
 
     if (paste.passwordHash && !password && paste.authorId !== userId) {
+      if (request) {
+        const cookies = request.cookies;
+
+        if (cookies[`paste_access_${id}`]) {
+          const token = cookies[`paste_access_${id}`] as string;
+          const payload = await this.jwtService
+            .verifyAsync<PasteUnlockTokenType>(token)
+            .catch(() => null);
+
+          if (payload) {
+            if (payload.pasteId !== id) {
+              return { isAccessible: false, error: "Password is required" };
+            }
+
+            if (payload.userId !== userId) {
+              return { isAccessible: false, error: "Password is required" };
+            }
+
+            return { isAccessible: true, error: null };
+          }
+        }
+      }
+
       return { isAccessible: false, error: "Password is required" };
     }
 
@@ -656,6 +681,7 @@ export class PastesService {
       }
     }
 
+    // http://localhost:5173/paste/4fdd0024-0ec6-44a4-9dca-7741a228dd40 123123123
     return { isAccessible: true, error: null };
   }
 
@@ -685,7 +711,7 @@ export class PastesService {
 
   private async getAccessiblePaste(
     id: string,
-    userId: string | undefined,
+    userId: string | null,
     request: Request | null,
     password?: Password,
     options: ReadPasteOptions = {},
@@ -696,6 +722,7 @@ export class PastesService {
       const { isAccessible, error } = await this.isPasteAccessible(
         id,
         userId,
+        request,
         password,
       );
 
@@ -777,24 +804,10 @@ export class PastesService {
       return data;
     }
 
-    if (request) {
-      const cookies = request.cookies;
-
-      if (cookies[`paste_access_${id}`]) {
-        const token = cookies[`paste_access_${id}`] as string;
-        const isTokenValid =
-          await this.jwtService.verifyAsync<PasteUnlockTokenType>(token);
-
-        if (isTokenValid) {
-          return data;
-        }
-      }
-    }
-
     return data;
   }
 
-  private async checkIsLiked(pasteId: string, userId: string | undefined) {
+  private async checkIsLiked(pasteId: string, userId: string | null) {
     return userId
       ? await this.prisma.like.count({
           where: {
