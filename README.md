@@ -4,9 +4,11 @@ QuickPaste is a full-stack paste-sharing application for publishing and discussi
 
 The application is usable and actively developed. Some planned features and broader test coverage are still in progress.
 
+![Homepage](preview/homepage.png)
+
 ## Preview
 
-A hosted demo and screenshots are not available yet. The complete application can be previewed locally with the [production setup](#production):
+A hosted demo is not available yet. The complete application can be previewed locally with the [production setup](#production):
 
 ```text
 http://localhost:8080
