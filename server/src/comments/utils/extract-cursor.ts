@@ -4,7 +4,7 @@ function isJson(str: string) {
   try {
     JSON.parse(str);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
@@ -19,7 +19,7 @@ export function extractCursor(value: string | undefined): Cursor | null {
     const trim = value.trim();
 
     return trim;
-  } catch (error: unknown) {
+  } catch {
     return null;
   }
 }
