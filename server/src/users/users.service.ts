@@ -61,7 +61,7 @@ export class UsersService {
     });
   }
 
-  async getUser(userId: string, currentUserId: string | undefined) {
+  async getUser(userId: string, currentUserId: string | null) {
     if (userId === currentUserId) {
       return this.getUserPrivateInfo(userId);
     } else {

@@ -62,7 +62,7 @@ export class PastesController {
   @Get(":id")
   async findOne(
     @Param("id") id: string,
-    @User("id") userId: string,
+    @User("id") userId: string | null,
     @Req() request: Request,
   ) {
     return await this.pastesService.findOne(id, userId, request);
@@ -91,7 +91,7 @@ export class PastesController {
   @Post(":id/unlock")
   async unlockPaste(
     @Param("id") id: string,
-    @User("id") userId: string,
+    @User("id") userId: string | null,
     @Body("password", new TrimPipe(["password"])) password: Password,
     @Res({ passthrough: true }) res: Response,
   ) {
