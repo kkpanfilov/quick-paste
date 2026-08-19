@@ -13,6 +13,8 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
     "start:test": "cross-env NODE_ENV=test npx dotenv -e ../.env.test -- npm run start nest start --watch",
+    "prisma:prod:deploy": "npx prisma migrate deploy",
+    "prisma:prod:generate": "npx prisma generate",
     "prisma:dev:migrate": "dotenv -e ../.env.dev -- npx prisma migrate dev",
     "prisma:dev:push": "dotenv -e ../.env.dev -- npx prisma db push",
     "prisma:dev:reset": "dotenv -e ../.env.dev -- npx prisma migrate reset",
