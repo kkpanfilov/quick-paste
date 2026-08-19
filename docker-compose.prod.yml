@@ -40,7 +40,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.prod
-    command: sh -c "cd app && npm run prisma:deploy && npm run start:prod"
+    command: sh -c "cd app && npm run prisma:prod:deploy && npm run start:prod"
     environment:
       NODE_ENV: production
       JWT_SECRET: ${JWT_SECRET}

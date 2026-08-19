@@ -62,7 +62,7 @@ export class PastesController {
   @Get(":id")
   async findOne(
     @Param("id") id: string,
-    @User("id") userId: string,
+    @User("id") userId: string | null,
     @Req() request: Request,
   ) {
     return await this.pastesService.findOne(id, userId, request);
@@ -91,23 +91,25 @@ export class PastesController {
   @Post(":id/unlock")
   async unlockPaste(
     @Param("id") id: string,
-    @User("id") userId: string,
+    @User("id") userId: string | null,
     @Body("password", new TrimPipe(["password"])) password: Password,
     @Res({ passthrough: true }) res: Response,
   ) {
     const paste = await this.pastesService.findOne(id, userId, null, password);
 
+    const isAuth = userId ? true : false;
+
     const token = this.jwtService.sign(
-      { pasteId: id, userId: userId },
-      { expiresIn: "7d" },
+      { pasteId: id, userId: isAuth ? userId : null },
+      { expiresIn: isAuth ? "7d" : "5m" },
     );
 
     res.cookie(`paste_access_${id}`, token, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: `/api/pastes/${id}`,
+      maxAge: isAuth ? 7 * 24 * 60 * 60 * 1000 : 5 * 60 * 1000,
+      path: `/api/`,
     });
 
     return paste;

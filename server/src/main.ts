@@ -12,9 +12,12 @@ async function bootstrap() {
 
   configureApp(app);
 
-  const PORT = configService.getOrThrow<number>("BACKEND_PORT");
+  const port = configService.getOrThrow<number>("BACKEND_PORT");
 
-  await app.listen(PORT ?? 4200);
+  await app.listen(port);
 }
 
-bootstrap();
+bootstrap().catch((error: unknown) => {
+  console.error("Failed to bootstrap application:", error);
+  process.exit(1);
+});

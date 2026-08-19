@@ -31,7 +31,7 @@ export class UsersController {
   @Get(":id")
   async getUser(
     @Param("id") userId: string,
-    @User("id") currentUserId: string | undefined,
+    @User("id") currentUserId: string | null,
   ) {
     return await this.usersService.getUser(userId, currentUserId);
   }

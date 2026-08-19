@@ -14,7 +14,9 @@ export class UserMiddleware implements NestMiddleware {
 
     if (token) {
       try {
-        const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+        const payload = await this.jwtService
+          .verifyAsync<JwtPayload>(token)
+          .catch(() => null);
 
         if (payload) {
           req.user = payload;
