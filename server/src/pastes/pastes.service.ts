@@ -575,6 +575,9 @@ export class PastesService {
       this.prisma.paste.count({
         where: {
           exposure: PasteExposure.PUBLIC,
+          title: {
+            contains: query,
+          },
         },
       }),
     ]);
@@ -681,7 +684,6 @@ export class PastesService {
       }
     }
 
-    // http://localhost:5173/paste/4fdd0024-0ec6-44a4-9dca-7741a228dd40 123123123
     return { isAccessible: true, error: null };
   }
 
