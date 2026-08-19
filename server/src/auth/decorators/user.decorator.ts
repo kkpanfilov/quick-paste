@@ -8,12 +8,13 @@ type RequestWithUser = Request & {
   user?: JwtPayload;
 };
 
-// TODO: make @User return only null user
 export const User = createParamDecorator(
-  (data: keyof JwtPayload | undefined, ctx: ExecutionContext) => {
+  (param: keyof JwtPayload, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<RequestWithUser>();
     const user = request.user;
 
-    return data ? user?.[data] : user;
+    if (!user) return null;
+
+    return param ? user[param] : user;
   },
 );
